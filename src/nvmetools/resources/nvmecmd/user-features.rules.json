@@ -1,0 +1,37 @@
+{
+  "rules": [
+    "'Critical Warnings' match No",
+    "'Media and Data Integrity Errors' = 0",
+    "'Warning Composite Temperature Time' = 0 Min",
+    "'Critical Composite Temperature Time' = 0 Min",
+    "'Thermal Management Temperature 1 Time' = 0 Sec",
+    "'Thermal Management Temperature 2 Time' = 0 Sec",
+    "'Number Of Failed Self-Tests' = 0",
+
+    "'PCI Width' match x4",
+    "'PCI Speed' match Gen3 8.0GT/s",
+
+    "'Number of Power States Support (NPSS)' = 5",
+    "'Power State 0 Maximum Power (MP)' < 10 Watts",
+    "'Power State 1 Maximum Power (MP)' < 9 Watts",
+    "'Power State 2 Maximum Power (MP)' < 8 Watts",
+    "'Power State 3 Maximum Power (MP)' < 0.1 Watts",
+    "'Power State 4 Maximum Power (MP)' < 0.05 Watts",
+    "'Power State 0 Non-Operational State (NOPS)' match False",
+    "'Power State 1 Non-Operational State (NOPS)' match False",
+    "'Power State 2 Non-Operational State (NOPS)' match False",
+    "'Power State 3 Non-Operational State (NOPS)' match True",
+    "'Power State 3 Exit Latency (EXLAT)' < 5000 uS",
+    "'Power State 4 Exit Latency (EXLAT)' < 50000 uS",
+
+    "'Firmware Activation Without Reset' match Supported",
+    "'Autonomous Power State Transition' match Supported",
+    "'Extended Device Self-test Time (EDSTT)' > 0 Min",
+    "'Crypto Erase Sanitize' match Supported",
+
+    "'RTD3 Entry Latency (RTD3E)'  < 10000000 uS",
+    "'RTD3 Resume Latency (RTD3R)' < 1000000 uS"
+  ]
+}
+
+

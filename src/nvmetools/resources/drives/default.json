@@ -1,0 +1,27 @@
+{
+    "model": "Any",
+    "Warranty Years": 5,
+    "TBW": 150,
+    "Client Drive": true,
+    "Wear Percent Limit": 90,
+    "Throttle Percent Limit": 1,
+    "Linearity Limit": 0.90,
+    "Timestamp Absolute Hours": 1.0,
+    "Timestamp Relative Percent": 1.0,
+    "Average Admin Cmd Limit mS": 50,
+    "Maximum Admin Cmd Limit mS": 500,
+    "Short Burst Bandwidth (GB/s)": {
+        "Sequential Write, QD32, 128KiB": 1.0,
+        "Sequential Read, QD32, 128KiB": 1.0,
+        "Random Write, QD1, 4KiB": 0.01,
+        "Random Read, QD1, 4KiB": 0.01,
+        "Random Write, QD32, 4KiB": 0.25,
+        "Random Read, QD32, 4KiB": 0.25
+    },
+    "Long Burst Bandwidth (GB/s)": {
+        "Sequential Write, QD32, 128KiB": 1.0,
+        "Sequential Read, QD32, 128KiB": 1.0,
+        "Random Write, QD1, 4KiB": 0.1,
+        "Random Read, QD1, 4KiB": 0.01
+    }
+}

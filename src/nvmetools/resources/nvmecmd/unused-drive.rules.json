@@ -1,0 +1,19 @@
+{
+  "rules": [
+    "'Percentage Used' = 0 %",
+    "'Data Read' < 0.01 GB",
+    "'Data Written' < 0.01 GB",
+    "'Power Cycles' < 5",
+    "'Power On Hours' < 5",
+    "'Available Spare' = 100 %",
+    "'Critical Warnings' match No",
+    "'Media and Data Integrity Errors' = 0",
+    "'Warning Composite Temperature Time' = 0 Min",
+    "'Critical Composite Temperature Time' = 0 Min",
+    "'Thermal Management Temperature 1 Time' = 0 Sec",
+    "'Thermal Management Temperature 2 Time' = 0 Sec",
+    "'Number Of Failed Self-Tests' = 0"
+  ]
+}
+
+

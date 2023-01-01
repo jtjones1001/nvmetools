@@ -1,0 +1,3 @@
+recursive-include src/nvmetools/resources *.*
+include src/nvmetools/resources/nvmecmd/nvmecmd
+recursive-include tests *.py

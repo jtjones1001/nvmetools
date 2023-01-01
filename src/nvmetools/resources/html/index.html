@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="en">
+<!--
+ ToDo:
+   Company colors and fonts - branding... Use same in PDF, resume, etc.
+   Percents on donut charts
+
+   dark-blue
+   mid-blue
+   fail-red
+   pass-green
+   skip-grey
+   light-grey
+   dark-grey
+   dark-bluegreen
+
+
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Joe Jones">
+
+    <title>CTC | Test Suite Dashboard</title>
+
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="data:image/png;base64,
+        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" />
+
+    <link rel="stylesheet" type="text/css" href="./assets/bootstrap.css">
+
+    <style>
+        :root {
+            --pass-color: #ffffff;
+            --pass-bg-color: #018301;
+            --fail-color: #ffffff;
+            --fail-bg-color: #df3639;
+            --fail-muted-color: #000000;
+            --fail-muted-bg-color: #fbc4c5;
+            --pass-muted-color: #000000;
+            --pass-muted-bg-color: #e9e8e8;
+            --skip-color: #ffffff;
+            --skip-bg-color: #777777;
+
+            --title-color: #646464;
+
+            --main-bg-color: #e6edf5;
+            --sidebar-bg-color: #f2f5f7;
+            --border-color: #c8c8c8;
+
+            --header-height: 56px;
+            --bs-danger: #ffffff;
+
+            --text-darkgrey: rgb(16, 16, 16);
+            --table-border: rgb(214, 214, 214);
+        }
+
+        .body {
+            padding-top: var(--header-height);
+        }
+
+        .top-header {
+            height: var(--header-height);
+            width: 100%;
+            background-color: #334a65;
+            color: var(--bs-danger);
+
+            padding: 0px;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+        }
+
+        .top-header span {
+            position: fixed;
+            left: 90px;
+            font-size: 24px;
+            padding: 10px 10px 10px 30px;
+        }
+
+        .main-view {
+            height: calc(100% - var(--header-height));
+            width: calc(100% - 96px);
+            min-width: 1200px;
+            min-height: 400px;
+            background-color: var(--main-bg-color);
+            position: fixed;
+            top: var(--header-height);
+            left: 96px;
+            border-style: none solid none none;
+            border-width: 1px;
+            border-color: var(--border-color);
+            overflow: scroll;
+            padding: 14px;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 96px;
+            background-color: var(--sidebar-bg-color);
+            position: fixed;
+            top: var(--header-height);
+            left: 0px;
+            border-style: none solid none none;
+            border-width: 1px;
+            border-color: var(--border-color);
+            padding-top: 0px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            display: block;
+        }
+
+        .sidebar ul li {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .btn,
+        .card-title,
+        .card-body,
+        .card-footer {
+            font-size: 12px;
+        }
+
+        .card-body {
+            padding: 0.5rem 1rem;
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            min-height: 32px !important;
+            background-color: white;
+        }
+
+        .number-col {
+            width: 25px;
+            text-align: center;
+        }
+
+        .status-col {
+            width: 55px;
+            text-align: center;
+        }
+
+        .badge-pass {
+            color: var(--pass-color);
+            background-color: var(--pass-bg-color);
+            border-radius: 2px;
+        }
+
+        .badge-fail {
+            color: var(--fail-color);
+            background-color: var(--fail-bg-color);
+            border-radius: 2px;
+        }
+
+        .badge-skip {
+            color: var(--skip-color);
+            background-color: var(--skip-bg-color);
+            border-radius: 2px;
+        }
+
+        .badge-pass-value {
+            color: var(--pass-muted-color);
+            background-color: var(--pass-muted-bg-color);
+            display: inline-block;
+        }
+
+        .badge-fail-value {
+            color: var(--fail-muted-color);
+            background-color: var(--fail-muted-bg-color);
+        }
+
+        .skip-color {
+            color: #333;
+            background-color: green;
+        }
+
+        .table {
+            width: 100% !important;
+            margin-left: 0;
+            margin-top: 25px;
+        }
+
+        .table {
+            --bs-table-hover-bg: rgba(0, 0, 0, 0.04);
+        }
+
+        table tbody.big tr td {
+            padding: 4px !important;
+            padding-left: 5px !important;
+        }
+
+        .table>:not(caption)>*>* {
+            padding: .25rem .25rem;
+        }
+
+        .table>tbody>tr.active>td {
+            background: #fdffc4;
+        }
+
+        /* adjust bs var */
+
+        table th {
+            background-color: #e5e2e2 !important;
+        }
+
+        .btn-outline-secondary {
+            --bs-btn-color: var(--text-darkgrey);
+            --bs-btn-border-color: #6c757d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: var(--text-darkgrey);
+            --bs-btn-hover-border-color: #6c757d;
+            --bs-btn-focus-shadow-rgb: 108, 117, 125;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #6c757d;
+            --bs-btn-active-border-color: #6c757d;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: var(--text-darkgrey);
+            --bs-btn-disabled-bg: transparent;
+            --bs-btn-disabled-border-color: #6c757d;
+            --bs-gradient: none;
+            min-width: 110px;
+            border-left: 0px;
+        }
+
+        .btn-outline-secondary-left {
+            --bs-btn-color: var(--text-darkgrey);
+            --bs-btn-border-color: #6c757d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: var(--text-darkgrey);
+            --bs-btn-hover-border-color: #6c757d;
+            --bs-btn-focus-shadow-rgb: 108, 117, 125;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #6c757d;
+            --bs-btn-active-border-color: #6c757d;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: var(--text-darkgrey);
+            --bs-btn-disabled-bg: transparent;
+            --bs-btn-disabled-border-color: #6c757d;
+            --bs-gradient: none;
+            min-width: 110px;
+        }
+
+        .sort-list>thead {
+            cursor: pointer;
+            user-select: none;
+            -ms-user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+
+<body id="mainbody">
+
+    <div class="top-header">
+
+        <!-- base64 stream of nvme_icon.png which is CTC icon -->
+        <image
+            src="data:image/png;base64,
+            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"
+            style="width:32px;height:32px;position: fixed; top: 12px; left: 28px;" />
+
+        <span id="suite-name"> </span>
+    </div>
+
+    <!-- Sidebar used for navigation -->
+
+    <div class="sidebar">
+        <ul>
+            <li onclick="toggleView('dashboard-view')">
+                <a id="nav-project" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-columns" viewBox="0 0 16 16">
+                        <path
+                            d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V2zm8.5 0v8H15V2H8.5zm0 9v3H15v-3H8.5zm-1-9H1v3h6.5V2zM1 14h6.5V6H1v8z" />
+                    </svg>
+            </li>
+            <li onclick="toggleView('graph-view')">
+                <a id="nav-suite" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-bar-chart-line" viewBox="0 0 16 16">
+                        <path
+                            d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z" />
+                    </svg>
+                </a>
+            </li>
+            <li onclick="toggleView('test-view')">
+                <a id="nav-test" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-list-check" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z" />
+                    </svg>
+                </a>
+            </li>
+            <li onclick="toggleView('rqmt-view')">
+                <a id="nav-rqmt" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-check2-square" viewBox="0 0 16 16">
+                        <path
+                            d="M3 14.5A1.5  1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z" />
+                        <path
+                            d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                    </svg>
+                </a>
+            </li>
+            <li onclick="toggleView('device-view')">
+                <a id="nav-rqmt" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-hdd" viewBox="0 0 16 16">
+                        <path d="M4.5 11a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 10.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                        <path
+                            d="M16 11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V9.51c0-.418.105-.83.305-1.197l2.472-4.531A1.5 1.5 0 0 1 4.094 3h7.812a1.5 1.5 0 0 1 1.317.782l2.472 4.53c.2.368.305.78.305 1.198V11zM3.655 4.26 1.592 8.043C1.724 8.014 1.86 8 2 8h12c.14 0 .276.014.408.042L12.345 4.26a.5.5 0 0 0-.439-.26H4.094a.5.5 0 0 0-.44.26zM1 10v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1z" />
+                    </svg>
+                </a>
+            </li>
+            <li onclick="toggleView('system-view')">
+                <a id="nav-rqmt" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-pc-display" viewBox="0 0 16 16">
+                        <path
+                            d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V1Zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0Zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0ZM9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5ZM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5ZM1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2H1.5Z" />
+                    </svg>
+                </a>
+            </li>
+
+            <!-- This is the PDF icon at the bottom of the sidebar -->
+
+            <li >
+                <a href="./report.pdf" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-file-pdf" viewBox="0 0 16 16">
+                        <path
+                            d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+                        <path
+                            d="M4.603 12.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.701 19.701 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.187-.012.395-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.065.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.716 5.716 0 0 1-.911-.95 11.642 11.642 0 0 0-1.997.406 11.311 11.311 0 0 1-1.021 1.51c-.29.35-.608.655-.926.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.27.27 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.647 12.647 0 0 1 1.01-.193 11.666 11.666 0 0 1-.51-.858 20.741 20.741 0 0 1-.5 1.05zm2.446.45c.15.162.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.881 3.881 0 0 0-.612-.053zM8.078 5.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main page with several views that are displayed based on sidebar selection -->
+
+    <div class="main-view">
+
+        <section id="dashboard-view" class="view d-block">
+            <div class="container-fluid">
+
+                <!-- First row with critical information -->
+                <div class="row align-items-top justify-content-center mb-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">TEST SUITE</p>
+                                <table class="table mt-3 mb-2">
+                                    <tbody>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td id="name"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ID</td>
+                                            <td id="id"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Version</td>
+                                            <td id="script version"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">TESTED</p>
+                                <table class="table table-hover mt-3 mb-2">
+                                    <tbody>
+                                        <tr onclick="toggleView('device-view')">
+                                            <td>Device</td>
+                                            <td id="model"></td>
+                                        </tr>
+                                        <tr onclick="toggleView('system-view')">
+                                            <td>System</td>
+                                            <td id="system"></td>
+                                        </tr>
+                                        <tr onclick="toggleView('system-view')">
+                                            <td>Location</td>
+                                            <td id="location"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">DATE</p>
+                                <table class="table mt-3 mb-2">
+                                    <tbody>
+                                        <tr>
+                                            <td>Start</td>
+                                            <td id=start></td>
+                                        </tr>
+                                        <tr>
+                                            <td>End</td>
+                                            <td id="end"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Duration</td>
+                                            <td id="duration"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second row with donut graphs-->
+                <div class="row align-items-center justify-content-center mb-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body text-left p-10 p-b-30">
+                                <p class="card-title mb-2">TESTS</p>
+                                <canvas id="tests" class="mt-3 mb-2" width="300" height="100"></canvas>
+                            </div>
+                            <div class="card-footer">
+                                <span id="test donut footer"></span>
+                                <span id="test donut footer total" style="float:right"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body text-left p-10 p-b-30">
+                                <p class="card-title mb-2">REQUIREMENTS</p>
+                                <canvas id="requirements" class="mt-3 mb-2" width="300" height="100"></canvas>
+                            </div>
+                            <div class="card-footer">
+                                <span id="rqmt donut footer"></span>
+                                <span id="rqmt donut footer total" style="float:right"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body text-left p-10 p-b-30">
+                                <p class="card-title mb-2">VERIFICATIONS</p>
+                                <canvas id="verifications" class="mt-3 mb-2" width="300" height="100"></canvas>
+                            </div>
+                            <div class="card-footer">
+                                <span id="ver donut footer" class="text-left"></span>
+                                <span id="ver donut footer total" style="float:right"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Third row : Tables of tests and requirements   -->
+
+                <div class="row align-items-top justify-content-center mb-3">
+                    <div class="col-4">
+                        <div class="card mb-4">
+                            <div class="card-body text-left p-10">
+                                <p class="card-title">TEST LIST
+                                <table id="test list" class="table table-hover test-list sort-list">
+                                    <thead>
+                                        <tr>
+                                            <th class="number-col" data-column="number" data-order="desc"> #</th>
+                                            <th data-column="title" data-order="desc"> Test</th>
+                                            <th class="status-col" data-column="result" data-order="desc">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-4">
+                            <div class="card-body text-left p-10">
+                                <p class="card-title">REQUIREMENT LIST</p>
+                                <table id="rqmt list" class="table table-hover rqmt-list sort-list">
+                                    <thead>
+                                        <thead>
+                                            <tr>
+                                                <th class=" number-col" data-column="number" data-order="desc">#</th>
+                                                <th data-column="title" data-order="desc">Requirement</th>
+                                                <th style="width:100px;" data-column="pass" data-order="desc">Pass</th>
+                                                <th style="width:100px;" data-column="fail" data-order="desc">Fail</th>
+                                                <th class="status-col" data-column="fail" data-order="desc">Status</th>
+                                            </tr>
+                                        </thead>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <section id="graph-view" class="view d-none">
+            <div class="container-fluid">
+
+                <!-- First row with donut graphs-->
+                <div class="row align-items-center justify-content-center">
+                    <div class="col">
+                        <div class="card mb-3">
+                            <div class="card-body text-left p-10 p-b-30">
+                                <p class="card-title">TESTS</p>
+                                <canvas id="tests2" class="mt-3 mb-2" width="300" height="100"></canvas>
+                            </div>
+                            <div class="card-footer">
+                                <span id="test2 donut footer"></span>
+                                <span id="test2 donut footer total" style="float:right"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-3">
+                            <div class="card-body text-left p-10 p-b-30">
+                                <p class="card-title">REQUIREMENTS</p>
+                                <canvas id="requirements2" class="mt-3 mb-2" width="300" height="100"></canvas>
+                            </div>
+                            <div class="card-footer">
+                                <span id="rqmt2 donut footer"></span>
+                                <span id="rqmt2 donut footer total" style="float:right"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mb-3">
+                            <div class="card-body text-left p-10 p-b-30">
+                                <p class="card-title">VERIFICATIONS</p>
+                                <canvas id="verifications2" class="mt-3 mb-2" width="300" height="100"></canvas>
+                            </div>
+                            <div class="card-footer">
+                                <span id="ver2 donut footer"></span>
+                                <span id="ver2 donut footer total" style="float:right"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="test-view" class="view d-none">
+            <div class="row align-items-top justify-content-center">
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">TEST LIST
+
+                                <svg id="collapsed" xmlns="http://www.w3.org/2000/svg" onclick="expandTests(this)"
+                                    data-bs-toggle="collapse" data-bs-target=".test_detail" style="float:right;"
+                                    width="16" height="16" fill="currentColor" class="d-none bi bi-plus-circle"
+                                    viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path
+                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                </svg>
+                                <svg id="expanded" xmlns="http://www.w3.org/2000/svg" onclick="collapseTests(this)"
+                                    data-bs-toggle="collapse" data-bs-target=".test_detail" style="float:right;"
+                                    width="16" height="16" fill="currentColor" class="bi bi-dash-circle"
+                                    viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                </svg>
+
+                            </p>
+
+                            <table id="test view list" class="table table-hover test-list sort-list">
+                                <thead>
+                                    <tr>
+                                        <th class="number-col" data-column="number" data-order="desc"> #</th>
+                                        <th data-column="title" data-order="desc"> Test</th>
+                                        <th class="status-col" data-column="result" data-order="desc">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="test-list-details" class="col">
+
+                </div>
+            </div>
+        </section>
+
+        <!--   Requirement View   -->
+        <section id="rqmt-view" class="view d-none">
+            <div class="row align-items-top justify-content-center">
+                <div class="col-5">
+                    <div class="card">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">REQUIREMENT LIST
+
+
+                                <svg id="rl2" xmlns="http://www.w3.org/2000/svg" onclick="setRqmt(0)"
+                                    style="float:right;" width="16" height="16" fill="currentColor"
+                                    class="d-none bi bi-x-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                    <path
+                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+
+
+                            </p>
+
+                            <table id="rqmt view list" class="table table-hover rqmt-list sort-list">
+                                <thead>
+                                    <tr>
+                                        <th class="number-col" data-column="number" data-order="desc">#</th>
+                                        <th data-column="title" data-order="desc">Requirement</th>
+                                        <th data-column="pass" data-order="desc">Pass</th>
+                                        <th data-column="fail" data-order="desc">Fail</th>
+                                        <th class="status-col" data-column="fail" data-order="desc">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">REQUIREMENT VERIFICATIONS</p>
+
+                            <table id="rqmt verifications" class="table verification-list sort-list">
+                                <thead>
+                                    <tr>
+                                        <th class="number-col" data-column="number" data-order="desc">#</th>
+                                        <th data-column="title" data-order="desc" style="width:45%">Requirement</th>
+                                        <th data-column="value" data-order="desc" style="width:100ps;">Value</th>
+                                        <th data-column="test number" data-order="desc" class="number-col">#</th>
+                                        <th data-column="test" data-order="desc">Test</th>
+                                        <th class="status-col" data-column="result" data-order="desc">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="device-view" class="view d-none">
+            <div class="row align-items-top justify-content-center">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">DEVICE INFORMATION </p>
+
+                            <div class="btn-toolbar mb-3">
+
+                                <div class="input-group input-group-sm ">
+                                    <input id="parameter-search" style="margin-right:20px;" type="text"
+                                        onkeyup="updateParameterListTable(parameterData)" spellcheck="false"
+                                        placeholder=" SEARCH...">
+                                </div>
+
+                                <div class="btn-group  btn-group-sm ">
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(summary)"
+                                        name="btnradio" id="summary" autocomplete="off" checked>
+                                    <label class="btn btn-outline-secondary-left" for="summary">SUMMARY</label>
+
+                                    <input type="radio" class="btn-check"
+                                        onchange="updateParameterListTable(parameters)" name="btnradio" id="all"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-secondary " for="all">ALL</label>
+
+                                    <input type="radio" class="btn-check"
+                                        onchange="updateParameterListTable(smart);console.log(parameterData.length)"
+                                        name="btnradio" id="smart" autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="smart">SMART</label>
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(firmware)"
+                                        name="btnradio" id="fw" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="fw">Firmware</label>
+
+                                    <input type="radio" class="btn-check"
+                                        onchange="updateParameterListTable(power);console.log(parameterData.length)"
+                                        name="btnradio" id="power" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="power">Power</label>
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(pci)"
+                                        name="btnradio" id="pci" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="pci">PCI</label>
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(thermal)"
+                                        name="btnradio" id="thermal" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="thermal">Thermal</label>
+
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(data)"
+                                        name="btnradio" id="data" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="data">Data</label>
+
+                                </div>
+                            </div>
+
+                            <table id="device parameters" style="word-break:break-all"
+                                class="table parameter-list sort-list">
+                                <thead>
+                                    <tr>
+                                        <th style="width:360px;" data-column="name" data-order="desc"> PARAMETER </th>
+                                        <th style="width:270px;" data-column="value" data-order="desc"> START VALUE</th>
+                                        <th style="width:270px;" data-column="change" data-order="desc"> END VALUE (IF
+                                            CHANGED) </th>
+                                        <th data-column="description" data-order="desc"> DESCRIPTION </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- This view lists the host parameters -->
+
+        <section id="system-view" class="view d-none">
+            <div class="row align-items-top justify-content-center">
+                <div class="col-5">
+                    <div class="card">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">HOST SYSTEM INFORMATION </p>
+                            <table id="host parameters" style="word-break:break-all" class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50%" data-column="name" data-order="desc"> PARAMETER </th>
+                                        <th style="width:50%;" data-column="value" data-order="desc"> VALUE </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Hostname</td>
+                                        <td id="hostname"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manufacturer</td>
+                                        <td id="host_mfg"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Model</td>
+                                        <td id="host_model"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>BIOS Version</td>
+                                        <td id="host_bios"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>OS</td>
+                                        <td id="host_os"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>UUID</td>
+                                        <td id="host_uuid"> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./assets/data.js"></script>
+    <script src="./assets/bootstrap.bundle.min.js"></script>
+    <script src="./assets/chart.min.js"></script>
+
+    <script>
+
+        let main_body = document.getElementById('mainbody');
+        let selectedTest = 1
+        let selectedRequirement = 0
+        let selectedRequirementName = ""
+
+        function passValue(value) { return `<td>${value}</td>` }
+        function failValue(value) { return `<td style="color:red;font-weight:bold;">${value}</td>` }
+
+        const failBadge = `<td class="status-col"><span class="badge badge-fail">FAIL</span></td>`
+        const passBadge = `<td class="status-col"><span class="badge badge-pass">PASS</span></td>`
+        const skipBadge = `<td class="status-col"><span class="badge badge-skip">SKIP</span></td>`
+
+        let selectedVerificationListData = verificationListData
+        let sortedRqmtList = rqmtListData
+        let sortedTestList = testListData
+        let parameterData = summary
+
+        function sortTableData(dataset, tableData) {
+            let column = dataset.column
+            let order = dataset.order
+
+            if (order === 'desc') {
+                dataset.order = "asc";
+                tableData = tableData.sort((a, b) =>
+                    a[column] > b[column] ? 1 : a[column] == b[column] && a['number'] > b['number'] ? 1 : -1
+                )
+            } else {
+                dataset.order = "desc";
+                tableData = tableData.sort((a, b) =>
+                    a[column] < b[column] ? 1 : a[column] == b[column] && a['number'] < b['number'] ? 1 : -1
+                )
+            }
+            return tableData
+        }
+
+        document.querySelectorAll('.sort-list th').forEach(function (header, index) {
+            header.addEventListener('click', function () {
+
+                let tableData = parameterData
+                const tableId = this.parentNode.parentNode.parentNode.id
+
+                console.log(`Sort list on ${tableId} col: ${this.dataset.column}`)
+
+                if (this.parentNode.parentNode.parentNode.classList.contains("test-list")) {
+                    sortedTestList = sortTableData(this.dataset, sortedTestList)
+                    updateTestListTable(this.parentNode.parentNode.parentNode.id, sortedTestList)
+                }
+                else if (this.parentNode.parentNode.parentNode.classList.contains("rqmt-list")) {
+                    sortTableData(this.dataset, sortedRqmtList)
+                    updateRequirementListTable(this.parentNode.parentNode.parentNode.id, sortedRqmtList)
+                }
+                else if (this.parentNode.parentNode.parentNode.classList.contains("verification-list")) {
+                    sortTableData(this.dataset, selectedVerificationListData)
+                    updateVerificationListTable(selectedVerificationListData)
+                }
+                else {
+                    sortTableData(this.dataset, parameterData)
+                    updateParameterListTable(parameterData)
+                }
+            })
+        })
+        function updateRequirementListTable(tableId, tableData) {
+            console.log(`updateRequirementListTable(${tableId}, tableData), selectedReq=${selectedRequirement}, tableId=${tableId}`)
+
+            rqmtViewList = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+
+            if (selectedRequirement == 0) {
+                selectedVerificationListData = verificationListData
+                document.getElementById('rl2').classList.add('d-none')
+                for (let i = 0; i < rqmtViewList.rows.length; i++) {
+                    rqmtViewList.rows[i].classList.remove("active")
+                }
+                rqmtDetails = document.getElementsByClassName("rqmt-detail")
+                for (let i = 0; i < rqmtDetails.length; i++) {
+                    rqmtDetails[i].classList.remove("d-none")
+                }
+            }
+            else {
+                document.getElementById('rl2').classList.remove('d-none')
+                for (let i = 0; i < rqmtViewList.rows.length; i++) {
+                    rqmtViewList.rows[i].classList.remove("active")
+                    //                    if (rqmtViewList.rows[i].cells[0].innerHTML == selectedRequirement) {
+
+                    if (rqmtViewList.rows[i].cells[0].innerText == selectedRequirement) {
+
+                        console.log(`found it ${selectedRequirement}`)
+                        rqmtViewList.rows[i].classList.add("active")
+                        selectedRequirementName = rqmtViewList.rows[i].cells[1].innerText
+
+                    }
+                }
+                rqmtDetails = document.getElementsByClassName("rqmt-detail")
+                for (let i = 0; i < rqmtDetails.length; i++) {
+                    rqmtDetails[i].classList.add("d-none")
+                }
+            }
+
+            testString = ""
+            for (let rqmt in tableData) {
+                if (tableData[rqmt]["fail"] == "0") {
+                    resultBadge = passBadge
+                }
+                else {
+                    resultBadge = failBadge
+                }
+                if (selectedRequirement == tableData[rqmt]['number'] && tableId == "rqmt view list") {
+                    testString += `<tr class="active" onclick="setRqmtView(${tableData[rqmt]['number']})">
+                    <td class="number-col">${tableData[rqmt]['number']}</td>
+                    <td>${tableData[rqmt]["title"]}</td>
+                    <td>${tableData[rqmt]["pass"]}</td>
+                    <td>${tableData[rqmt]["fail"]}</td>
+                    ${resultBadge}</tr>`
+                }
+                else {
+                    testString += `<tr onclick="setRqmtView(${tableData[rqmt]['number']})">
+                    <td class="number-col">${tableData[rqmt]['number']}</td>
+                    <td>${tableData[rqmt]["title"]}</td>
+                    <td>${tableData[rqmt]["pass"]}</td>
+                    <td>${tableData[rqmt]["fail"]}</td>
+                    ${resultBadge}</tr>`
+                }
+            }
+            var activeTableBody = document.getElementById(tableId).getElementsByTagName('tbody')[0]
+            activeTableBody.innerHTML = testString
+        }
+
+        function updateTestListTable(tableId, tableData) {
+            console.log(`updateTestListTable(${tableId}, tableData)`)
+
+            testString = ""
+            for (let test in tableData) {
+                let resultBadge = failBadge
+                if (tableData[test]["result"] == "PASSED") {
+                    resultBadge = passBadge
+                }
+                if (tableData[test]["result"] == "SKIPPED") {
+                    resultBadge = skipBadge
+                }
+
+                if (selectedTest == tableData[test]['number'] && tableId == "test view list") {
+                    testString += `
+                    <tr class="active" onclick="setTestView(${tableData[test]['number']})">
+                    <td class="number-col">${tableData[test]['number']}</td>
+                    <td>${tableData[test]['title']}</td>
+                    ${resultBadge}</tr>`
+                }
+                else {
+                    testString += `
+                    <tr onclick="setTestView(${tableData[test]['number']})">
+                    <td class="number-col">${tableData[test]['number']}</td>
+                    <td>${tableData[test]['title']}</td>
+                    ${resultBadge}</tr>`
+                }
+            }
+            const activeTable = document.getElementById(tableId)
+            var activeTableBody = activeTable.getElementsByTagName('tbody')[0]
+            activeTableBody.innerHTML = testString
+        }
+        function updateVerificationListTable(tableData) {
+            console.log(`updateVerificationListTable(tableData)`)
+            let testString = ""
+            for (let index in tableData) {
+
+                console.log(tableData[index]["value"])
+
+                if ((selectedRequirement == 0) || (tableData[index]["title"] == selectedRequirementName)) {
+                    testString += `<tr>
+                                <td class="text-center">${tableData[index]["number"]}</td>
+                                <td>${tableData[index]["title"]}</td>`
+
+                    if (tableData[index]["result"] == "PASSED") {
+                        testString += `${passValue(tableData[index]["value"])}</td>
+                                <td class="text-center">${tableData[index]["test number"]}</td>
+                                <td>${tableData[index]["test"]}</td>
+                                ${passBadge}</tr>`
+                    }
+                    else {
+                        testString += `${failValue(tableData[index]["value"])}</td>
+                                <td class="text-center">${tableData[index]["test number"]}</td>
+                                <td>${tableData[index]["test"]}</td>
+                                ${failBadge}</tr>`
+                    }
+                }
+            }
+            document.getElementById('rqmt verifications').getElementsByTagName('tbody')[0].innerHTML = testString
+        }
+
+        function updateParameterListTable(userData) {
+            if (userData === null) { userData = parameterData; console.info("updateParameterListTable with size is null"); }
+            else { parameterData = userData; console.info("updateParameterListTable with size " + parameterData.length); }
+
+            let startTime = Date.now();
+            let mystring = "";  // load to string because faster
+            var activeTableBody = document.getElementById("device parameters").getElementsByTagName('tbody')[0];
+            activeTableBody.innerHTML = '';
+
+            var filteredData = []
+
+            const value = document.getElementById("parameter-search").value
+
+
+            for (var i in userData) {
+                let hasValue = false;
+
+                if (userData[i].name != undefined && userData[i].name.toLowerCase().includes(value)) { hasValue = true; }
+                if (userData[i].description != undefined && userData[i].description.toLowerCase().includes(value)) { hasValue = true; }
+                if (userData[i].value != undefined && userData[i].value.toLowerCase().includes(value)) { hasValue = true; }
+
+                if (hasValue) { filteredData.push(userData[i]) }
+            }
+
+            for (var i in filteredData) {
+                mystring += `<tr>
+                    <td>${filteredData[i].name}</td>
+                    <td>${filteredData[i].value}</td>
+                    <td>${filteredData[i].change}</td>
+                    <td>${filteredData[i].description}</td>
+                    </tr>`
+            }
+            activeTableBody.innerHTML = mystring;
+        }
+        function expandTests(x) {
+            document.getElementById("collapsed").classList.add("d-none")
+            document.getElementById("expanded").classList.remove("d-none")
+        }
+        function collapseTests(x) {
+            document.getElementById("expanded").classList.add("d-none")
+            document.getElementById("collapsed").classList.remove("d-none")
+        }
+        function updateTestDetailTable() {
+            testString = ""
+            for (let index in testListData) {
+                testListData
+                testNumber = testListData[index]['number']
+                if (index == 0) {
+                    testString += `<div id="test${testNumber}" class="card test-detail"><div class="card-body text-left p-10">`
+                }
+                else {
+                    testString += `<div id="test${testNumber}" class="card test-detail d-none"><div class="card-body text-left p-10">`
+                }
+                testString += `<p class="card-title">TEST DETAIL : ${testListData[index]["title"]} </p>`
+                testString += `<p>${testListData[index]["description"]}</p>`
+
+
+
+                if (testListData[index]["result"] == "ABORTED") {
+                    testString += `<p style="color:red">Test was aborted and did not complete, refer to the test logs for error details.</p>`
+                }
+
+                testString += `<table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width:30px">#</th>
+                                        <th>Step</th>
+                                        <th class="text-center" style="width:60px">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="test1_steps">`
+
+                let stepCount = 1
+                for (let step in testListData[index]["steps"]) {
+                    stepNumber = stepCount
+                    stepCount = stepCount + 1
+                    testString += ` <tr>
+                                        <td class="text-center">${stepNumber}</td>
+                                        <td>${testListData[index]["steps"][step]["title"]}
+                                        <div class="test_detail collapse show">
+                                            <p class="mt-0"> ${testListData[index]["steps"][step]["description"]}</p>`
+
+                    if (testListData[index]["steps"][step]["verifications"].length > 0) {
+                        testString += `<table class="table" style="width:80%!important">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width:75%">Requirement</th>
+                                                                <th style="width:100px;">Value</th>
+                                                                <th class="status-col">Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>`
+                        for (let ver in testListData[index]["steps"][step]["verifications"]) {
+                            testString += formatReq(testListData[index]["steps"][step]["verifications"][ver])
+                        }
+                        testString += `</tbody></table>`
+                    }
+                    testString += `</div></td>`
+
+                    if (testListData[index]["steps"][step]["result"] == "PASSED") {
+                        testString += `${passBadge}`
+                    }
+                    else {
+                        testString += `${failBadge}`
+                    }
+                }
+                testString += `</table></div></div>`
+            }
+            console.log(testString)
+            document.getElementById('test-list-details').innerHTML = testString
+        }
+
+        function formatReq(requirement) {
+            reqString = `<tr> <td>${requirement["title"]}</td>`
+            if (requirement["result"] == "PASSED") {
+                reqString += `${passValue(requirement["value"])} ${passBadge}</tr>`
+            }
+            else {
+                reqString += `${failValue(requirement["value"])} ${failBadge}</tr>`
+            }
+            return reqString
+        }
+
+        function toggleView(newView) {
+            allViews = document.getElementsByClassName("view");
+            for (let i = 0; i < allViews.length; i++) {
+                allViews[i].classList.remove("d-block")
+                allViews[i].classList.add("d-none")
+            }
+            activeView = document.getElementById(newView);
+            activeView.classList.remove("d-none")
+            activeView.classList.add("d-block")
+        }
+        function setTestView(newselectedTest) {
+
+            console.log(`setTestView(${newselectedTest}) called`)
+
+            selectedTest = newselectedTest
+            var testViewListBody = document.getElementById('test view list').getElementsByTagName('tbody')[0];
+
+            for (let i = 0; i < testViewListBody.rows.length; i++) {
+                testViewListBody.rows[i].classList.remove("active")
+                if (testViewListBody.rows[i].cells[0].innerHTML == selectedTest) {
+                    testViewListBody.rows[i].classList.add("active")
+                }
+            }
+            testDetails = document.getElementsByClassName("test-detail")
+            for (let i = 0; i < testDetails.length; i++) {
+                testDetails[i].classList.add("d-none")
+            }
+
+            let activeDetail = document.getElementById(`test${selectedTest}`)
+            activeDetail.classList.remove("d-none")
+            toggleView('test-view');
+        }
+
+        function setRqmt(newRequirement) {
+            selectedRequirement = newRequirement
+            updateRequirementListTable("rqmt list", sortedRqmtList)
+            updateRequirementListTable("rqmt view list", sortedRqmtList)
+            updateVerificationListTable(selectedVerificationListData)
+
+        }
+        function setRqmtView(newRequirement) {
+            setRqmt(newRequirement)
+            toggleView('rqmt-view');
+        }
+        function donut_chart(element_by_id, labels, values) {
+            const tmpChart = new Chart(element_by_id, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            getComputedStyle(main_body).getPropertyValue("--pass-bg-color"),
+                            getComputedStyle(main_body).getPropertyValue("--fail-bg-color"),
+                            getComputedStyle(main_body).getPropertyValue("--skip-bg-color")
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: { display: true, position: 'right', labels: { boxWidth: 15 } },
+                    }
+                }
+            })
+        };
+
+        //---------  Update the dashboard with values from results.json  -------------//
+
+        const test = info["summary"]["tests"]
+        const rqmt = info["summary"]["rqmts"]
+        const ver = info["summary"]["verifications"]
+
+        const testLabels = ['Pass', 'Fail', 'Skip']
+        const rqmtLabels = ['Pass', 'Fail']
+        const verLabels = ['Pass', 'Fail']
+
+        document.getElementById('suite-name').innerHTML = `${info["title"]} Test Suite > ${info["result"]}`;
+        document.getElementById('name').innerHTML = `${info["title"]}`;
+        document.getElementById('id').innerHTML = `${info["id"]}`;
+        document.getElementById('script version').innerHTML = `${info["script version"]}`;
+
+        document.getElementById('model').innerHTML = `${info["model"]}`;
+        document.getElementById('system').innerHTML = `${info["system"]}`;
+        document.getElementById('location').innerHTML = `${info["location"]}`;
+
+        document.getElementById('start').innerHTML = `${info["start time"]}`;
+        document.getElementById('end').innerHTML = `${info["end time"]}`;
+        document.getElementById('duration').innerHTML = `${info["duration"]}`;
+
+        document.getElementById('test donut footer total').innerHTML = `<b>${test.total}</b> Total`;
+        document.getElementById('test donut footer').innerHTML = `<b>${test.pass}</b> passed, <b>${test.fail}</b> failed, <b>${test.skip}</b> skipped`;
+        document.getElementById('rqmt donut footer total').innerHTML = `<b>${rqmt.total}</b> Total`;
+        document.getElementById('rqmt donut footer').innerHTML = `<b>${rqmt.pass}</b> passed, <b>${rqmt.fail}</b> failed `;
+        document.getElementById('ver donut footer total').innerHTML = `<b>${ver.total}</b> Total`;
+        document.getElementById('ver donut footer').innerHTML = `<b>${ver.pass}</b> passed, <b>${ver.fail}</b> failed `;
+
+        document.getElementById('test2 donut footer total').innerHTML = `<b>${test.total}</b> Total`;
+        document.getElementById('test2 donut footer').innerHTML = `<b>${test.pass}</b> passed, <b>${test.fail}</b> failed, <b>${test.skip}</b> skipped`;
+        document.getElementById('rqmt2 donut footer total').innerHTML = `<b>${rqmt.total}</b> Total`;
+        document.getElementById('rqmt2 donut footer').innerHTML = `<b>${rqmt.pass}</b> passed, <b>${rqmt.fail}</b> failed `;
+        document.getElementById('ver2 donut footer total').innerHTML = `<b>${ver.total}</b> Total`;
+        document.getElementById('ver2 donut footer').innerHTML = `<b>${ver.pass}</b> passed, <b>${ver.fail}</b> failed `;
+
+        document.getElementById('hostname').innerHTML = `${systemData['hostname']}`;
+        document.getElementById('host_mfg').innerHTML = `${systemData['manufacturer']}`;
+        document.getElementById('host_model').innerHTML = `${systemData['model']}`;
+        document.getElementById('host_bios').innerHTML = `${systemData['bios version']}`;
+        document.getElementById('host_os').innerHTML = `${systemData['os']}`;
+        document.getElementById('host_uuid').innerHTML = `${systemData['uuid']}`;
+
+        // Create the donut charts
+
+        donut_chart(document.getElementById('tests').getContext('2d'), testLabels, [test.pass, test.fail, test.skip]);
+        donut_chart(document.getElementById('requirements').getContext('2d'), rqmtLabels, [rqmt.pass, rqmt.fail]);
+        donut_chart(document.getElementById('verifications').getContext('2d'), verLabels, [ver.pass, ver.fail])
+
+        donut_chart(document.getElementById('tests2').getContext('2d'), testLabels, [test.pass, test.fail, test.skip]);
+        donut_chart(document.getElementById('requirements2').getContext('2d'), rqmtLabels, [rqmt.pass, rqmt.failpowerpower]);
+        donut_chart(document.getElementById('verifications2').getContext('2d'), verLabels, [ver.pass, ver.fail])
+
+        // Update the tables with initial values
+
+        updateTestListTable("test list", testListData)
+        updateTestListTable("test view list", testListData)
+        updateRequirementListTable('rqmt list', rqmtListData)
+        updateRequirementListTable('rqmt view list', rqmtListData)
+        updateVerificationListTable(selectedVerificationListData)
+        updateParameterListTable(parameterData)
+        updateTestDetailTable()
+
+    </script>
+</body>
+
+</html>

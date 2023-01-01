@@ -1,0 +1,12 @@
+{
+  "command type": "self-test",
+  "short description": "Self-Test",
+  "display sample interval in sec": 2,
+  "extended self-test": false,
+  "read command times": true,
+  "read smart data": true,
+  "abort time": 0,
+  "high priority": false,
+  "high resolution timer": false
+
+}

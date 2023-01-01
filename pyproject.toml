@@ -1,0 +1,85 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nvmetools"
+version = "0.3.15"
+description = "Basic tools for working with NVMe SSD on Windows or Linux"
+readme = "README.md"
+authors = [{ name = "Joe Jones", email = "joejones@chargetrap.com" }]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+]
+keywords = [ "nvme","ssd"]
+dependencies = [
+    "numpy",
+    "psutil",
+    "matplotlib",
+    "reportlab",
+    "cycler"
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+dev = ["black", "flake8", "pytest"]
+
+[project.urls]
+Homepage = "https://www.epicutils.com"
+Repository = "https://github.com/jtjones1001/nvmetools.git"
+Documentation = "https://nvmetools.readthedocs.io/en/latest/"
+
+[project.scripts]
+readnvme = "nvmetools.console.readnvme:main"
+checknvme = "nvmetools.console.checknvme:main"
+listnvme = "nvmetools.console.listnvme:main"
+testnvme = "nvmetools.console.testnvme:main"
+updatenvme= "nvmetools.console.updatenvme:main"
+
+[tool.black]
+line-length = 115
+include = '\.pyi?$'
+
+[tool.setuptools]
+# ...
+# By default, include-package-data is true in pyproject.toml, so you do
+# NOT have to specify this line.
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+
+[tool.flakeheaven]
+# optionally inherit from remote config (or local if you want)
+base = "https://raw.githubusercontent.com/flakeheaven/flakeheaven/main/pyproject.toml"
+# specify any flake8 options. For example, exclude "example.py":
+exclude = [".git","*migrations*","tests"]
+format = "grouped"
+max_line_length = 115
+show_source = true
+
+[tool.flakeheaven.plugins]
+pyflakes = ["+*", "-F401"]
+flake8-bandit = ["+*","-S404","-S603","-S602","-S311"] # Use subprocess
+flake8-bugbear =  ["+*"]
+flake8-annotations = ["-*"] # self doesn't need type annotation
+flake8-docstrings = ["-*"]
+pep8-naming = ["+*","-N806","-N818"]
+flake8-builtins = ["+*"]
+flake8-isort = ["-*"]
+flake8-eradicate = ["+*"]
+pycodestyle = ["+*", "-W503"] # Ignore the line break rule after binary operator
+dlint = ["+#"]
+flake8-import-order  = ["+*"]
+flake8-blind-except = ["+*","-B902"]
+flake8-logging-format = ["+*","-G004","-G003"] # No f-string allowed in logging?  Revist later
+flake8-quotes = ["-Q000"]
+flake8-commas = ["-C812"]
