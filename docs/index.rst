@@ -6,7 +6,7 @@ This package supports two use cases:  Tool User and Test Developer.  A Tool User
 commands to read or test NVMe drives.  A Test Developer modifies or creates NVMe tests and
 has a working knowledge of python and NVMe drives.
 
-For a quick look on what this package provides see below examples
+Click these links for examples of the information and test reporting provided by this package
 
 - `NVMe Information <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme/readnvme.log>`_
 - `NVMe Information (all parameters) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_all/readnvme.log>`_
@@ -31,6 +31,7 @@ in commercial computers (e.g. laptops).
 
         - Aquire additional computers to verify the current NVMe Test Cases
         - Add the following NVMe Test Cases
+
                 - Reset and Power Cycles
                 - Power measurements
                 - Power loss protection

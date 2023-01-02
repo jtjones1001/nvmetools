@@ -19,10 +19,9 @@ structured as follows::
 
 The framework automatically runs a test suite and produces these three outputs
 
-    -  `Detailed text and json logs  <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/readnvme/readnvme.log>`_
-    -  `HTML dashboard  <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/readnvme_all/readnvme.log>`_
-    -  `Detailed report  <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/readnvme_hex/readnvme.log>`_
-
+    -  Detailed text and json logs
+    -  HTML dashboard
+    -  Detailed report
 
 Because this framework is based on python and command line usage it can easily be integrated into
 existing automation frameworks, test databases such as TestRail, and log storage servers.

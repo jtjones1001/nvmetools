@@ -3,10 +3,11 @@
 # --------------------------------------------------------------------------------------
 """ nvmetools package for reading information and testing NVMe drives.
 
-
 This package uses the following:
    - black formatter with the wider line length defined in pyproject.toml
    - flakeheaven linter with custom settings defined in pyproject.toml
+
+To update version update both pyproject.toml and docs/conf.py
 
 To release package to test pypi:
    python3 -m build

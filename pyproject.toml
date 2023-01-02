@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nvmetools"
-version = "0.2.51"
+version = "0.4.0"
 description = "Basic tools for working with NVMe SSD on Windows or Linux"
 readme = "README.md"
 authors = [{ name = "Joe Jones", email = "joejones@chargetrap.com" }]
