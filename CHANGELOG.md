@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.0
+## v0.4.1
 
 Initial public release of new format.  This is a beta release with limited testing and is posted
 primarily to gather feedback.
