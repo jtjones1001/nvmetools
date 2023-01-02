@@ -1,12 +1,11 @@
 # --------------------------------------------------------------------------------------
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
-import platform
 import sys
 import time
 
 from nvmetools import TestSuite, tests
-from nvmetools.support.conversions import is_admin
+from nvmetools.support.conversions import is_windows_admin
 
 
 def firmware(args):
@@ -62,7 +61,7 @@ def health(args):
     Args:
         args: dictionary of NVMe parameters passed from testnvme command
     """
-    if not is_admin():
+    if not is_windows_admin():
         print("This Test Suite must be run as Administrator.")
         sys.exit(1)
 
@@ -115,7 +114,7 @@ def selftest(args):
         args: dictionary of NVMe parameters passed from testnvme command
 
     """
-    if not is_admin():
+    if not is_windows_admin():
         print("This Test Suite must be run as Administrator.")
         sys.exit(1)
 

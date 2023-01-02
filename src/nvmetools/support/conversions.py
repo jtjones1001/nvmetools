@@ -7,6 +7,7 @@ import ctypes
 import datetime
 import logging
 import os
+import platform
 
 import numpy
 
@@ -149,3 +150,10 @@ def is_admin():
 def is_debug():
     """Return boolean to indicate running in debug mode."""
     return log.handlers[0].level == logging.DEBUG
+
+
+def is_windows_admin():
+    """Return boolean to indicate running with admin privilege."""
+    if platform.system() == "Windows":
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    return True
