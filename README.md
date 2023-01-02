@@ -69,7 +69,7 @@ readnvme --nvme 0
 This command displays NVMe information to the console and logs it to a couple of files.  The console output is
 logged to readnvme.log and the detailed NVMe information is logged to nvme.info.json.
 
-[Example nvme.info.json](https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/readnvme/nvme.info.json)
+[Example nvme.info.json](https://github.com/jtjones1001/nvmetools/blob/7c29927faf9bf7dc3a33cfde8fd7c47dd4d78de4/docs/examples/readnvme/nvme.info.json)
 
 By default, only a subset of NVMe parameters are displayed to the console.  All parameters can be displayed
 with the -all parameter.  The raw hex data from the commands can be displayed with the --hex parameter.
