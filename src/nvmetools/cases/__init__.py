@@ -14,6 +14,10 @@ easily be imported and run as shown here.
 
             tests.timestamp(suite)
 
+
+.. warning::
+   The NVMe Test Cases provided in this release are examples only.
+
 """
 from nvmetools.cases.features.timestamp import timestamp
 from nvmetools.cases.firmware.firmware_activate import firmware_activate

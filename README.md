@@ -8,6 +8,7 @@ Linux OS.
   * List NVMe devices
   * Read NVMe information
   * Check NVMe health
+  * Test NVMe features
 * python module that can:
   * Read NVMe information
   * Read and check NVMe information at regular interval (e.g. check SMART attributes every second)

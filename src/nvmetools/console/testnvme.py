@@ -29,8 +29,8 @@ Command Line Parameters
 
         testnvme  short_demo  --nvme 1  --volume /mnt/nvme1a
 
-    - `Example report (report.pdf) <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/checknvme/nvme_health_check.pdf>`_
-    - `Example dashboard (dashboard.html) <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/checknvme/checknvme.log>`_
+    - `short_demo report (report.pdf) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/short_demo/report.pdf>`_
+    - `short_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/short_demo/dashboard.html>`_
 
 **Example**
 
@@ -40,8 +40,8 @@ Command Line Parameters
 
         testnvme  big_demo  --nvme 1 --volume g:
 
-    - `Example report (report.pdf) <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/checknvme/nvme_health_check.pdf>`_
-    - `Example dashboard (dashboard.html) <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/checknvme/checknvme.log>`_
+    - `big_demo report (report.pdf) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/big_demo/report.pdf>`_
+    - `big_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/big_demo/dashboard.html>`_
 
 """  # noqa: E501
 import argparse

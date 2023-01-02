@@ -124,8 +124,8 @@ The following log files are saved to the working directory:
           Root                            0x8086       0xA340       Bus 0, device 27, function 0
 
 
-    * `Example console output with --all (readnvme.log) <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/readnvme_all/readnvme.log>`_
-    * `Example console output with --hex (readnvme.log) <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/readnvme_hex/readnvme.log>`_
+    * `Example console output with --all (readnvme.log) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/readnvme_all/readnvme.log>`_
+    * `Example console output with --hex (readnvme.log) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/readnvme_hex/readnvme.log>`_
 
 """  # noqa: E501
 import argparse
@@ -156,16 +156,7 @@ def _parse_arguments():
     return vars(parser.parse_args())
 
 
-def read_nvme(
-    nvme=0,
-    as_list=False,
-    as_hex=False,
-    as_all=False,
-    describe=False,
-    create_pdf=False,
-    verbose=False,
-    debug=False,
-):
+def read_nvme(nvme=0, as_list=False, as_hex=False, as_all=False, describe=False, create_pdf=False, verbose=False):
     """Display and log NVMe information.
 
     Reads NVMe information using the nvmecmd utility. This utility creates a file named nvme.info.json
