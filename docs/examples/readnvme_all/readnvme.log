@@ -1,0 +1,423 @@
+  EPIC NVMe Utilities, version 0.0.8, www.epicutils.com, Copyright (C) 2022 Joe Jones
+       
+       
+          128-bit Host Identifier                            Not Supported                      
+          ANA Group Identifier Maximum (ANAGRPMAX)           Not Supported                      
+          ANA Transition Time (ANATT)                        Not Supported                      
+          Abort Command Limit (ACL)                          5                                  
+          Admin Vendor Specific command handling             Not Vendor Specific                
+          Aggregation Threshold (THR)                        1                                  
+          Aggregation Time (TIME)                            No Delay                           
+          Arbitration Burst (AB)                             4 (2^4=16)                         
+          Associated Function Type                           PCI                                
+          Asymmetric Namespace Access Change Notices         Not Supported                      
+          Asymmetric Namespace Access Reporting              Not Supported                      
+          Asynchronous Event Request Limit (AERL)            8                                  
+          Atomic Write Unit Normal (AWUN)                    1                                  
+          Atomic Write Unit Power Fail (AWUPF)               1                                  
+          Autonomous Power State Transition                  Supported                          
+          Autonomous Power State Transition Enable (APSTE)   Enabled                            
+          Available Space Below Threshold                    No                                 
+          Available Spare                                    100 %                              
+          Available Spare Threshold                          10 %                               
+          Block Erase Sanitize                               Supported                          
+          Command Retry Delay Time 1 (CRDT1)                 0 (0 mS)                           
+          Command Retry Delay Time 2 (CRDT2)                 0 (0 mS)                           
+          Command Retry Delay Time 3 (CRDT3)                 0 (0 mS)                           
+          Commands Supported and Effects Log Page            Supported                          
+          Compare NVM Command                                Supported                          
+          Compare and Write Fused Operation                  Not Supported                      
+          Composite Temperature                              33 C                               
+          Composite Temperature Over Threshold               80 C                               
+          Composite Temperature Under Threshold              -5 C                               
+          Controller Busy Time                               15,937 Min                         
+          Controller ID (CNTLID)                             1                                  
+          Controller Type (CNTRLTYPE)                        I/O Controller                     
+          Controller Vendor                                  Sandisk                            
+          Critical Composite Temperature Threshold (CCTEMP)  85 C                               
+          Critical Composite Temperature Time                2 Min                              
+          Critical Warnings                                  No                                 
+          Crypto Erase                                       Not Supported                      
+          Crypto Erase Sanitize                              Not Supported                      
+          Current Number Of Errors                           0                                  
+          Current Number Of Self-Tests                       20                                 
+          Current Power State (PS)                           4                                  
+          Current Self-Test Completion                       0                                  
+          Current Self-Test Operation                        No Test In Progress                
+          Data Read                                          356,901.852 GB                     
+          Data Units Read                                    697,073,929                        
+          Data Units Written                                 236,226,636                        
+          Data Written                                       120,948.038 GB                     
+          Dataset Management NVM Command                     Supported                          
+          Deallocated or Unwritten Logical Block Error Enable (DULBE) Disabled                           
+          Device Self-test Command                           Supported                          
+          Directive Send and Directive Receive Commands      Not Supported                      
+          Disable Normal (DN)                                Not Supported                      
+          Doorbell Buffer Config Command                     Not Supported                      
+          EG Available Space Below Threshold                 No                                 
+          EG Critical Warnings                               No                                 
+          EG Reliability Degraded                            No                                 
+          EG in Read Only                                    No                                 
+          Enable Host Memory (EHM)                           Enabled                            
+          Endurance Group Event Log Page Change Notices      Not Supported                      
+          Endurance Group Identifier Maximum (ENDGIDMAX)     0                                  
+          Endurance Groups                                   Not Supported                      
+          Error Log Page Entries (ELPE)                      256                                
+          Extended Data for Get Log Page                     Supported                          
+          Extended Device Self-test Time (EDSTT)             44 Min                             
+          FRU Globally Unique Identifier (FGUID)             000000-00000000000000000000000000  
+          Firmware Activation Notices                        Supported                          
+          Firmware Activation Notices Enable                 Enabled                            
+          Firmware Activation Without Reset                  Supported                          
+          Firmware Active Slot                               1                                  
+          Firmware Commit and Image Download Commands        Supported                          
+          Firmware Pending Slot                              Not Reported                       
+          Firmware Revision (FR)                             211070WD                           
+          Firmware Slot 1 Read Status                        Read/Write                         
+          Firmware Slot 1 Revision                           211070WD                           
+          Firmware Slot 2 Revision                                                              
+          Firmware Slots                                     2                                  
+          Firmware Update Granularity (FWUG)                 4 KiB                              
+          Format All Namespaces                              Not Supported                      
+          Format NVM Command                                 Supported                          
+          Get LBA Status capability                          Not Supported                      
+          High Priority Weight (HPW)                         1                                  
+          Highest Version Detected                           1.4.0                              
+          Host Controlled Thermal Management (HCTMA)         Supported                          
+          Host Memory Buffer Minimum Descriptor Entry Size (HMMINDS) No limitations                     
+          Host Memory Buffer Minimum Size (HMMIN)            823 (3,292 KiB)                    
+          Host Memory Buffer Preferred Size (HMPRE)          51,200 (204,800 KiB)               
+          Host Memory Buffer Size (HSIZE)                    8,192                              
+          Host Memory Descriptor List Address (HMDLAL)       0x2DF08000                         
+          Host Memory Descriptor List Address (HMDLAU)       0x00000002                         
+          Host Memory Descriptor List Entry Count (HMDLEC)   8                                  
+          Host Memory Maximum Descriptors Entries (HMMAXD)   8                                  
+          Host Read Commands                                 9,314,262,073                      
+          Host Timestamp                                     1,660,785,359,976 mS               
+          Host Timestamp Decoded                             2022-08-17 18:15:59.976 DST        
+          Host Write Commands                                5,212,102,971                      
+          IEEE OUI Identifier (IEEE)                         00-1b-44                           
+          Keep Alive Support (KAS)                           Not Supported                      
+          LBA Status Information Notices                     Not Supported                      
+          Low Priority Weight (LPW)                          1                                  
+          Maximum Completion Queue Entry Size                4 (2^4=16)                         
+          Maximum Data Transfer Size (MDTS)                  7 (2^7=128)                        
+          Maximum Number Allowed Namespaces (MNAN)           0                                  
+          Maximum Outstanding Commands (MAXCMD)              Not Supported                      
+          Maximum Submission Queue Entry Size                6 (2^6=64)                         
+          Maximum Thermal Management Temperature (MXTMT)     85 C                               
+          Maximum Time for Firmware Activation (MTFA)        5,000 mS                           
+          Media and Data Integrity Errors                    0                                  
+          Media in Read Only                                 No                                 
+          Medium Priority Weight (MPW)                       1                                  
+          Minimum Thermal Management Temperature (MNTMT)     0 C                                
+          Model Number (MN)                                  WDC WDS250G2B0C-00PXH0             
+          NVM Set Identifier Maximum (NSETIDMAX)             0                                  
+          NVM Sets                                           Not Supported                      
+          NVM Subsystem Controllers                          Single                             
+          NVM Subsystem NVMe Qualified Name (SUBNQN)         nqn.2018-01.com.wdc:nguid:E8238FA6BF53-0001-001B448B49BC0ECB
+          NVM Subsystem PCIe Ports                           Single                             
+          NVME MI Send/Receive Commands                      Not Supported                      
+          Namespace 1 ANA Group Identifier (ANAGRPID)        Not Reported                       
+          Namespace 1 Active LBA Format                      0                                  
+          Namespace 1 Atomic Boundary Offset (NABO)          7                                  
+          Namespace 1 Atomic Boundary Size Normal (NABSN)    7                                  
+          Namespace 1 Atomic Boundary Size Power Fail (NABSPF) 7                                  
+          Namespace 1 Atomic Compare & Write Unit (NACWU)    Same as ACWU                       
+          Namespace 1 Atomic Write Unit Normal (NAWUN)       7                                  
+          Namespace 1 Atomic Write Unit Power Fail (NAWUPF)  7                                  
+          Namespace 1 Atomic Writes                          Supported                          
+          Namespace 1 Capacity (NCAP)                        488,397,168                        
+          Namespace 1 Deallocate Bit in Write Zeros          Supported                          
+          Namespace 1 Deallocate Guard Field                 Not Supported                      
+          Namespace 1 Deallocate Logical Block Value         All 00h                            
+          Namespace 1 Endurance Group Identifier (ENDGID)    Not Supported                      
+          Namespace 1 Exclusive Access All Registrants Reservation Not Supported                      
+          Namespace 1 Exclusive Access Registrants Only Reservation Not Supported                      
+          Namespace 1 Exclusive Access Reservation           Not Supported                      
+          Namespace 1 Extended Data LBA                      Not Supported                      
+          Namespace 1 Format Percent Complete                0                                  
+          Namespace 1 Format Progress Indicator              Supported                          
+          Namespace 1 Globally Unique Identifier (NGUID)     e8238fa6bf530001-001b44-8b49bc0ecb 
+          Namespace 1 IEEE Extended Unique Identifier (EUI64) 001b44-8b49bc0ecb                  
+          Namespace 1 IO Optimize Fields                     Not Supported                      
+          Namespace 1 Ignore Existing Key Specification      1.2.1 or earlier                   
+          Namespace 1 LBA 0 Data Size (LBADS)                9 (2^9=512) *                      
+          Namespace 1 LBA 0 Relative Performance (RP)        Good Performance *                 
+          Namespace 1 LBA 1 Data Size (LBADS)                12 (2^12=4096)                     
+          Namespace 1 LBA 1 Relative Performance (RP)        Better Performance                 
+          Namespace 1 Logical Block Error                    Not Supported                      
+          Namespace 1 Metadata Transfer Buffer               Not Supported                      
+          Namespace 1 Metadata Transfer Extended LBA         Not Supported                      
+          Namespace 1 NGUID/EUID Not Reused                  Not Supported                      
+          Namespace 1 NVM Capacity (NVMCAP)                  250,059,350,016                    
+          Namespace 1 NVM Set Identifier (NVMSETID)          Not Supported                      
+          Namespace 1 Number of LBA Formats (NLBAF)          2                                  
+          Namespace 1 Optimal IO Boundary (NOIOB)            Not Reported                       
+          Namespace 1 Optimal Write Size (NOWS)              1                                  
+          Namespace 1 Persist Through Power Loss             Not Supported                      
+          Namespace 1 Preferred Deallocate Alignment (NPDA)  1                                  
+          Namespace 1 Preferred Deallocate Granularity (NPDG) 1                                  
+          Namespace 1 Preferred Write Alignment (NPWA)       1                                  
+          Namespace 1 Preferred Write Granularity (NPWG)     1                                  
+          Namespace 1 Protection First                       Not Supported                      
+          Namespace 1 Protection Information Enabled         Disabled                           
+          Namespace 1 Protection Information First           Last 8 Bytes                       
+          Namespace 1 Protection Last                        Not Supported                      
+          Namespace 1 Protection Type 1                      Not Supported                      
+          Namespace 1 Protection Type 2                      Not Supported                      
+          Namespace 1 Protection Type 3                      Not Supported                      
+          Namespace 1 Shared                                 Not Supported                      
+          Namespace 1 Size                                   250 GB                             
+          Namespace 1 Size in GiB                            232.9 GiB                          
+          Namespace 1 Size in LBA (NSZE)                     488,397,168                        
+          Namespace 1 Thin Provisioning                      Not Supported                      
+          Namespace 1 Utilization (NUSE)                     488,397,168                        
+          Namespace 1 Write Exclusive All Registrants Reservation Not Supported                      
+          Namespace 1 Write Exclusive Registrants Only Reservation Not Supported                      
+          Namespace 1 Write Exclusive Reservation            Not Supported                      
+          Namespace 1 Write Protected                        No                                 
+          Namespace Attribute Notices                        Not Supported                      
+          Namespace Granularity                              Not Supported                      
+          Namespace Management and Attachment Commands       Not Supported                      
+          No-Deallocate Inhibited (NDI)                      Supported                          
+          No-Deallocate Modifies Media After Sanitize (NODMMAS) Media not modified                 
+          Non-Operational Power State Permissive Mode        Supported                          
+          Non-Operational Power State Permissive Mode Enable (NOPPME) Enabled                            
+          Non-zero ANAGRPID                                  Not Supported                      
+          Number Of Failed Self-Tests                        0                                  
+          Number of ANA Group Identifiers (NANAGRPID)        Not Supported                      
+          Number of Error Information Log Entries            1                                  
+          Number of Namespaces (NN)                          1                                  
+          Number of Power States Support (NPSS)              5                                  
+          OS Location                                        /dev/nvme0                         
+          One Self-Test                                      Per System                         
+          Overwrite Sanitize                                 Not Supported                      
+          PCI Device ID                                      0x5009                             
+          PCI Location                                       Bus 1, device 0, function 0        
+          PCI Rated Speed                                    Gen3 8.0GT/s                       
+          PCI Rated Width                                    x4                                 
+          PCI Speed                                          Gen3 8.0GT/s                       
+          PCI Subsystem Vendor ID (SSVID)                    0x15B7                             
+          PCI Vendor ID (VID)                                0x15B7                             
+          PCI Width                                          x4                                 
+          PCIe Management Endpoint (PCIEME)                  Not Supported                      
+          Percentage Used                                    17 %                               
+          Permanent Write Protect                            Not Supported                      
+          Persistent Event Log                               Supported                          
+          Persistent Event Log Size (PELS)                   64 KiB                             
+          Persistent Memory Unreliable                       No                                 
+          Power Cycles                                       153                                
+          Power On Hours                                     1,779                              
+          Power State 0 Active Power (ACTP)                  1.8 Watts                          
+          Power State 0 Active Power Workload (APW)          Workload #2                        
+          Power State 0 Entry Latency (ENLAT)                Not Reported                       
+          Power State 0 Exit Latency (EXLAT)                 Not Reported                       
+          Power State 0 Idle Power (IDLP)                    0.63 Watts                         
+          Power State 0 Idle Time Prior to Transition (ITPT) 100 mS                             
+          Power State 0 Idle Transition Power State (ITPS)   3                                  
+          Power State 0 Maximum Power (MP)                   3.5 Watts                          
+          Power State 0 Non-Operational State (NOPS)         False                              
+          Power State 0 Relative Read Latency (RRL)          0                                  
+          Power State 0 Relative Read Throughput (RRT)       0                                  
+          Power State 0 Relative Write Latency (RWL)         0                                  
+          Power State 0 Relative Write Throughput (RWT)      0                                  
+          Power State 1 Active Power (ACTP)                  1.6 Watts                          
+          Power State 1 Active Power Workload (APW)          Workload #2                        
+          Power State 1 Entry Latency (ENLAT)                Not Reported                       
+          Power State 1 Exit Latency (EXLAT)                 Not Reported                       
+          Power State 1 Idle Power (IDLP)                    0.63 Watts                         
+          Power State 1 Idle Time Prior to Transition (ITPT) 100 mS                             
+          Power State 1 Idle Transition Power State (ITPS)   3                                  
+          Power State 1 Maximum Power (MP)                   2.4 Watts                          
+          Power State 1 Non-Operational State (NOPS)         False                              
+          Power State 1 Relative Read Latency (RRL)          0                                  
+          Power State 1 Relative Read Throughput (RRT)       0                                  
+          Power State 1 Relative Write Latency (RWL)         0                                  
+          Power State 1 Relative Write Throughput (RWT)      0                                  
+          Power State 2 Active Power (ACTP)                  1.5 Watts                          
+          Power State 2 Active Power Workload (APW)          Workload #2                        
+          Power State 2 Entry Latency (ENLAT)                Not Reported                       
+          Power State 2 Exit Latency (EXLAT)                 Not Reported                       
+          Power State 2 Idle Power (IDLP)                    0.63 Watts                         
+          Power State 2 Idle Time Prior to Transition (ITPT) 100 mS                             
+          Power State 2 Idle Transition Power State (ITPS)   3                                  
+          Power State 2 Maximum Power (MP)                   1.9 Watts                          
+          Power State 2 Non-Operational State (NOPS)         False                              
+          Power State 2 Relative Read Latency (RRL)          0                                  
+          Power State 2 Relative Read Throughput (RRT)       0                                  
+          Power State 2 Relative Write Latency (RWL)         0                                  
+          Power State 2 Relative Write Throughput (RWT)      0                                  
+          Power State 3 Active Power (ACTP)                  Not Reported                       
+          Power State 3 Active Power Workload (APW)          No workload                        
+          Power State 3 Entry Latency (ENLAT)                3,900 uS (0.003 sec)               
+          Power State 3 Exit Latency (EXLAT)                 11,000 uS (0.011 sec)              
+          Power State 3 Idle Power (IDLP)                    0.02 Watts                         
+          Power State 3 Idle Time Prior to Transition (ITPT) 2,000 mS                           
+          Power State 3 Idle Transition Power State (ITPS)   4                                  
+          Power State 3 Maximum Power (MP)                   0.02 Watts                         
+          Power State 3 Non-Operational State (NOPS)         True                               
+          Power State 3 Relative Read Latency (RRL)          3                                  
+          Power State 3 Relative Read Throughput (RRT)       3                                  
+          Power State 3 Relative Write Latency (RWL)         3                                  
+          Power State 3 Relative Write Throughput (RWT)      3                                  
+          Power State 4 Active Power (ACTP)                  Not Reported                       
+          Power State 4 Active Power Workload (APW)          No workload                        
+          Power State 4 Entry Latency (ENLAT)                5,000 uS (0.005 sec)               
+          Power State 4 Exit Latency (EXLAT)                 39,000 uS (0.039 sec)              
+          Power State 4 Idle Power (IDLP)                    0.005 Watts                        
+          Power State 4 Idle Time Prior to Transition (ITPT) Disabled                           
+          Power State 4 Maximum Power (MP)                   0.005 Watts                        
+          Power State 4 Non-Operational State (NOPS)         True                               
+          Power State 4 Relative Read Latency (RRL)          4                                  
+          Power State 4 Relative Read Throughput (RRT)       4                                  
+          Power State 4 Relative Write Latency (RWL)         4                                  
+          Power State 4 Relative Write Throughput (RWT)      4                                  
+          Predictable Latency Event Log Change Notices       Not Supported                      
+          Predictable Latency Mode                           Not Supported                      
+          RTD3 Entry Latency (RTD3E)                         1,000,000 uS (1.000 sec)           
+          RTD3 Resume Latency (RTD3R)                        500,000 uS (0.500 sec)             
+          Read Recovery Levels                               Not Supported                      
+          Read Recovery Levels Supported (RRLS)              0x0000                             
+          Recommended Arbitration Burst (RAB)                4 (2^4=16)                         
+          Reliability Degraded                               No                                 
+          Replay Protected Memory Blocks (RPMBS)             Not Supported                      
+          Report ANA Change state                            Not Supported                      
+          Report ANA Inaccessible state                      Not Supported                      
+          Report ANA Non-Optimized state                     Not Supported                      
+          Report ANA Optimized state                         Not Supported                      
+          Report ANA Persistent Loss state                   Not Supported                      
+          Required Completion Queue Entry Size               4 (2^4=16)                         
+          Required Submission Queue Entry Size               6 (2^6=64)                         
+          Reservations                                       Not Supported                      
+          Root PCI Device ID                                 0xA340                             
+          Root PCI Location                                  Bus 0, device 27, function 0       
+          Root PCI Vendor ID                                 0x8086                             
+          SGL support in NVM command                         Not Supported                      
+          SMART Critical Warning Notices Enable              0x00                               
+          SMART/Health Log Page per Namespace                Not Supported                      
+          SMBus Management Endpoint (SMBUSME)                Not Supported                      
+          SQ Associations                                    Not Supported                      
+          Save/Select Fields in Features Command             Supported                          
+          Secure Erase All Namespaces                        Not Supported                      
+          Security Send and Security Receive Command         Supported                          
+          Self-Test 1 Power On Hours                         1,779                              
+          Self-Test 1 Result                                 Passed                             
+          Self-Test 1 Result Code                            0                                  
+          Self-Test 1 Type                                   Short Test                         
+          Self-Test 10 Power On Hours                        1,764                              
+          Self-Test 10 Result                                Passed                             
+          Self-Test 10 Result Code                           0                                  
+          Self-Test 10 Type                                  Short Test                         
+          Self-Test 11 Power On Hours                        1,764                              
+          Self-Test 11 Result                                Passed                             
+          Self-Test 11 Result Code                           0                                  
+          Self-Test 11 Type                                  Short Test                         
+          Self-Test 12 Power On Hours                        1,764                              
+          Self-Test 12 Result                                Passed                             
+          Self-Test 12 Result Code                           0                                  
+          Self-Test 12 Type                                  Short Test                         
+          Self-Test 13 Power On Hours                        1,764                              
+          Self-Test 13 Result                                Passed                             
+          Self-Test 13 Result Code                           0                                  
+          Self-Test 13 Type                                  Short Test                         
+          Self-Test 14 Power On Hours                        1,764                              
+          Self-Test 14 Result                                Passed                             
+          Self-Test 14 Result Code                           0                                  
+          Self-Test 14 Type                                  Short Test                         
+          Self-Test 15 Power On Hours                        1,764                              
+          Self-Test 15 Result                                Passed                             
+          Self-Test 15 Result Code                           0                                  
+          Self-Test 15 Type                                  Short Test                         
+          Self-Test 16 Power On Hours                        1,764                              
+          Self-Test 16 Result                                Passed                             
+          Self-Test 16 Result Code                           0                                  
+          Self-Test 16 Type                                  Short Test                         
+          Self-Test 17 Power On Hours                        1,764                              
+          Self-Test 17 Result                                Passed                             
+          Self-Test 17 Result Code                           0                                  
+          Self-Test 17 Type                                  Short Test                         
+          Self-Test 18 Power On Hours                        1,764                              
+          Self-Test 18 Result                                Passed                             
+          Self-Test 18 Result Code                           0                                  
+          Self-Test 18 Type                                  Short Test                         
+          Self-Test 19 Power On Hours                        1,764                              
+          Self-Test 19 Result                                Passed                             
+          Self-Test 19 Result Code                           0                                  
+          Self-Test 19 Type                                  Short Test                         
+          Self-Test 2 Power On Hours                         1,771                              
+          Self-Test 2 Result                                 Passed                             
+          Self-Test 2 Result Code                            0                                  
+          Self-Test 2 Type                                   Short Test                         
+          Self-Test 20 Power On Hours                        1,764                              
+          Self-Test 20 Result                                Passed                             
+          Self-Test 20 Result Code                           0                                  
+          Self-Test 20 Type                                  Short Test                         
+          Self-Test 3 Power On Hours                         1,771                              
+          Self-Test 3 Result                                 Passed                             
+          Self-Test 3 Result Code                            0                                  
+          Self-Test 3 Type                                   Short Test                         
+          Self-Test 4 Power On Hours                         1,767                              
+          Self-Test 4 Result                                 Passed                             
+          Self-Test 4 Result Code                            0                                  
+          Self-Test 4 Type                                   Extended Test                      
+          Self-Test 5 Power On Hours                         1,766                              
+          Self-Test 5 Result                                 Passed                             
+          Self-Test 5 Result Code                            0                                  
+          Self-Test 5 Type                                   Extended Test                      
+          Self-Test 6 Power On Hours                         1,766                              
+          Self-Test 6 Result                                 Passed                             
+          Self-Test 6 Result Code                            0                                  
+          Self-Test 6 Type                                   Short Test                         
+          Self-Test 7 Power On Hours                         1,766                              
+          Self-Test 7 Result                                 Passed                             
+          Self-Test 7 Result Code                            0                                  
+          Self-Test 7 Type                                   Short Test                         
+          Self-Test 8 Power On Hours                         1,764                              
+          Self-Test 8 Result                                 Passed                             
+          Self-Test 8 Result Code                            0                                  
+          Self-Test 8 Type                                   Short Test                         
+          Self-Test 9 Power On Hours                         1,764                              
+          Self-Test 9 Result                                 Passed                             
+          Self-Test 9 Result Code                            0                                  
+          Self-Test 9 Type                                   Short Test                         
+          Serial Number (SN)                                 2035A0805352                       
+          Size                                               250 GB                             
+          Size in GiB                                        232.9 GiB                          
+          Subsystem Vendor                                   Sandisk                            
+          Telemetry Log Notices                              Supported                          
+          Telemetry Log Notices Enable                       Disabled                           
+          Temperature Over/Under Threshold                   No                                 
+          Thermal Management Temperature 1 (TMT1)            Disabled                           
+          Thermal Management Temperature 1 Count             0                                  
+          Thermal Management Temperature 1 Time              0 Sec                              
+          Thermal Management Temperature 2 (TMT2)            Disabled                           
+          Thermal Management Temperature 2 Count             0                                  
+          Thermal Management Temperature 2 Time              0 Sec                              
+          Time Limited Error Recovery (TLER)                 No Timeout                         
+          Timestamp                                          1,660,748,814,971 mS               
+          Timestamp Decoded                                  2022-08-17 08:06:54.971 DST        
+          Timestamp Feature                                  Supported                          
+          Timestamp Origin                                   Host Programmed                    
+          Timestamp Stopped                                  True                               
+          Traffic Based Keep Alive Support                   Not Supported                      
+          UUID List                                          Not Supported                      
+          Unchanged ANAGRPID                                 Not Supported                      
+          Unsafe Shutdowns                                   23                                 
+          Vendor Specific Command Configuration              Not Vendor Specific                
+          Verify NVM Command                                 Not Supported                      
+          Version (VER)                                      1.4.0                              
+          Virtualization Mgt Command                         Not Supported                      
+          Volatile Backup Failed                             No                                 
+          Volatile Write Cache (VWC)                         Supported                          
+          Volatile Write Cache Enable (WCE)                  Enabled                            
+          Volatile Write Cache Flush All NSID                Supported                          
+          Warning Composite Temperature Threshold (WCTEMP)   80 C                               
+          Warning Composite Temperature Time                 53 Min                             
+          Workload Hint (WH)                                 0                                  
+          Write Protect Namespace States                     Not Supported                      
+          Write Protect Until Power Cycle                    Not Supported                      
+          Write Uncorrectable NVM Command                    Supported                          
+          Write Zeroes NVM Command                           Supported                          
+          Time Throttled                                     3300                               
+          Namespace 1 Active LBA Size                        512                                
