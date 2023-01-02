@@ -124,8 +124,8 @@ The following log files are saved to the working directory:
           Root                            0x8086       0xA340       Bus 0, device 27, function 0
 
 
-    * `Example console output with --all (readnvme.log) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/readnvme_all/readnvme.log>`_
-    * `Example console output with --hex (readnvme.log) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/readnvme_hex/readnvme.log>`_
+    * `Example console output with --all (readnvme.log) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_all/readnvme.log>`_
+    * `Example console output with --hex (readnvme.log) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_hex/readnvme.log>`_
 
 """  # noqa: E501
 import argparse

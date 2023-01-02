@@ -28,8 +28,8 @@ This example checks the health of NVMe 0.
 
    checknvme  --nvme 0
 
-* `checknvme report (report.pdf) <https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/checknvme/report.pdf>`_
-* `checknvme dashboard(dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/0c1ef108369a4bdbbab54e8f7719a3555c54c97a/src/nvmetools/resources/documentation/checknvme/dashboard.html>`_
+* `checknvme report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/checknvme/report.pdf>`_
+* `checknvme dashboard(dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/checknvme/dashboard.html>`_
 
 .. warning::
    The Windows OS driver has a bug where the self-test diagnostic fails if rerun within 10 minutes of a prior

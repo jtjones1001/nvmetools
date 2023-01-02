@@ -6,6 +6,14 @@ This package supports two use cases:  Tool User and Test Developer.  A Tool User
 commands to read or test NVMe drives.  A Test Developer modifies or creates NVMe tests and
 has a working knowledge of python and NVMe drives.
 
+For a quick look on what this package provides see below examples
+
+- `NVMe Information <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme/readnvme.log>`_
+- `NVMe Information (all parameters) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_all/readnvme.log>`_
+- `NVMe Information (hex format) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_hex/readnvme.log>`_
+- `Test Dashboard <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/03da67a81119e3b1d0a366e36c964796fd3a5683/docs/examples/big_demo/dashboard.html>`_
+- `Test Report <https://raw.githubusercontent.com/jtjones1001/nvmetools/03da67a81119e3b1d0a366e36c964796fd3a5683/docs/examples/big_demo/report.pdf>`_
+
 .. warning::
    The NVMe Test Cases provided in this release are examples only.
 
@@ -31,7 +39,7 @@ in commercial computers (e.g. laptops).
 
 Change History
 --------------
-- `CHANGELOG <https://github.com/jtjones1001/nvmetools/blob/e4dbba5f95b5a5b621d131e6db3ea104dc51d1f3/src/nvmetools/resources/documentation/checknvme/nvme_health_check.pdf>`_
+- `CHANGELOG <https://github.com/jtjones1001/nvmetools/blob/03da67a81119e3b1d0a366e36c964796fd3a5683/CHANGELOG.md>`_
 
 
 .. Hidden TOCs
