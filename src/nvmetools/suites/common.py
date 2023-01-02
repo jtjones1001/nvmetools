@@ -2,6 +2,7 @@
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
 import platform
+import sys
 import time
 
 from nvmetools import TestSuite, tests
@@ -61,11 +62,11 @@ def health(args):
     Args:
         args: dictionary of NVMe parameters passed from testnvme command
     """
+    if not is_admin():
+        print("This Test Suite must be run as Administrator.")
+        sys.exit(1)
+
     with TestSuite("Check NVMe Health", health.__doc__, **args) as suite:
-
-        if not is_admin():
-            suite.stop("Test Suite must be run as Administrator.")
-
         info = tests.suite_start_info(suite)
         tests.short_diagnostic(suite)
         tests.suite_end_info(suite, info)
@@ -114,11 +115,11 @@ def selftest(args):
         args: dictionary of NVMe parameters passed from testnvme command
 
     """
+    if not is_admin():
+        print("This Test Suite must be run as Administrator.")
+        sys.exit(1)
+
     with TestSuite("Selftest", selftest.__doc__, **args) as suite:
-
-        if not is_admin():
-            suite.stop("Test Suite must be run as Administrator.")
-
         info = tests.suite_start_info(suite)
 
         tests.short_selftest(suite)

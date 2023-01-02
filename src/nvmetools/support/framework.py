@@ -212,7 +212,7 @@ class TestStep:
             log.info("")
             super().__init__("TestStep.Stop")
 
-    def stop(self, force_fail=True, message=""):
+    def stop(self, message="", force_fail=True):
         """Stop the TestStep.
 
         Stops the step when called.  By default will force the step to fail.  If force_fail=False
@@ -434,7 +434,7 @@ class TestCase:
         """
         raise self.__Skip(message)
 
-    def stop(self, force_fail=True, message=""):
+    def stop(self, message="", force_fail=True):
         """Stop the TestCase.
 
         Stops the test when called.  By default will force the test to fail.  If force_fail=False
@@ -723,7 +723,7 @@ class TestSuite:
         with open(filepath, "r") as file_object:
             self.device = json.load(file_object)
 
-    def stop(self, force_fail=True, message=""):
+    def stop(self, message="", force_fail=True):
         """Stop the TestSuite.
 
         Stops the suite when called.  By default will force the suite to fail.  If force_fail=False
