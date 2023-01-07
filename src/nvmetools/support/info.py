@@ -39,6 +39,12 @@ def _compare(start_info, end_info):
     }
 
     for parameter in end_info.full_parameters:
+
+        # If parameter not in original info may have been added during the test (e.g. self-test result)
+
+        if parameter not in start_info.full_parameters:
+            continue
+
         new_parameter = end_info.full_parameters[parameter]
         old_parameter = start_info.full_parameters[parameter]
 
