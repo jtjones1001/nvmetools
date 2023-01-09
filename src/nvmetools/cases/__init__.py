@@ -28,14 +28,13 @@ from nvmetools.cases.info.admin_commands import admin_commands
 from nvmetools.cases.info.suite_end_info import suite_end_info
 from nvmetools.cases.info.suite_start_info import suite_start_info
 from nvmetools.cases.performance.address_alignment import address_alignment
-from nvmetools.cases.performance.aspm_latency import aspm_latency
 from nvmetools.cases.performance.big_file_reads import big_file_reads
 from nvmetools.cases.performance.big_file_writes import big_file_writes
 from nvmetools.cases.performance.data_compression import data_compression
 from nvmetools.cases.performance.data_deduplication import data_deduplication
+from nvmetools.cases.performance.idle_latency import idle_latency
 from nvmetools.cases.performance.long_burst_performance import long_burst_performance
 from nvmetools.cases.performance.long_burst_performance_full import long_burst_performance_full
-from nvmetools.cases.performance.nonop_power_times import nonop_power_times
 from nvmetools.cases.performance.read_buffer import read_buffer
 from nvmetools.cases.performance.short_burst_performance import short_burst_performance
 from nvmetools.cases.performance.short_burst_performance_full import short_burst_performance_full

@@ -31,12 +31,12 @@ def smart_data(suite):
         test.data["smart data run time"] = SMART_DATA_FIO_RUNTIME = 180
 
         # -----------------------------------------------------------------------------------------
-        # Step : Create fio file if does not already exist
+        #  Get fio file if does not already exist
         # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_performance_file(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Get start info
+        #  Get start info
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Start info", "Verify not in error state", stop_on_fail=True) as step:
 
@@ -50,7 +50,7 @@ def smart_data(suite):
             rqmts.no_critical_warnings(step, start_info)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Run fio
+        # Run fio
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "IO", "Run IO to generate read and write data") as step:
 
@@ -83,7 +83,7 @@ def smart_data(suite):
             rqmts.no_data_corruption(step, fio_info)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read final information
+        # Read final information
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "End info", "Verify no unexpected changes during test") as step:
             time.sleep(10)

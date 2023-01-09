@@ -40,7 +40,7 @@ def report(report, test_result):
     report.add_table(table_rows, [100, 100, 100, 100, 100])
 
     test_dir = os.path.join(report._results_directory, test_result["directory name"])
-    samples_dir = os.path.join(test_dir, "3_sample_info")
+    samples_dir = os.path.join(test_dir, "4_sample_info")
 
     report.add_subheading("Temperature and IO Bandwidth")
     report.add_paragraph(

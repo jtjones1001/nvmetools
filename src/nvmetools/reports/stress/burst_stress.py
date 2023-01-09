@@ -9,7 +9,7 @@ def report(report, test_result):
 
     data = test_result["data"]
     test_dir = os.path.join(report._results_directory, test_result["directory name"])
-    samples_dir = os.path.join(test_dir, "3_sample_info")
+    samples_dir = os.path.join(test_dir, "4_sample_info")
 
     report.add_description(
         """This test verifies drive reliability running short bursts of IO stress.  The short

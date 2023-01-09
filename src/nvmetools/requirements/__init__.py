@@ -40,11 +40,12 @@ from nvmetools.requirements.info import (
     usage_within_limit,
 )
 from nvmetools.requirements.performance import (
-    bandwidth_vs_qd_bs,
-    power_entry_timeout,
-    power_exit_latency,
     random_read_4k_qd1_bandwidth,
     random_write_4k_qd1_bandwidth,
+    review_io_bandwidth,
+    review_power_entry_timeout,
+    review_power_exit_latency,
+    review_short_power_exit_latency,
     sequential_read_128k_qd32_bandwidth,
     sequential_write_128k_qd32_bandwidth,
 )

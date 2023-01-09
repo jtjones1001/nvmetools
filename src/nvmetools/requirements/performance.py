@@ -6,7 +6,18 @@
 from nvmetools.support.framework import verification
 
 
-def power_exit_latency(step):
+def review_short_power_exit_latency(step):
+
+    verification(
+        rqmt_id=57,
+        step=step,
+        title="IO read latency after short idle times behaves as expected.",
+        verified=False,
+        value="REVIEW",
+    )
+
+
+def review_power_exit_latency(step):
 
     verification(
         rqmt_id=50,
@@ -17,7 +28,7 @@ def power_exit_latency(step):
     )
 
 
-def power_entry_timeout(step):
+def review_power_entry_timeout(step):
 
     verification(
         rqmt_id=51,
@@ -84,12 +95,12 @@ def sequential_write_128k_qd32_bandwidth(step, data, burst_type="Short"):
     )
 
 
-def bandwidth_vs_qd_bs(step):
+def review_io_bandwidth(step):
 
     verification(
         rqmt_id=56,
         step=step,
-        title="IO bandwidth behaved as expected with increasing queue depth and block size",
+        title="IO bandwidth behaved as expected across queue depth, block size, address type",
         verified=False,
         value="REVIEW",
     )

@@ -25,7 +25,7 @@ def short_selftest(suite):
         test.data["runtime limit"] = RUNTIME_MIN = 2
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info at start of test
+        # Read NVMe info at start of test
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Test start info", "Read NVMe information using nvmecmd") as step:
             step.stop_on_fail = True
@@ -37,12 +37,12 @@ def short_selftest(suite):
 
             rqmts.no_critical_warnings(step, start_info)
         # -----------------------------------------------------------------------------------------
-        # Step: Get the file for fio to read and write
+        # Get the file for fio to read and write
         # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_small_file(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Run self-test standalone using nvmecmd
+        # Run self-test standalone using nvmecmd
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Selftest standalone") as step:
 
@@ -60,7 +60,7 @@ def short_selftest(suite):
             test.data["standalone"] = selftest.data
 
         # -----------------------------------------------------------------------------------------
-        # Step : Run fio baseline for as long as self-test is expected to take
+        # Run fio baseline for as long as self-test is expected to take
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "IO standalone", "Baseline the light IO workload") as step:
 
@@ -104,7 +104,7 @@ def short_selftest(suite):
                 log.debug(f"Waiting {WINDOWS_WA_SEC} seconds for Windows workaround.")
 
         # -----------------------------------------------------------------------------------------
-        # Step : Run fio and self-test concurrently
+        # Run fio and self-test concurrently
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Selftest and IO", "Run selftest and IO concurrently") as step:
 
@@ -154,6 +154,6 @@ def short_selftest(suite):
             test.data["concurrent"] = selftest_concurrent.data
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
+        # Read NVMe info and compare against starting info
         # -----------------------------------------------------------------------------------------
         steps.test_end_info(test, start_info)

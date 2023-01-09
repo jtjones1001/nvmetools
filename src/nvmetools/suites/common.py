@@ -1,11 +1,14 @@
 # --------------------------------------------------------------------------------------
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
+import platform
 import sys
 import time
 
-from nvmetools import TestSuite, tests
+from nvmetools import TestSuite, fio, tests
 from nvmetools.support.conversions import is_windows_admin
+
+import psutil
 
 
 def firmware(args):
@@ -87,20 +90,18 @@ def performance(args):
 
         tests.short_burst_performance(suite)
         tests.long_burst_performance(suite)
-
-        tests.aspm_latency(suite)
-        tests.nonop_power_times(suite)
-
-        tests.data_compression(suite)
+        tests.idle_latency(suite)
         tests.data_deduplication(suite)
-
         tests.read_buffer(suite)
 
-        tests.big_file_writes(suite)
-        tests.big_file_reads(suite)
+        if fio.space_for_big_file(info, suite.volume):
 
-        tests.short_burst_performance_full(suite)
-        tests.long_burst_performance_full(suite)
+            tests.big_file_writes(suite)
+
+            tests.big_file_reads(suite)
+            tests.data_compression(suite)
+            tests.short_burst_performance_full(suite)
+            tests.long_burst_performance_full(suite)
 
         tests.suite_end_info(suite, info)
 

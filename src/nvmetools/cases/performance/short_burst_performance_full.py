@@ -29,46 +29,20 @@ def short_burst_performance_full(suite):
         test.data["time after read sec"] = WAIT_AFTER_READ_SEC = IO_RUN_TIME_SEC
         test.data["io size"] = IO_SIZE = 1024 * 1024 * 1024
         test.data["queue depths"] = QUEUE_DEPTHS = [1, 2, 8, 16, 32]
-        test.data["block sizes"] = BLOCK_SIZES = [
-            4096,
-            8192,
-            4 * 4096,
-            8 * 4096,
-            16 * 4096,
-            32 * 4096,
-            64 * 4096,
-            128 * 4096,
-            256 * 4096,
-        ]
+        test.data["block sizes"] = BLOCK_SIZES = [4096 * 2**x for x in range(9)]
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info.  Stop test if critical warnings found.
+        # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-
-        # -----------------------------------------------------------------------------------------
-        # Step: Get the file for fio to read and write
-        # -----------------------------------------------------------------------------------------
-        # This step will stop the test if cannot find or create the file.  The test requires the
-        # big file. Since this is a stress test it must check the data integrity so the file will
-        # be created with verify=True.  Note big files always have verify=True
-        # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_performance_file(test)
+        steps.wait_for_idle(test)
 
-        # -----------------------------------------------------------------------------------------
-        # Step : Start sampling SMART and Power State
-        # -----------------------------------------------------------------------------------------
-        # Start reading SMART and Power State info at a regular interval until stopped.  This data
-        # can be used to plot temperature, bandwidth, power states, etc.  Only read SMART and Power
-        # State feature to limit impact of reading info on the IO performance
-        # -----------------------------------------------------------------------------------------
-        info_samples = steps.start_state_samples(test)
-
-        # -----------------------------------------------------------------------------------------
-        # Step : Run short burst of IO reads and writes
         # -----------------------------------------------------------------------------------------
         # Run short bursts of the four different IO patterns at different block sizes and queue depths
         # -----------------------------------------------------------------------------------------
+        info_samples = steps.start_info_samples(test)
+
         for io_pattern in ["sequential write", "sequential read", "random write", "random read"]:
             io_pattern_name = io_pattern.replace(" ", "_")
 
@@ -142,18 +116,10 @@ def short_burst_performance_full(suite):
 
                 rqmts.no_io_errors(step, fio_io_errors)
 
-        # -----------------------------------------------------------------------------------------
-        # Step : Stop reading SMART and Power State information that was started above
-        # -----------------------------------------------------------------------------------------
-        with TestStep(test, "Verify samples", "Stop sampling and verify no sample errors") as step:
-            time.sleep(2)
-            info_samples.stop()
-
-            rqmts.no_counter_parameter_decrements(step, info_samples)
-            rqmts.no_errorcount_change(step, info_samples)
+        steps.stop_info_samples(test, info_samples)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Verify performance within limits
+        #  Verify performance within limits
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Verify performance", "Verify short burst performance.") as step:
 
@@ -161,12 +127,9 @@ def short_burst_performance_full(suite):
             rqmts.random_write_4k_qd1_bandwidth(step, test.data)
             rqmts.sequential_read_128k_qd32_bandwidth(step, test.data)
             rqmts.sequential_write_128k_qd32_bandwidth(step, test.data)
-            rqmts.bandwidth_vs_qd_bs(step)
+            rqmts.review_io_bandwidth(step)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
-        # -----------------------------------------------------------------------------------------
-        # This test reads the full information and verifies no counter decrements, static parameter
-        # changes, no critical warnings, and no error count increases.
+        # After test, read NVMe info and compare against the starting info
         # -----------------------------------------------------------------------------------------
         steps.test_end_info(test, start_info)

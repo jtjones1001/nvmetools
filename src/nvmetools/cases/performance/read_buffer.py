@@ -15,24 +15,17 @@ def read_buffer(suite):
     Args:
         suite:  Parent TestSuite instance
     """
-
     with TestCase(suite, "Read buffer", read_buffer.__doc__) as test:
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info.  Stop test if critical warnings found.
+        # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-
-        # -----------------------------------------------------------------------------------------
-        # Step: Get the file for fio to read and write
-        # -----------------------------------------------------------------------------------------
-        # This step will stop the test if cannot find or create the file.  The test will use the
-        # small file with Verify=False
-        # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_performance_file(test)
+        steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Create and run the IO trace file
+        # Create and run the IO trace file
         # -----------------------------------------------------------------------------------------
         # This file is created for fio to do the subsequent reads to the same addresses.  Multiple
         # block sizes are run to get an idea of how big the buffer is.
@@ -88,9 +81,6 @@ def read_buffer(suite):
             rqmts.no_io_errors(step, fio_result)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
-        # -----------------------------------------------------------------------------------------
-        # This test reads the full information and verifies no counter decrements, static parameter
-        # changes, no critical warnings, and no error count increases.
+        # After test, read NVMe info and compare against the starting info
         # -----------------------------------------------------------------------------------------
         steps.test_end_info(test, start_info)

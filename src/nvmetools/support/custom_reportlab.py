@@ -69,6 +69,8 @@ SKIP_COLOR = "#808080"
 LIMIT_COLOR = "#fd625e"
 
 TEXT_FONT_SIZE = 10
+TABLE_FONT_SIZE = 9
+
 
 HEADING_STYLE = ParagraphStyle(
     "heading",
@@ -92,7 +94,7 @@ TEXT_STYLE = ParagraphStyle(
 FAIL_TEXT_STYLE = ParagraphStyle(
     "fail",
     fontName="Helvetica-BOLD",
-    fontSize=TEXT_FONT_SIZE,
+    fontSize=TABLE_FONT_SIZE,
     alignment=4,
     spaceAfter=8,
     textColor="red",
@@ -121,7 +123,7 @@ TABLE_HEADER_GRID_COLOR = "#303030"
 TABLE_TEXT_STYLE = ParagraphStyle(
     "table",
     fontName="Helvetica",
-    fontSize=TEXT_FONT_SIZE,
+    fontSize=TABLE_FONT_SIZE,
     alignment=4,
     spaceAfter=8,
     textColor=TEXT_COLOR,
@@ -136,16 +138,16 @@ TABLE_STYLE = TableStyle(
         ("TOPPADDING", (0, 0), (-1, 0), 4),
         ("BOTTOMPADDING", (0, 0), (-1, 0), 4),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 0), (-1, -1), TEXT_FONT_SIZE),
-        ("LEADING", (0, 0), (-1, -1), TEXT_FONT_SIZE * 1.2),
+        ("FONTSIZE", (0, 0), (-1, -1), TABLE_FONT_SIZE),
+        ("LEADING", (0, 0), (-1, -1), TABLE_FONT_SIZE * 1.2),
     ]
 )
 TABLE_STYLE_NO_HEADER = TableStyle(
     [
         ("GRID", (0, 0), (-1, -1), 1, TABLE_GRID_COLOR),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 0), (-1, -1), TEXT_FONT_SIZE),
-        ("LEADING", (0, 0), (-1, -1), TEXT_FONT_SIZE * 1.2),
+        ("FONTSIZE", (0, 0), (-1, -1), TABLE_FONT_SIZE),
+        ("LEADING", (0, 0), (-1, -1), TABLE_FONT_SIZE * 1.2),
     ]
 )
 

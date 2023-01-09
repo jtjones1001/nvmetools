@@ -38,7 +38,7 @@ def timestamp(suite):
         test.data["Timestamp Relative Percent"] = suite.device["Timestamp Relative Percent"]
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and verify no critical warnings and timestamp supported
+        #  Read NVMe info and verify no critical warnings and timestamp supported
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Test start info", "Read NVMe information using nvmecmd") as step:
 
@@ -78,9 +78,9 @@ def timestamp(suite):
         fio_file = steps.get_fio_small_file(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Start sampling SMART and Power State
+        #  Start sampling SMART and Power State
         # -----------------------------------------------------------------------------------------
-        info_samples = steps.start_state_samples(test, cmd_file="timestamp")
+        info_samples = steps.start_info_samples(test, cmd_file="timestamp")
 
         # -----------------------------------------------------------------------------------------
         # Step: Run IO and then wait for idle period
@@ -139,7 +139,7 @@ def timestamp(suite):
         rqmts.no_counter_parameter_decrements(step, info_samples)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
+        #  Read NVMe info and compare against starting info
         # -----------------------------------------------------------------------------------------
         end_info = steps.test_end_info(test, start_info)
 

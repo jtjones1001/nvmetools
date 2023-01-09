@@ -30,7 +30,7 @@ def report(report, test_result):
 
     report.add_results(test_result)
     report.add_subheading2("Continuous Writes")
-    step_directory = os.path.join(test_dir, "3_continuous_writes")
+    step_directory = os.path.join(test_dir, "4_sample_info")
     report.add_paragraph(
         f""" The file size tested was {data['file size']/BYTES_IN_GB:0.1f} GB which is
         {data['file ratio']:0.0f}% of the disk size of {data['disk size']/BYTES_IN_GB:0.1f} GB.
@@ -49,7 +49,7 @@ def report(report, test_result):
     report.add_bigfile_write_plot(step_directory, data["file size"])
 
     report.add_subheading2("Burst Writes")
-    step_directory = os.path.join(test_dir, "4_burst_writes")
+    step_directory = os.path.join(test_dir, "7_sample_info")
     report.add_paragraph(
         f"""A total of {len(BURST_DELAY_SEC)} groups of bursts were completed. Each burst group has
         different idle times between bursts.  For devices with write buffers, the bandwidth may decrease

@@ -4,7 +4,7 @@
 import platform
 import time
 
-from nvmetools import TestSuite, tests
+from nvmetools import TestSuite, fio, tests
 
 
 def big_demo(args):
@@ -46,19 +46,16 @@ def big_demo(args):
         tests.short_burst_performance(suite)
         tests.long_burst_performance(suite)
 
-        tests.aspm_latency(suite)
-        tests.nonop_power_times(suite)
-
-        tests.data_compression(suite)
         tests.data_deduplication(suite)
-
         tests.read_buffer(suite)
 
-        tests.big_file_writes(suite)
-        tests.big_file_reads(suite)
+        if fio.space_for_big_file(info, suite.volume):
 
-        tests.short_burst_performance_full(suite)
-        tests.long_burst_performance_full(suite)
+            tests.big_file_writes(suite)
+            tests.big_file_reads(suite)
+            tests.data_compression(suite)
+            tests.short_burst_performance_full(suite)
+            tests.long_burst_performance_full(suite)
 
         # Stress tests
 

@@ -2,7 +2,6 @@
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
 import os
-import time
 
 from nvmetools import TestCase, TestStep, fio, log, rqmts, steps
 
@@ -29,34 +28,22 @@ def read_disturb_stress(suite):
         test.data["address increment"] = ADDRESS_INCREMENT = BLOCK_SIZE * 16
         test.data["file size"] = FILE_SIZE = 1024 * 1024 * 1024
         test.data["reads per page"] = READS_PER_PAGE = 100000
-        test.data["info sample delay sec"] = INFO_SAMPLE_DELAY_SEC = 10
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and rqmts no critical warnings, stop test on fail
+        # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-
-        # -----------------------------------------------------------------------------------------
-        # Step : Create a small data file for fio to use, stop test on fail
-        # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_small_file(test)
+        steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Start sampling SMART and Power State
+        # Write the file to use.  Write and verify the target file. Write 2x the file size so that
+        # the final data in the file will, hopefully, be created using "new" blocks where all the
+        # pages in the new blocks are mapped to sequentially to the LBA
         # -----------------------------------------------------------------------------------------
-        info_samples = steps.start_state_samples(test)
+        info_samples = steps.start_info_samples(test)
 
-        # -----------------------------------------------------------------------------------------
-        # Step : Write the file to use
-        # -----------------------------------------------------------------------------------------
-        # Write and verify the target file. Write 2x the file size so that the final data in the
-        # file will, hopefully, be created using "new" blocks where all the pages in the new blocks
-        #  are mapped to sequentially to the LBA
-        # -----------------------------------------------------------------------------------------
         with TestStep(test, "Write verify file") as step:
-
-            log.debug(f"Waiting {INFO_SAMPLE_DELAY_SEC} seconds to start IO")
-            time.sleep(INFO_SAMPLE_DELAY_SEC)
 
             args = [
                 "--direct=1",
@@ -85,11 +72,9 @@ def read_disturb_stress(suite):
             rqmts.no_data_corruption(step, fio_write)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read one page every block (hopefully)
-        # -----------------------------------------------------------------------------------------
-        # Read one page every block size offset in the file.  If NPDG available use this for block size,
-        # else use default.  Note that reading a value smaller than page size still results in the entire
-        # page being read from the flash.
+        # Read one page every block (hopefully). Read one page every block size offset in the file.
+        # If NPDG available use this for block size, else use default.  Note that reading a value
+        # smaller than page size still results in the entire page being read from the flash.
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Read pages") as step:
 
@@ -133,9 +118,7 @@ def read_disturb_stress(suite):
             log.debug("")
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read all pages
-        # -----------------------------------------------------------------------------------------
-        # Read every page in the file to determine if a page was corrupted by read disturb
+        #  Read every page in the file to determine if a page was corrupted by read disturb
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Read all pages") as step:
 
@@ -163,18 +146,10 @@ def read_disturb_stress(suite):
             fio_verify = fio.RunFio(args, step.directory, suite.volume)
             rqmts.no_io_errors(step, fio_verify)
             rqmts.no_data_corruption(step, fio_verify)
-        # -----------------------------------------------------------------------------------------
-        # Stop reading SMART and Power State information that was started above
-        # -----------------------------------------------------------------------------------------
-        log.debug(f"Waiting {INFO_SAMPLE_DELAY_SEC} seconds to stop sampling")
-        time.sleep(INFO_SAMPLE_DELAY_SEC)
-        info_samples.stop()
 
-        rqmts.no_counter_parameter_decrements(step, info_samples)
-        rqmts.no_static_parameter_changes(step, info_samples)
-        rqmts.no_errorcount_change(step, info_samples)
+        steps.stop_info_samples(test, info_samples)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
+        # After test, read NVMe info and compare against the starting info
         # -----------------------------------------------------------------------------------------
         steps.test_end_info(test, start_info)

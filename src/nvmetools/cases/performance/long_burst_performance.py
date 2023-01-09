@@ -27,18 +27,11 @@ def long_burst_performance(suite):
         test.data["sequential queue depth"] = SEQ_QUEUE_DEPTH = 32
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info.  Stop test if critical warnings found.
+        # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-
-        # -----------------------------------------------------------------------------------------
-        # Step: Get the file for fio to read and write
-        # -----------------------------------------------------------------------------------------
-        # This step will stop the test if cannot find or create the file.  The test requires the
-        # big file. Since this is a stress test it must check the data integrity so the file will
-        # be created with verify=True.  Note big files always have verify=True
-        # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_performance_file(test)
+        steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
         # Multiple Steps : Run the bursts with the target IO types
@@ -68,17 +61,17 @@ def long_burst_performance(suite):
                 1,
             )
         # -----------------------------------------------------------------------------------------
-        # Step : Verify performance within limits
+        # Verify performance within limits
         # -----------------------------------------------------------------------------------------
-        with TestStep(test, "Verify performance", "Verify short burst performance.") as step:
+        with TestStep(test, "Verify performance", "Verify long burst performance.") as step:
 
-            rqmts.random_read_4k_qd1_bandwidth(step, test.data)
-            rqmts.random_write_4k_qd1_bandwidth(step, test.data)
-            rqmts.sequential_read_128k_qd32_bandwidth(step, test.data)
-            rqmts.sequential_write_128k_qd32_bandwidth(step, test.data)
-            rqmts.bandwidth_vs_qd_bs(step)
+            rqmts.random_read_4k_qd1_bandwidth(step, test.data, burst_type="Long")
+            rqmts.random_write_4k_qd1_bandwidth(step, test.data, burst_type="Long")
+            rqmts.sequential_read_128k_qd32_bandwidth(step, test.data, burst_type="Long")
+            rqmts.sequential_write_128k_qd32_bandwidth(step, test.data, burst_type="Long")
+            rqmts.review_io_bandwidth(step)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
+        # After test, read NVMe info and compare against the starting info
         # -----------------------------------------------------------------------------------------
         steps.test_end_info(test, start_info)

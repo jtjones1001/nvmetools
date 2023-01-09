@@ -2,7 +2,6 @@
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
 import os
-import time
 
 from nvmetools import TestCase, TestStep, fio, log, rqmts, steps
 
@@ -20,37 +19,25 @@ def high_bandwidth_stress(suite, run_time_sec=180):
     """
     with TestCase(suite, "High bandwidth stress", high_bandwidth_stress.__doc__) as test:
 
+        test.data["block size kib"] = BLOCK_SIZE_KB = 128
+        test.data["queue depth"] = QUEUE_DEPTH = 32
+        test.data["run time sec"] = run_time_sec
+        test.data["runtime"] = f"{run_time_sec/60:0.2f} min"
+
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info.  Stop test if critical warnings found.
+        # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
+        fio_file = steps.get_fio_stress_file(test, float(start_info.parameters["Size"]))
+        steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step: Get the file for fio to read and write
+        #  Run high bandwidth IO. High bandwidth is achieved using sequential addressing, high
+        #  queue depth, and a large  block size.  The fio utility is used to run the IO.
         # -----------------------------------------------------------------------------------------
-        fio_file = steps.get_fio_stress_file(test, start_info.parameters["Size"])
+        info_samples = steps.start_info_samples(test)
 
-        # -----------------------------------------------------------------------------------------
-        # Step : Start sampling SMART and Power State
-        # ------------------------------------------------------------------------------------------
-        info_samples = steps.start_state_samples(test)
-
-        # -----------------------------------------------------------------------------------------
-        # Step : Run high bandwidth IO
-        # -----------------------------------------------------------------------------------------
-        # High bandwidth is achieved using sequential addressing, high queue depth, and a large
-        # block size.  The fio utility is used to run the IO.
-        # -----------------------------------------------------------------------------------------
         with TestStep(test, "IO stress", "Run high bandwidth IO stress with fio") as step:
-
-            test.data["block size kib"] = 128
-            test.data["queue depth"] = 32
-            test.data["run time sec"] = run_time_sec
-            test.data["runtime"] = f"{run_time_sec/60:0.2f} min"
-            test.data["sample delay sec"] = 30
-
-            log.debug(f"Waiting {test.data['sample delay sec']} seconds to start IO")
-            time.sleep(test.data["sample delay sec"])
 
             fio_args = [
                 "--direct=1",
@@ -59,8 +46,8 @@ def high_bandwidth_stress(suite, run_time_sec=180):
                 f"--filesize={fio_file.file_size}",
                 f"--filename={fio_file.filepath}",
                 "--rw=readwrite",
-                f"--iodepth={test.data['queue depth']}",
-                f"--bs={test.data['block size kib']}k",
+                f"--iodepth={QUEUE_DEPTH}",
+                f"--bs={BLOCK_SIZE_KB}k",
                 "--verify_interval=4096",
                 "--verify=crc32c",
                 "--verify_dump=1",
@@ -71,13 +58,10 @@ def high_bandwidth_stress(suite, run_time_sec=180):
                 f"--output={os.path.join(step.directory,'fio.json')}",
                 "--output-format=json",
                 "--time_based",
-                f"--runtime={test.data['run time sec']}",
+                f"--runtime={run_time_sec}",
                 "--name=fio",
             ]
             fio_result = fio.RunFio(fio_args, step.directory, suite.volume)
-
-            log.debug(f"Waiting {test.data['sample delay sec']} seconds to stop sampling")
-            time.sleep(test.data["sample delay sec"])
 
             rqmts.no_io_errors(step, fio_result)
             rqmts.no_data_corruption(step, fio_result)
@@ -87,19 +71,12 @@ def high_bandwidth_stress(suite, run_time_sec=180):
 
             test.data["written"] = f"{fio_result.data_write_gb:0.1f} GB"
             test.data["write bandwidth"] = f"{fio_result.write_bw_gb:0.3f} GB/s"
-        # -----------------------------------------------------------------------------------------
-        # Step : Stop reading SMART and Power State information that was started above
-        # -----------------------------------------------------------------------------------------
-        with TestStep(test, "Verify samples", "Stop sampling and verify no sample errors") as step:
-            info_samples.stop()
 
-            rqmts.no_counter_parameter_decrements(step, info_samples)
-            rqmts.no_errorcount_change(step, info_samples)
-            test.data["min temp"] = info_samples.min_temp
-            test.data["max temp"] = info_samples.max_temp
-            test.data["time throttled"] = info_samples.time_throttled
-
+        steps.stop_info_samples(test, info_samples)
+        test.data["min temp"] = info_samples.min_temp
+        test.data["max temp"] = info_samples.max_temp
+        test.data["time throttled"] = info_samples.time_throttled
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
+        # After test, read NVMe info and compare against the starting info
         # -----------------------------------------------------------------------------------------
         steps.test_end_info(test, start_info)

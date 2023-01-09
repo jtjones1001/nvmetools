@@ -38,7 +38,7 @@ def report(report, test_result):
     report.add_description(
         f"""This test verifies reading SMART attributes during normal operation has no adverse
         effects on IO read and writes.  Adverse effects are defined as functional errors, data integrity
-        loss, or an unacceptable increase in IO latency.  A typical Enterprise Use Case [9]
+        loss, or an unacceptable increase in IO latency.  A typical Enterprise Use Case [10]
         reads SMART attributes regularly to identify issues that may predict drive failures.  Suspect
         drives can then be replaced prior to actually failing.
         <br/><br/>

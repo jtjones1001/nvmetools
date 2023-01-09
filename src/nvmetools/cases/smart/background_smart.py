@@ -31,20 +31,19 @@ def background_smart(suite):
         test.data["interval ms"] = ADMIN_LOG2_INTERVAL_MS = 500
         test.data["samples"] = ADMIN_LOG2_SAMPLE = 1825
         test.data["slow latency limit"] = SMART_IO_LATENCY_INCREASE_LIMIT = 50
-        test.data["idle wait time sec"] = IDLE_WAIT_TIME_SEC = 180
 
         # -----------------------------------------------------------------------------------------
-        # Step : Create fio file if does not already exist
+        # Create fio file if does not already exist
         # -----------------------------------------------------------------------------------------
         fio_file = steps.get_fio_small_file(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Wait to ensure drive is back to idle temperature and no garbage collection underway
+        # Wait to ensure drive is back to idle temperature and no garbage collection underway
         # -----------------------------------------------------------------------------------------
-        steps.idle_wait(test, IDLE_WAIT_TIME_SEC)
+        steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : SMART baseline
+        # SMART baseline
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "SMART baseline", f"Run Get Log Page 2 command {ADMIN_LOG2_SAMPLE:,} times") as step:
 
@@ -62,7 +61,7 @@ def background_smart(suite):
             rqmts.admin_command_max_latency(step, logpage2, suite.device["Maximum Admin Cmd Limit mS"])
 
         # -----------------------------------------------------------------------------------------
-        # Step : fio baseline
+        # fio baseline
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "IO baseline", "Baseline IO reads and writes using fio") as step:
 
@@ -102,12 +101,12 @@ def background_smart(suite):
             rqmts.no_data_corruption(step, fio_result)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Wait to ensure drive is back to idle temperature and no garbage collection underway
+        # Wait to ensure drive is back to idle temperature and no garbage collection underway
         # -----------------------------------------------------------------------------------------
-        steps.idle_wait(test, IDLE_WAIT_TIME_SEC)
+        steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Run fio and Get Log Page 2 concurrently.
+        # Run fio and Get Log Page 2 concurrently.
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "SMART and IO", "Run IO and Get Log Page 2 concurrently") as step:
 

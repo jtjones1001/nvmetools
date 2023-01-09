@@ -27,7 +27,7 @@ def report(report, test_result):
     )
 
     report.add_subheading2("Sequential Reads")
-    step_directory = os.path.join(test_dir, "3_sample_info")
+    step_directory = os.path.join(test_dir, "4_sample_info")
     report.add_paragraph(
         """ The plot below shows the composite temperature of the drive during the test along with the
         thermal throttle limits.<br/><br/>"""
@@ -38,7 +38,7 @@ def report(report, test_result):
 
     cmd_times = []
 
-    csv_file = os.path.join(test_dir, "4_sequential_reads", "raw_lat.1.log")
+    csv_file = os.path.join(test_dir, "5_sequential_reads", "raw_lat.1.log")
     with open(csv_file, "r") as filename:
         filereader = csv.reader(filename)
         for _index in range(16):
@@ -58,7 +58,7 @@ def report(report, test_result):
     report.add_histogram(cmd_times, xlabel="Latency (uS)", log=True)
 
     report.add_subheading2("Random Reads")
-    step_directory = os.path.join(test_dir, "6_sample_info")
+    step_directory = os.path.join(test_dir, "7_sample_info")
     report.add_paragraph(
         """The plot below shows the composite temperature of the drive during the test along with the
         thermal throttle limits.<br/><br/> """
@@ -68,7 +68,7 @@ def report(report, test_result):
     report.add_bigfile_read_plot(step_directory, data["file size"])
     cmd_times = []
 
-    csv_file = os.path.join(test_dir, "7_random_reads", "raw_lat.1.log")
+    csv_file = os.path.join(test_dir, "8_random_reads", "raw_lat.1.log")
     with open(csv_file, "r") as filename:
         filereader = csv.reader(filename)
         for _index in range(16):

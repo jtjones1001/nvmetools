@@ -6,7 +6,7 @@ Information
 -----------
 .. autofunction:: test_start_info
 .. autofunction:: test_end_info
-.. autofunction:: start_state_samples
+.. autofunction:: start_info_samples
 
 IO Data File (fio)
 ------------------
@@ -17,4 +17,4 @@ IO Data File (fio)
 
 Wait
 ----
-.. autofunction:: idle_wait
+.. autofunction:: wait_for_idle

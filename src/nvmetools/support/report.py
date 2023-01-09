@@ -728,7 +728,10 @@ class NvmeReport(InfoReport):
                 8.  Measure IO performance with fio and nvmecmd
                 <br/><br/>
 
-                9. What SMART Stats Tell Us About Hard Drives, Backblaze blog,<br/>
+                9.  Analyze idle latency plots with fio
+                <br/><br/>
+
+                10. What SMART Stats Tell Us About Hard Drives, Backblaze blog,<br/>
                  https://www.backblaze.com/blog/what-smart-stats-indicate-hard-drive-failures/
                 <br/><br/>
                 """
@@ -793,7 +796,7 @@ class NvmeReport(InfoReport):
                         result = "FAIL"
 
                     table_data.append([Paragraph(f"{name}", style=TABLE_TEXT_STYLE), value, result])
-                self.add_table(table_data, [USABLE_WIDTH - 125, 75, 50], fail_fmt=True)
+                self.add_table(table_data, [USABLE_WIDTH - 175, 75, 50], fail_fmt=True)
 
     def _add_summary(self):
         self.add_pagebreak()
@@ -1038,6 +1041,19 @@ class NvmeReport(InfoReport):
                 {self._start_info['metadata']['system']['model']} running \
                 {self._start_info['metadata']['system']['os']}."
 
+    def _smooth(self, data, weight):
+        # Based on an idea posted here:
+        #    https://stackoverflow.com/questions/5283649/plot-smooth-line-with-pyplot
+
+        last = data[0]
+        smoothed = list()
+        for point in data:
+            smoothed_val = last * weight + (1 - weight) * point
+            smoothed.append(smoothed_val)
+            last = smoothed_val
+
+        return smoothed
+
     def add_admin_bar_chart(self, labels, values):
         """Plot bar graphs for admin commands."""
         fig, ax = plt.subplots(figsize=(6, 5))
@@ -1201,6 +1217,27 @@ class NvmeReport(InfoReport):
         self._elements.append(convert_plot_to_image(fig, ax))
         plt.close("all")
 
+    def add_idle_latency_plot(self, file, unit="mS"):
+        """Plot read latency vs. idle time."""
+        fig, ax = plt.subplots(figsize=(6.5, 2))
+        ax.set_xlabel(f"Idle Time ({unit})")
+        ax.set_ylabel("Latency (mS)")
+        ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
+
+        time_data = []
+        latency_data = []
+        with open(file, newline="") as file_object:
+            rows = csv.reader(file_object)
+            for row in rows:
+                time_data.append(int(row[0]))
+                latency_data.append(float(row[1]))
+        ax.plot(time_data, latency_data, linewidth=1, label="raw", color="#ff8f1e")
+        ax.plot(time_data, self._smooth(latency_data, 0.8), linewidth=1.5, label="smooth", color="#0f67a4")
+
+        plt.legend(bbox_to_anchor=(1.05, 0.5), loc="center left")
+        self._elements.append(convert_plot_to_image(fig, ax))
+        plt.close("all")
+
     def add_latency_bar_charts(self, read0, read1, write0, write1):
         """Plot bar graphs for standalone/concurrent IO."""
         fig, ax = plt.subplots(figsize=(6, 1.5))
@@ -1285,8 +1322,14 @@ class NvmeReport(InfoReport):
         self._elements.append(convert_plot_to_image(fig, ax))
         plt.close("all")
 
-    def add_power_timing_plot(self, file, timeouts, exit_latencies):
+    def add_power_state_plot(self, file, timeouts, exit_latencies):
         """Plot BW vs time from temp_bw.csv."""
+        fig, ax = plt.subplots(figsize=(6.5, 2))
+        ax.set_xlabel("Idle Time (mS)")
+        ax.set_ylabel("Latency (mS)")
+        ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
+        linestyles = ["--", "-", ".", "."]
+
         time_data = []
         latency_data = []
 
@@ -1295,12 +1338,6 @@ class NvmeReport(InfoReport):
             for row in rows:
                 time_data.append(int(row[0]))
                 latency_data.append(float(row[1]))
-
-        fig, ax = plt.subplots(figsize=(6.5, 2.5))
-        ax.set_xlabel("Idle Time (mS)")
-        ax.set_ylabel("Latency (mS)")
-        ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
-        linestyles = ["--", "-", ".", "."]
 
         for i, latency in enumerate(exit_latencies):
             plt.axhline(
@@ -1318,7 +1355,7 @@ class NvmeReport(InfoReport):
                 linestyle=linestyles[i],
                 label=timeout,
             )
-        ax.plot(time_data, latency_data)
+        ax.plot(time_data, latency_data, linewidth=2, color="#0f67a4")
         plt.legend(bbox_to_anchor=(1.05, 0.5), loc="center left")
 
         self._elements.append(convert_plot_to_image(fig, ax))

@@ -28,7 +28,7 @@ def address_alignment(suite):
         max_offset_4kib = test.data["max offset in 4kib"] = 257
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info.  Stop test if critical warnings found.
+        #  Read NVMe info.  Stop test if critical warnings found.
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
 
@@ -42,7 +42,7 @@ def address_alignment(suite):
         fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"]))
 
         # -----------------------------------------------------------------------------------------
-        # Step : Random reads at same offset
+        #  Random reads at same offset
         # -----------------------------------------------------------------------------------------
         with TestStep(test, "Random IO reads", "Read IO at random address offsets") as step:
 
@@ -86,7 +86,7 @@ def address_alignment(suite):
             rqmts.no_io_errors(step, fio_io_errors)
 
         # -----------------------------------------------------------------------------------------
-        # Step : Read NVMe info and compare against starting info
+        #  Read NVMe info and compare against starting info
         # -----------------------------------------------------------------------------------------
         # This test reads the full information and verifies no counter decrements, static parameter
         # changes, no critical warnings, and no error count increases.

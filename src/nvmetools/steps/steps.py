@@ -21,8 +21,9 @@ easily be imported and run as shown here.
 
 """
 import os
+import time
 
-from nvmetools import Info, InfoSamples, TestStep, rqmts
+from nvmetools import Info, InfoSamples, TestStep, log, rqmts
 from nvmetools.apps.fio import FioFiles
 from nvmetools.support.conversions import BYTES_IN_GB
 
@@ -79,8 +80,8 @@ def get_fio_big_file(test, disk_size):
     """
     with TestStep(
         test,
-        "Create fio file",
-        "Create file if does not exist.",
+        "Get fio file",
+        "Get or create big file without verification headers.",
         stop_on_fail=True,
     ) as step:
         fio_files = FioFiles(step.directory, test.suite.volume)
@@ -102,8 +103,8 @@ def get_fio_performance_file(test):
     """
     with TestStep(
         test,
-        "Create fio file",
-        "If does not exist, create a small file without verification data for fio.",
+        "Get fio file",
+        "Get or create small file without verification headers.",
         stop_on_fail=True,
     ) as step:
         fio_files = FioFiles(step.directory, test.suite.volume)
@@ -125,8 +126,8 @@ def get_fio_small_file(test):
     """
     with TestStep(
         test,
-        "Create fio file",
-        "Create small file with verification data, if does not exist.",
+        "Get fio file",
+        "Get or create small file with verification headers.",
         stop_on_fail=True,
     ) as step:
         fio_files = FioFiles(step.directory, test.suite.volume)
@@ -147,7 +148,7 @@ def get_fio_stress_file(test, disk_size):
         disk_size:  Size of disk in bytes
 
     """
-    with TestStep(test, "Create fio file", "Use big file if exists, else use or create a small file.") as step:
+    with TestStep(test, "Get fio file", "Use big file if exists, else get or create a small file.") as step:
 
         step.stop_on_fail = True
 
@@ -164,13 +165,13 @@ def get_fio_stress_file(test, disk_size):
     return fio_file
 
 
-def start_state_samples(test, cmd_file="state"):
-    """Start sampling SMART and power state info every second..
+def start_info_samples(test, cmd_file="state", delay_sec=10):
+    """Start sampling SMART and power state info every second.
 
     Args:
         test: Parent TestCase instance
         cmd_file: cmd file to use for reading samples
-
+        delay_sec: Seconds to delay before returning, guarantees some sample
     """
     with TestStep(test, "Sample info", "Start sampling SMART and power state info every second.") as step:
         info_samples = InfoSamples(
@@ -181,11 +182,26 @@ def start_state_samples(test, cmd_file="state"):
             interval=1000,
             cmd_file=cmd_file,
         )
+        log.debug(f"Waiting {delay_sec} seconds to start IO")
+        time.sleep(delay_sec)
 
     return info_samples
 
 
-def idle_wait(test, wait_sec=180):
+def stop_info_samples(test, info_samples, delay_sec=10):
+    """Stop sampling SMART and power state info every second.
+
+    Args:
+        test: Parent TestCase instance
+        delay_sec: Seconds to delay before stopping, guarantees some samples
+    """
+    with TestStep(test, "Verify samples", "Stop sampling and verify no sample errors") as step:
+        info_samples.stop()
+        rqmts.no_counter_parameter_decrements(step, info_samples)
+        rqmts.no_errorcount_change(step, info_samples)
+
+
+def wait_for_idle(test, wait_sec=180):
     """Wait for drive to return to idle.
 
     Args:

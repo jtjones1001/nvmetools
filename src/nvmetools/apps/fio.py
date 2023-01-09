@@ -45,6 +45,8 @@ from nvmetools.support.conversions import BYTES_IN_GIB, KIB_TO_GB, NS_IN_MS, NS_
 from nvmetools.support.log import log
 from nvmetools.support.process import RunProcess
 
+import psutil
+
 FIO_TRIM_IOS = 16
 FIO_DELAY_IOS = 16
 
@@ -52,8 +54,9 @@ FIO_BIG_FILE = "fio_big_file.bin"
 FIO_VERIFY_FILE = "fio_verify.bin"
 FIO_PERFORMANCE_FILE = "fio_performance.bin"
 
-FIO_BIG_FILE_SIZE = 0.90
-FIO_SMALL_FILE_SIZE = 1024 * 1024 * 1024
+
+BIG_FILE_SIZE = 0.90
+SMALL_FILE_SIZE = 1024 * 1024 * 1024
 
 if "Windows" == platform.system():
     FIO_EXEC = r"\Program Files\fio\fio.exe"
@@ -75,6 +78,13 @@ class _FioBadJson(Exception):
         self.code = 61
         self.nvmetools = True
         super().__init__(" failed parsing fio JSON file.")
+
+
+class FioNoSpace(Exception):
+    def __init__(self, message=""):
+        self.code = 62
+        self.nvmetools = True
+        super().__init__(message)
 
 
 class RunFio:
@@ -335,13 +345,13 @@ class FioFiles:
 
     def create(self, big=False, verify=False, disk_size=None, wait_sec=0):
         if big:
-            self.file_size = int(0.90 * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
-            self.file_size_gb = int(0.90 * disk_size / BYTES_IN_GIB)
+            self.file_size = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
+            self.file_size_gb = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB)
 
             self.filename = FIO_BIG_FILE
         else:
-            self.file_size = FIO_SMALL_FILE_SIZE
-            self.file_size_gb = FIO_SMALL_FILE_SIZE / BYTES_IN_GIB
+            self.file_size = SMALL_FILE_SIZE
+            self.file_size_gb = SMALL_FILE_SIZE / BYTES_IN_GIB
             self.filename = FIO_VERIFY_FILE if verify else FIO_PERFORMANCE_FILE
 
         self.filepath = os.path.join(_get_fio_target_directory(self.volume), self.filename)
@@ -350,6 +360,9 @@ class FioFiles:
         if os.path.exists(self.os_filepath):
             log.debug(f"FioFiles: File already exists: {self.os_filepath}")
             return self
+
+        if self.file_size > psutil.disk_usage(self.directory).free:
+            raise FioNoSpace("Not enough free space on disk to create fio file")
 
         fio_args = [
             FIO_EXEC,
@@ -390,10 +403,20 @@ class FioFiles:
 
             self.filename = FIO_BIG_FILE
         else:
-            self.file_size = FIO_SMALL_FILE_SIZE
-            self.file_size = FIO_SMALL_FILE_SIZE / BYTES_IN_GIB
+            self.file_size = SMALL_FILE_SIZE
+            self.file_size = SMALL_FILE_SIZE / BYTES_IN_GIB
 
             self.filename = FIO_VERIFY_FILE if verify else FIO_PERFORMANCE_FILE
         self.filepath = os.path.join(_get_fio_target_directory(self.volume), self.filename)
         self.os_filepath = self.filepath.replace(r"\:", ":")
         return self
+
+
+def space_for_big_file(info, volume):
+    filepath = os.path.join(_get_fio_target_directory(volume), FIO_BIG_FILE)
+    os_filepath = filepath.replace(r"\:", ":")
+    if os.path.exists(os_filepath):
+        return True
+    disk_size = float(info.parameters["Size"])
+    file_size = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
+    return file_size < psutil.disk_usage(volume).free

@@ -9,14 +9,13 @@ from nvmetools.reports.firmware import firmware_activate, firmware_download, fir
 from nvmetools.reports.info import admin_commands, suite_end_info, suite_start_info
 from nvmetools.reports.performance import (
     address_alignment,
-    aspm_latency,
     big_file_reads,
     big_file_writes,
     data_compression,
     data_deduplication,
+    idle_latency,
     long_burst_performance,
     long_burst_performance_full_drive,
-    nonop_power_times,
     read_buffer,
     short_burst_performance,
     short_burst_performance_full_drive,
