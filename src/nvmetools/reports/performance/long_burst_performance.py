@@ -20,7 +20,7 @@ def report(report, test_result):
         The test reports different bandwidths for each IO pattern.  The average bandwidth for the
         entire IO burst, first second, first 15 seconds, and last 120 seconds.  The initial bandwidth
         is more relevant for use cases that do not continuously access the drive, such as office
-        omputing.  The end bandwidth is more relevant for uses cases that continuously access the
+        computing.  The end bandwidth is more relevant for uses cases that continuously access the
         drive."""
     )
     report.add_results(test_result)

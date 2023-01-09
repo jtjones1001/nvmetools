@@ -11,6 +11,11 @@ Logs results to a directory in ~/Documents/nvmetools/suites/<suite>.  The direct
 defined by the uid command line parameter.  If uid was not specified the directory name is
 based on the date and time the command was run.
 
+.. warning::
+   Test Suites create files in the fio directory on the volume being tested.  These files can
+   take up signficant amount of space and are not deleted after the test suite runs.  They must
+   be deleted manually.
+
 .. note::
    Test Suites with self-test tests must be run as Administrator on Windows OS.
 

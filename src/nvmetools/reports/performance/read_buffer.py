@@ -24,7 +24,7 @@ def report(report, test_result):
 
     # Calculate and plot the first / second read ratio
 
-    csv_file = os.path.join(test_dir, "3_io", "raw_lat.1.log")
+    csv_file = os.path.join(test_dir, "4_io", "raw_lat.1.log")
     with open(csv_file, "r") as file_object:
         file_rows = csv.reader(file_object)
         for _index in range(DELAYED_LATENCY_IOS):

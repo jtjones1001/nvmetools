@@ -8,7 +8,7 @@ def report(report, test_result):
 
     data = test_result["data"]
     test_dir = os.path.join(report._results_directory, test_result["directory name"])
-    samples_dir = os.path.join(test_dir, "3_sample_info")
+    samples_dir = os.path.join(test_dir, "4_sample_info")
 
     report.add_description(
         f"""This test verifies drive reliability running high bandwidth IO stress.  High
@@ -51,9 +51,9 @@ def report(report, test_result):
     report.add_table(table_rows, [125, 125, 125, 125])
 
     report.add_paragraph(
-        f"""This temperature plot includes a {data['sample delay sec'] } second idle time
-        before and after the IO stress. In this plot, verify the temperature behaves as
-        expected.  For details see <u>Analyze temperature and bandwidth plots with nvmecmd</u> [5]"""
+        f"""This temperature plot includes idle time before and after the IO stress. In this plot,
+        verify the temperature behaves as expected.  For details see <u>Analyze temperature and
+        bandwidth plots with nvmecmd</u> [5]"""
     )
     report.add_temperature_plot(samples_dir, ymin=20)
 
