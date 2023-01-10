@@ -45,7 +45,7 @@ def big_demo(args):
 
         tests.short_burst_performance(suite)
         tests.long_burst_performance(suite)
-
+        tests.idle_latency(suite)
         tests.data_deduplication(suite)
         tests.read_buffer(suite)
 
