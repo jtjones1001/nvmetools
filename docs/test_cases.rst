@@ -22,14 +22,13 @@ Information
 Performance
 -----------
 .. autofunction:: address_alignment
-.. autofunction:: aspm_latency
 .. autofunction:: big_file_reads
 .. autofunction:: big_file_writes
 .. autofunction:: data_compression
 .. autofunction:: data_deduplication
+.. autofunction:: idle_latency
 .. autofunction:: long_burst_performance
 .. autofunction:: long_burst_performance_full
-.. autofunction:: nonop_power_times
 .. autofunction:: read_buffer
 .. autofunction:: short_burst_performance
 .. autofunction:: short_burst_performance_full
