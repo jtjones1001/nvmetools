@@ -138,6 +138,7 @@ class TestStep:
             "title": title,
             "description": self._description,
             "result": ABORTED,
+            "force fail": False,
             "start time": f"{datetime.datetime.now()}"[:-3],
             "end time": "",
             "duration (sec)": "",
@@ -224,6 +225,7 @@ class TestStep:
 
         """
         self.__force_fail = force_fail
+        self.state["force fail"] = force_fail
         raise self.__Stop(message)
 
 
@@ -328,6 +330,7 @@ class TestCase:
             "description": self._description,
             "details": self.details,
             "result": ABORTED,
+            "force fail": False,
             "start time": f"{datetime.datetime.now()}"[:-3],
             "end time": "",
             "duration (sec)": "",
@@ -363,6 +366,7 @@ class TestCase:
         fail_steps = sum(step["result"] is not PASSED for step in self.state["steps"])
 
         if exc_type is None or hasattr(exc_value, "nvme_framework_exception"):
+
             if exc_type is self.__Skip:
                 self.state["result"] = SKIPPED
             elif self.__force_fail or fail_steps > 0:
@@ -373,7 +377,6 @@ class TestCase:
             self.state["result"] = ABORTED
 
         self.update_summary()
-
         self.suite.state["tests"].append(self.state)
 
         results_file = os.path.join(self.directory, RESULTS_FILE)
@@ -446,6 +449,8 @@ class TestCase:
 
         """
         self.__force_fail = force_fail
+        self.state["force fail"] = force_fail
+
         raise self.__Stop(message)
 
     def update_summary(self):
@@ -471,8 +476,12 @@ class TestCase:
 
 
 class TestSuite:
-    stop_on_fail = False
+    create_reports = True
     loglevel = 1
+    show_dashboard = True
+    stop_on_fail = False
+    uid = None
+
     __force_fail = False
 
     def __init__(self, title, description="", *args, **kwargs):
@@ -576,6 +585,7 @@ class TestSuite:
 
         if self.uid is None:
             self.uid = f"{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            time.sleep(1)
 
         self.directory = os.path.realpath(
             os.path.join(TEST_SUITE_DIRECTORY, title.lower().replace(" ", "_"), self.uid)
@@ -589,6 +599,7 @@ class TestSuite:
             "description": self._description,
             "details": self.details,
             "result": ABORTED,
+            "force fail": False,
             "complete": False,
             "start time": f"{datetime.datetime.now()}"[:-3],
             "end time": "",
@@ -623,6 +634,9 @@ class TestSuite:
 
         check_nvmecmd_permissions()
         self.get_drive_specification()
+        results_file = os.path.join(self.directory, RESULTS_FILE)
+        with open(results_file, "w", encoding="utf-8") as file_object:
+            json.dump(self.state, file_object, ensure_ascii=False, indent=4)
 
     def __enter__(self):
         log.frames("TestSuite", inspect.getouterframes(inspect.currentframe(), context=1), indent=False)
@@ -697,11 +711,13 @@ class TestSuite:
         with open(results_file, "w", encoding="utf-8") as file_object:
             json.dump(self.state, file_object, ensure_ascii=False, indent=4)
 
-        create_reports(
-            results_directory=self.directory,
-            title=self._title,
-            description=self.details,
-        )
+        if self.create_reports:
+            create_reports(
+                results_directory=self.directory,
+                title=self._title,
+                description=self.details,
+                show_dashboard=self.show_dashboard,
+            )
         return True
 
     def get_drive_specification(self):
@@ -735,6 +751,7 @@ class TestSuite:
 
         """
         self.__force_fail = force_fail
+        self.state["force fail"] = force_fail
         raise self.__Stop(message)
 
     def update_summary(self):
@@ -800,7 +817,7 @@ def update_suite_summary(state):
 
     if state["result"] != ABORTED:
         test_fails = sum(ver["result"] is not PASSED for ver in state["tests"])
-        if test_fails == 0:
+        if test_fails == 0 and not state["force fail"]:
             state["result"] = PASSED
         else:
             state["result"] = FAILED
@@ -906,7 +923,7 @@ def update_test_summary(state):
                 state["rqmts"][verification["title"]]["fail"] += 1
                 step_fails += 1
 
-        if step_fails == 0:
+        if step_fails == 0 and not step["force fail"]:
             state["summary"]["steps"]["pass"] += 1
             step["result"] = PASSED
         else:
@@ -926,7 +943,7 @@ def update_test_summary(state):
 
     if state["result"] != SKIPPED and state["result"] != ABORTED:
         failed_steps = sum(step["result"] is not PASSED for step in state["steps"])
-        if failed_steps == 0:
+        if failed_steps == 0 and not state["force fail"]:
             state["result"] = PASSED
         else:
             state["result"] = FAILED

@@ -331,7 +331,11 @@ class Info:
 
             poweron_hours = as_int(self.full_parameters["Power On Hours"]["value"])
             throttle_hours = throttle_time_sec / 3600
-            throttle_percent = throttle_hours / poweron_hours * 100.0
+
+            if poweron_hours == 0:
+                throttle_percent = 0
+            else:
+                throttle_percent = throttle_hours / poweron_hours * 100.0
 
             self.full_parameters["Percent Throttled"] = {
                 "compare type": "counter",
@@ -665,9 +669,12 @@ class Info:
             as_list: Display information as a list.  Default is display in a table.
         """
         total_time = as_int(self.parameters["Seconds Throttled"])
-        ttt = (
-            f"{total_time/3600:,.3f} Hours " + f"({total_time/(as_int(self.parameters['Power On Hours'])):,.1f} %)"
-        )
+        poweron_hours = as_int(self.parameters["Power On Hours"])
+
+        if poweron_hours == 0:
+            ttt = "0 Hours"
+        else:
+            ttt = f"{total_time/3600:,.3f} Hours " + f"({total_time/poweron_hours:,.1f} %)"
         if as_list:
 
             # Temperature Readings

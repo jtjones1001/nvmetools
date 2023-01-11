@@ -1497,7 +1497,7 @@ class NvmeReport(InfoReport):
         save_reportlab_report(self.filepath, self._elements, drive=self.drive_name, add_header_footer=True)
 
 
-def create_dashboard(results_directory):
+def create_dashboard(results_directory, show_dashboard=True):
 
     dashboard_file = os.path.join(results_directory, "dashboard.html")
 
@@ -1610,19 +1610,20 @@ def create_dashboard(results_directory):
     with open(dashboard_file, "w") as file_object:
         file_object.writelines(write_lines)
 
-    webbrowser.open(dashboard_file, new=2)
+    if show_dashboard:
+        webbrowser.open(dashboard_file, new=2)
 
     log.info(f" Dashboard:    {dashboard_file}", indent=False)
 
 
-def create_reports(results_directory, title="N/A", description="N/A"):
+def create_reports(results_directory, title="N/A", description="N/A", show_dashboard=True):
 
     try:
 
         log.info(f" Logs:         {results_directory}", indent=False)
         pdf = NvmeReport(results_directory=results_directory, title=title, description=description)
         pdf.save()
-        create_dashboard(results_directory)
+        create_dashboard(results_directory, show_dashboard)
         log.info(f" Report:       {os.path.join(results_directory,'report.pdf')}", indent=False)
 
     except Exception:

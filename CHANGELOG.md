@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.3
+
+ Updated to support PCIe gen4/5 devices
+
+### Improvements
+- Updated nvmecmd to version that supports PCIe gen4/5 speed
+- Set read default to exclude log pages 7/8 because they can be too big
+
 ## v0.4.2
 
 Added fixes for bugs found through initial testing and updated test cases to be more consistent and

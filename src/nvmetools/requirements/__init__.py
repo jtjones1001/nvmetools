@@ -16,6 +16,7 @@ can easily be imported and run as shown here.
 
 """
 from nvmetools.requirements.fio import no_data_corruption, no_io_errors
+from nvmetools.requirements.general import _force_fail, _force_pass
 from nvmetools.requirements.info import (
     accurate_power_on_change,
     admin_command_avg_latency,
