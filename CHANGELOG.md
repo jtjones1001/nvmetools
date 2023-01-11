@@ -2,11 +2,12 @@
 
 ## v0.4.3
 
- Updated to support PCIe gen4/5 devices
+ Updated to support PCIe gen4/5 devices, several bug fixes in framework to stop on fail
 
 ### Improvements
 - Updated nvmecmd to version that supports PCIe gen4/5 speed
 - Set read default to exclude log pages 7/8 because they can be too big
+- Bug fixes in framework for stop and stop on fail options
 
 ## v0.4.2
 
