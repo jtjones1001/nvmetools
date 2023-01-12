@@ -1328,7 +1328,7 @@ class NvmeReport(InfoReport):
         ax.set_xlabel("Idle Time (mS)")
         ax.set_ylabel("Latency (mS)")
         ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
-        linestyles = ["--", "-", ".", "."]
+        linestyles = ["--", "-", ":", ":"]
 
         time_data = []
         latency_data = []
