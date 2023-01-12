@@ -1227,8 +1227,23 @@
                 },
                 options: {
                     responsive: false,
+
                     plugins: {
                         legend: { display: true, position: 'right', labels: { boxWidth: 15 } },
+                        tooltip: {
+                           callbacks: {
+                              label: function(context, data) { 
+                                     let label = context.label
+                                     let value = context.formattedValue;
+                                     let sum = 0
+                                     let dataArr = context.chart.data.datasets[0].data
+                                     dataArr.map(data => {sum += Number(data) })
+
+                                     return label + ": " + value + " (" + (value*100/sum).toFixed(1) + '%)'   
+                               }
+                           }
+                        }
+
                     }
                 }
             })
@@ -1280,9 +1295,9 @@
 
         // Create the donut charts
 
-        donut_chart(document.getElementById('tests').getContext('2d'), testLabels, [test.pass, test.fail, test.skip]);
-        donut_chart(document.getElementById('requirements').getContext('2d'), rqmtLabels, [rqmt.pass, rqmt.fail]);
-        donut_chart(document.getElementById('verifications').getContext('2d'), verLabels, [ver.pass, ver.fail])
+        donut_chart(document.getElementById('tests').getContext('2d'), testLabels, [test.pass , test.fail , test.skip ]);
+        donut_chart(document.getElementById('requirements').getContext('2d'), rqmtLabels, [rqmt.pass, rqmt.fail ]);
+        donut_chart(document.getElementById('verifications').getContext('2d'), verLabels, [ver.pass , ver.fail ])
 
         donut_chart(document.getElementById('tests2').getContext('2d'), testLabels, [test.pass, test.fail, test.skip]);
         donut_chart(document.getElementById('requirements2').getContext('2d'), rqmtLabels, [rqmt.pass, rqmt.failpowerpower]);
