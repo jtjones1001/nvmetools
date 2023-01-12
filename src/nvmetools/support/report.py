@@ -35,7 +35,7 @@ import numpy as np
 
 import nvmetools.reports as pdf_reports
 from nvmetools import RESOURCE_DIRECTORY, RESULTS_FILE, TEST_SUITE_DIRECTORY
-from nvmetools.support.conversions import BYTES_IN_GB, KIB_TO_GB, MS_IN_SEC, as_int, as_io
+from nvmetools.support.conversions import BYTES_IN_GB, KIB_TO_GB, MS_IN_SEC, as_int, as_io, as_float
 from nvmetools.support.custom_reportlab import (
     FAIL_COLOR,
     FAIL_TEXT_STYLE,
@@ -549,6 +549,16 @@ class NvmeReport(InfoReport):
     def _add_performance_summary(self):
 
         found_performance_results = False
+        short_empty_rnd = []
+        short_full_rnd = []
+        short_empty_seq = []
+        short_full_seq = []
+
+        long_empty_rnd = []
+        long_full_rnd = []
+        long_empty_seq = []
+        long_full_seq = []
+
 
         if len(glob.glob(os.path.join(self._results_directory, "*_short_burst_performance"))) == 1:
             test_dir = glob.glob(os.path.join(self._results_directory, "*_short_burst_performance"))[0]
@@ -581,7 +591,6 @@ class NvmeReport(InfoReport):
         if found_performance_results:
             self.add_pagebreak()
             self.add_heading("Performance Summary")
-
             short_burst_seconds = 0
             empty_seq_write = "N/A"
             empty_seq_read = "N/A"
@@ -635,6 +644,8 @@ class NvmeReport(InfoReport):
                     f"{empty_rnd1_read}",
                     f"{full_rnd1_read}",
                 ],
+
+
                 [
                     "Random Write, QD32, 4KiB",
                     f"{empty_rnd32_write}",
@@ -645,6 +656,7 @@ class NvmeReport(InfoReport):
                     f"{empty_rnd32_read}",
                     f"{full_rnd32_read}",
                 ],
+
                 [
                     "Sequential Write, QD32, 128KiB",
                     f"{empty_seq_write}",
@@ -656,9 +668,21 @@ class NvmeReport(InfoReport):
                     f"{full_seq_read}",
                 ],
             ]
+
             if short_burst_seconds != 0:
                 self.add_subheading2(f"Short Burst Performance ({short_burst_seconds} seconds)")
-                self.add_table(table_data, widths=[160, 150, 150])
+                self.add_table(table_data, widths=[160, 120, 120])
+
+                short_empty_rnd = [as_float(empty_rnd1_read)]
+                short_full_rnd = [as_float(full_rnd1_read)]
+                short_empty_seq = [as_float(empty_seq_read)]
+                short_full_seq = [as_float(full_seq_read)]
+
+                short_empty_rnd_w = [as_float(empty_rnd1_write)]
+                short_full_rnd_w = [as_float(full_rnd1_write)]
+                short_empty_seq_w = [as_float(empty_seq_write)]
+                short_full_seq_w = [as_float(full_seq_write)]
+
 
             if os.path.exists(long_burst_test_file):
 
@@ -666,7 +690,7 @@ class NvmeReport(InfoReport):
                     json_data = json.load(file_object)
                     data = json_data["data"]
                     long_burst_minutes = json_data["data"]["io runtime sec"] / 60
-                    self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes) - Empty Drive")
+              #      self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes) - Empty Drive")
                 table_rows = [["IO PATTERN", "AVERAGE", "FIRST SEC", "FIRST 15 SEC", "LAST 120 SEC"]]
                 for burst_type in data["bursts"]:
                     table_rows.append(
@@ -678,26 +702,100 @@ class NvmeReport(InfoReport):
                             f"{data['bursts'][burst_type]['end bandwidth']:.3f} GB/s",
                         ]
                     )
-                self.add_table(table_rows, [160, 85, 85, 85, 85])
+          #      self.add_table(table_rows, [160, 85, 85, 85, 85])
+
+                long_empty_rnd = [
+                    data['bursts']["Random Read, QD1, 4KiB"]['bandwidth']
+                ]
+                long_empty_seq = [
+                    data['bursts']["Sequential Read, QD32, 128KiB"]['bandwidth']
+                ]
+                long_empty_rnd_w = [
+                    data['bursts']["Random Write, QD1, 4KiB"]['bandwidth']
+                ]
+                long_empty_seq_w = [
+                    data['bursts']["Sequential Write, QD32, 128KiB"]['bandwidth']
+                ]
+
+
 
             if os.path.exists(long_burst_full_test_file):
                 with open(long_burst_full_test_file, "r") as file_object:
                     json_data = json.load(file_object)
-                    data = json_data["data"]
+                    full_data = json_data["data"]
                     long_burst_minutes = json_data["data"]["io runtime sec"] / 60
-                    self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes) - Drive 90% Full")
+                #    self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes) - Drive 90% Full")
                 table_rows = [["IO PATTERN", "AVERAGE", "FIRST SEC", "FIRST 15 SEC", "LAST 120 SEC"]]
-                for burst_type in data["bursts"]:
+                for burst_type in full_data["bursts"]:
                     table_rows.append(
                         [
                             burst_type,
-                            f"{data['bursts'][burst_type]['bandwidth']:.3f} GB/s",
-                            f"{data['bursts'][burst_type]['1 second bandwidth']:.3f} GB/s",
-                            f"{data['bursts'][burst_type]['15 second bandwidth']:.3f} GB/s",
-                            f"{data['bursts'][burst_type]['end bandwidth']:.3f} GB/s",
+                            f"{full_data['bursts'][burst_type]['bandwidth']:.3f} GB/s",
+                            f"{full_data['bursts'][burst_type]['1 second bandwidth']:.3f} GB/s",
+                            f"{full_data['bursts'][burst_type]['15 second bandwidth']:.3f} GB/s",
+                            f"{full_data['bursts'][burst_type]['end bandwidth']:.3f} GB/s",
                         ]
                     )
-                self.add_table(table_rows, [160, 85, 85, 85, 85])
+              #  self.add_table(table_rows, [160, 85, 85, 85, 85])
+
+                table_data = [
+                ["IO PATTERN", "EMPTY DRIVE", "DRIVE 90% FULL"],
+                [
+                    "Random Write, QD1, 4KiB",
+                    f"{data['bursts']['Random Write, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
+                    f"{full_data['bursts']['Random Write, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
+                ],
+                [
+                    "Random Read, QD1, 4KiB",
+                    f"{data['bursts']['Random Read, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
+                    f"{full_data['bursts']['Random Read, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
+                ],
+
+                [
+                    "Sequential Write, QD32, 128KiB",
+                    f"{data['bursts']['Sequential Write, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
+                    f"{full_data['bursts']['Sequential Write, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
+                ],
+                [
+                    "Sequential Read, QD32, 128KiB",
+                    f"{data['bursts']['Sequential Read, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
+                    f"{full_data['bursts']['Sequential Read, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
+                ],
+                ]
+
+                self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes)")
+                self.add_table(table_data, widths=[160, 120, 120])
+
+                long_full_rnd = [
+                    data['bursts']["Random Read, QD1, 4KiB"]['bandwidth']
+                ]
+                long_full_seq = [
+                    data['bursts']["Sequential Read, QD32, 128KiB"]['bandwidth']
+                ]
+
+                long_full_rnd_w = [
+                    data['bursts']["Random Write, QD1, 4KiB"]['bandwidth']
+                ]
+                long_full_seq_w = [
+                    data['bursts']["Sequential Write, QD32, 128KiB"]['bandwidth']
+                ]
+
+                self.add_paragraph("<br/><br/>")
+                self.add_subheading2("Random Reads, QD1, 4KiB")
+                self.add_performance_bar_charts([short_empty_rnd[0],long_empty_rnd[0]], [short_full_rnd[0], long_full_rnd[0]])
+                self.add_paragraph("<br/><br/>")
+
+                self.add_subheading2("Random Writes, QD1, 4KiB")
+                self.add_performance_bar_charts([short_empty_rnd_w[0],long_empty_rnd_w[0]], [short_full_rnd_w[0], long_full_rnd_w[0]])
+                self.add_paragraph("")
+                self.add_pagebreak()
+                self.add_subheading2("Sequential Reads, QD32, 128KiB")
+                self.add_performance_bar_charts([short_empty_seq[0],long_empty_seq[0]], [short_full_seq[0], long_full_seq[0]])
+                self.add_paragraph("<br/><br/>")
+
+                self.add_subheading2("Sequential Writes, QD32, 128KiB")
+                self.add_performance_bar_charts([short_empty_seq_w[0],long_empty_seq_w[0]], [short_full_seq_w[0], long_full_seq_w[0]])
+
 
     def _add_references(self):
         self.add_pagebreak()
@@ -851,12 +949,7 @@ class NvmeReport(InfoReport):
 
                     for req in test_data["rqmts"]:
                         if test_data["rqmts"][req]["fail"] != 0:
-                            table_data.append(
-                                [
-                                    Paragraph("RQMT: " + f"{req}"),
-                                    "FAIL",
-                                ]
-                            )
+                            table_data.append([Paragraph(f"RQMT: {req}", TABLE_TEXT_STYLE), "FAIL"])
 
                     self.add_table(table_data, [350, 50], align="CENTER", start_row=1, bg_color=bg, fail_fmt=True)
 
@@ -1263,6 +1356,31 @@ class NvmeReport(InfoReport):
 
         self._elements.append(convert_plot_to_image(fig, ax))
         plt.close("all")
+
+
+    def add_performance_bar_charts(self, empty, full):
+        """Plot bar graphs for short/long term peformance."""
+        fig, ax = plt.subplots(figsize=(6, 1.5))
+        labels = ["Short", "Long"]
+        width = 0.3
+        y_value = np.arange(len(labels))
+
+        rects1 = ax.barh(y_value + width / 2, empty, width, label="Empty Drive")
+        rects2 = ax.barh(y_value - width / 2, full, width, label="Full Drive")
+
+        plt.legend(bbox_to_anchor=(1.15, 0.5), loc="center left")
+        plt.xlabel("Bandwidth (GB/s)")
+
+        ax.set_yticks(y_value, labels)
+        ax.grid(False)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.bar_label(rects1, padding=2, fmt="%.3f")
+        ax.bar_label(rects2, padding=2, fmt="%.3f")
+
+        self._elements.append(convert_plot_to_image(fig, ax))
+        plt.close("all")
+
 
     def _add_performance_row(self, name, data, iops=False):
         """Add row to report bandwidth or iops table."""

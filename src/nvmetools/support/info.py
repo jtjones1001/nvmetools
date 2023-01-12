@@ -1077,7 +1077,8 @@ class InfoSamples:
         self._first_sample = Info(nvme=None, from_file=first_sample_file)
 
         sample_files = os.path.join(self._directory, "nvme.info.*.json")
-        last_sample_file = sorted(filter(os.path.isfile, glob.glob(sample_files)))[-1]
+        sample_file_list = filter(os.path.isfile, glob.glob(sample_files))
+        last_sample_file = sorted(sample_file_list, key=lambda x: int(x.replace('.json','').split('-')[-1]))[-1]
         self._last_sample = Info(nvme=None, from_file=last_sample_file)
 
         self.compare = _compare(self._first_sample, self._last_sample)

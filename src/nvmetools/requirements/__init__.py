@@ -29,6 +29,7 @@ from nvmetools.requirements.info import (
     no_critical_time,
     no_critical_warnings,
     no_errorcount_change,
+    no_errors_reading_samples,
     no_media_errors,
     no_prior_selftest_failures,
     no_static_parameter_changes,

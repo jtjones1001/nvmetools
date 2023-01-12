@@ -199,7 +199,7 @@ def stop_info_samples(test, info_samples, delay_sec=10):
         info_samples.stop()
         rqmts.no_counter_parameter_decrements(step, info_samples)
         rqmts.no_errorcount_change(step, info_samples)
-
+        rqmts.no_errors_reading_samples(step, info_samples)
 
 def wait_for_idle(test, wait_sec=180):
     """Wait for drive to return to idle.

@@ -283,3 +283,14 @@ def review_wear_values(step):
         verified=False,
         value="REVIEW",
     )
+
+
+def no_errors_reading_samples(step, info_samples):
+
+    verification(
+        rqmt_id=31,
+        step=step,
+        title="Number of errors reading samples shall be 0",
+        verified=(info_samples.return_code == 0),
+        value=info_samples.return_code,
+    )
