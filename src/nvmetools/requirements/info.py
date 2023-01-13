@@ -294,3 +294,19 @@ def no_errors_reading_samples(step, info_samples):
         verified=(info_samples.return_code == 0),
         value=info_samples.return_code,
     )
+
+
+def verify_empty_drive(step, free_space, disk_size):
+
+    if disk_size == 0:
+        percent_free_space = 0
+    else:
+        percent_free_space = free_space/disk_size * 100
+
+    verification(
+        rqmt_id=32,
+        step=step,
+        title="Disk free space must be greater than 90%",
+        verified=(percent_free_space > 90),
+        value=f"{percent_free_space:0.1f}%",
+    )

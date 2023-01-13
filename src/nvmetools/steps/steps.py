@@ -21,6 +21,7 @@ easily be imported and run as shown here.
 
 """
 import os
+import psutil
 import time
 
 from nvmetools import Info, InfoSamples, TestStep, log, rqmts
@@ -163,6 +164,15 @@ def get_fio_stress_file(test, disk_size):
         test.data["fio filepath"] = fio_file.os_filepath
         test.data["file ratio"] = float(fio_file.file_size / float(disk_size)) * 100.0
     return fio_file
+
+
+def verify_empty_drive(test, volume, info):
+
+    disk_size = float(info.parameters["Size"])
+    free_space = psutil.disk_usage(volume).free
+
+    with TestStep(test, "Empty drive", "Verify the drive free space.") as step:
+        rqmts.verify_empty_drive(step, free_space, disk_size)
 
 
 def start_info_samples(test, cmd_file="state", delay_sec=10):

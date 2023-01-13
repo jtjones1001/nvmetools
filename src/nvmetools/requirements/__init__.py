@@ -40,6 +40,7 @@ from nvmetools.requirements.info import (
     smart_write_data,
     throttle_time_within_limit,
     usage_within_limit,
+    verify_empty_drive
 )
 from nvmetools.requirements.performance import (
     random_read_4k_qd1_bandwidth,

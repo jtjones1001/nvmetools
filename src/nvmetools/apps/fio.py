@@ -361,7 +361,7 @@ class FioFiles:
             log.debug(f"FioFiles: File already exists: {self.os_filepath}")
             return self
 
-        if self.file_size > psutil.disk_usage(self.directory).free:
+        if self.file_size > psutil.disk_usage(self.volume).free:
             raise FioNoSpace("Not enough free space on disk to create fio file")
 
         fio_args = [

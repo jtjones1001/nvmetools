@@ -1,6 +1,8 @@
 # --------------------------------------------------------------------------------------
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
+import os
+
 from nvmetools import TestCase, TestStep, rqmts, steps
 from nvmetools.cases.performance.long_burst_lib import _run_burst
 
@@ -31,6 +33,8 @@ def long_burst_performance(suite):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_performance_file(test)
+
+        steps.verify_empty_drive(test, suite.volume, start_info)
         steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------

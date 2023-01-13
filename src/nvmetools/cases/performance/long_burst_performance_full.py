@@ -30,6 +30,7 @@ def long_burst_performance_full(suite):
         # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
+        steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"]))
         fio_file = steps.get_fio_performance_file(test)
         steps.wait_for_idle(test)
 

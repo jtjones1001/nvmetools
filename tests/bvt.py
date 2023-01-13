@@ -194,7 +194,7 @@ def verify_suite_stop():
                     assert suite.state['summary']['tests']['pass'] == 1
 
             else:
-        
+
                 if fail_rqmt:
                     assert suite.state['result'] == 'FAILED'
                     assert suite.state['summary']['verifications']['total'] == 2

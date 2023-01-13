@@ -36,6 +36,8 @@ def short_burst_performance(suite):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_performance_file(test)
+
+        steps.verify_empty_drive(test, suite.volume, start_info)
         steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
