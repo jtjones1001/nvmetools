@@ -301,7 +301,7 @@ def verify_empty_drive(step, free_space, disk_size):
     if disk_size == 0:
         percent_free_space = 0
     else:
-        percent_free_space = free_space/disk_size * 100
+        percent_free_space = free_space / disk_size * 100
 
     verification(
         rqmt_id=32,

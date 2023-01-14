@@ -549,16 +549,6 @@ class NvmeReport(InfoReport):
     def _add_performance_summary(self):
 
         found_performance_results = False
-        short_empty_rnd = []
-        short_full_rnd = []
-        short_empty_seq = []
-        short_full_seq = []
-
-        long_empty_rnd = []
-        long_full_rnd = []
-        long_empty_seq = []
-        long_full_seq = []
-
 
         if len(glob.glob(os.path.join(self._results_directory, "*_short_burst_performance"))) == 1:
             test_dir = glob.glob(os.path.join(self._results_directory, "*_short_burst_performance"))[0]
@@ -592,210 +582,166 @@ class NvmeReport(InfoReport):
             self.add_pagebreak()
             self.add_heading("Performance Summary")
             short_burst_seconds = 0
-            empty_seq_write = "N/A"
-            empty_seq_read = "N/A"
-            empty_rnd1_write = "N/A"
-            empty_rnd1_read = "N/A"
-            empty_rnd32_write = "N/A"
-            empty_rnd32_read = "N/A"
 
-            if os.path.exists(short_burst_test_file):
-                with open(short_burst_test_file, "r") as file_object:
-                    json_data = json.load(file_object)
-                    short_burst_seconds = json_data["data"]["io runtime sec"]
-                    data = json_data["data"]
-                    empty_seq_write = f"{data['sequential write']['results']['32']['131072']['bw']:0.3f} GB/s"
-                    empty_seq_read = f"{data['sequential read']['results']['32']['131072']['bw']:0.3f} GB/s"
-                    empty_rnd32_write = f"{data['random write']['results']['32']['4096']['bw']:0.3f} GB/s"
-                    empty_rnd32_read = f"{data['random read']['results']['32']['4096']['bw']:0.3f} GB/s"
+            # if short burst empty or full results then display the table
 
-                    empty_rnd1_write = f"{data['random write']['results']['1']['4096']['bw']:0.3f} GB/s"
-                    empty_rnd1_read = f"{data['random read']['results']['1']['4096']['bw']:0.3f} GB/s"
+            if os.path.exists(short_burst_test_file) or os.path.exists(short_burst_full_test_file):
 
-            full_seq_write = "N/A"
-            full_seq_read = "N/A"
-            full_rnd1_write = "N/A"
-            full_rnd1_read = "N/A"
-            full_rnd32_write = "N/A"
-            full_rnd32_read = "N/A"
+                if os.path.exists(short_burst_test_file):
+                    with open(short_burst_test_file, "r") as file_object:
+                        json_data = json.load(file_object)
+                        short_burst_seconds = json_data["data"]["io runtime sec"]
+                        data = json_data["data"]
+                        empty_seq_write = f"{data['sequential write']['results']['32']['131072']['bw']:0.3f} GB/s"
+                        empty_seq_read = f"{data['sequential read']['results']['32']['131072']['bw']:0.3f} GB/s"
+                        empty_rnd32_write = f"{data['random write']['results']['32']['4096']['bw']:0.3f} GB/s"
+                        empty_rnd32_read = f"{data['random read']['results']['32']['4096']['bw']:0.3f} GB/s"
+                        empty_rnd1_write = f"{data['random write']['results']['1']['4096']['bw']:0.3f} GB/s"
+                        empty_rnd1_read = f"{data['random read']['results']['1']['4096']['bw']:0.3f} GB/s"
 
-            if os.path.exists(short_burst_full_test_file):
-                with open(short_burst_full_test_file, "r") as file_object:
-                    json_data = json.load(file_object)
-                    short_burst_seconds = json_data["data"]["io runtime sec"]
-                    data = json_data["data"]
-                    full_seq_write = f"{data['sequential write']['results']['32']['131072']['bw']:0.3f} GB/s"
-                    full_seq_read = f"{data['sequential read']['results']['32']['131072']['bw']:0.3f} GB/s"
-                    full_rnd32_write = f"{data['random write']['results']['32']['4096']['bw']:0.3f} GB/s"
-                    full_rnd32_read = f"{data['random read']['results']['32']['4096']['bw']:0.3f} GB/s"
+                        short_empty_rr = as_float(empty_rnd1_read)
+                        short_empty_sr = as_float(empty_seq_read)
+                        short_empty_rw = as_float(empty_rnd1_write)
+                        short_empty_sw = as_float(empty_seq_write)
+                else:
+                    empty_seq_write = "N/A"
+                    empty_seq_read = "N/A"
+                    empty_rnd1_write = "N/A"
+                    empty_rnd1_read = "N/A"
+                    empty_rnd32_write = "N/A"
+                    empty_rnd32_read = "N/A"
 
-                    full_rnd1_write = f"{data['random write']['results']['1']['4096']['bw']:0.3f} GB/s"
-                    full_rnd1_read = f"{data['random read']['results']['1']['4096']['bw']:0.3f} GB/s"
+                    short_empty_rr = 0
+                    short_empty_sr = 0
+                    short_empty_rw = 0
+                    short_empty_sw = 0
 
-            table_data = [
-                ["IO PATTERN", "EMPTY DRIVE", "DRIVE 90% FULL"],
-                [
-                    "Random Write, QD1, 4KiB",
-                    f"{empty_rnd1_write}",
-                    f"{full_rnd1_write}",
-                ],
-                [
-                    "Random Read, QD1, 4KiB",
-                    f"{empty_rnd1_read}",
-                    f"{full_rnd1_read}",
-                ],
+                if os.path.exists(short_burst_full_test_file):
+                    with open(short_burst_full_test_file, "r") as file_object:
+                        json_data = json.load(file_object)
+                        short_burst_seconds = json_data["data"]["io runtime sec"]
+                        data = json_data["data"]
+                        full_seq_write = f"{data['sequential write']['results']['32']['131072']['bw']:0.3f} GB/s"
+                        full_seq_read = f"{data['sequential read']['results']['32']['131072']['bw']:0.3f} GB/s"
+                        full_rnd32_write = f"{data['random write']['results']['32']['4096']['bw']:0.3f} GB/s"
+                        full_rnd32_read = f"{data['random read']['results']['32']['4096']['bw']:0.3f} GB/s"
+                        full_rnd1_write = f"{data['random write']['results']['1']['4096']['bw']:0.3f} GB/s"
+                        full_rnd1_read = f"{data['random read']['results']['1']['4096']['bw']:0.3f} GB/s"
 
+                        short_full_rr = as_float(full_rnd1_read)
+                        short_full_sr = as_float(full_seq_read)
+                        short_full_rw = as_float(full_rnd1_write)
+                        short_full_sw = as_float(full_seq_write)
 
-                [
-                    "Random Write, QD32, 4KiB",
-                    f"{empty_rnd32_write}",
-                    f"{full_rnd32_write}",
-                ],
-                [
-                    "Random Read, QD32, 4KiB",
-                    f"{empty_rnd32_read}",
-                    f"{full_rnd32_read}",
-                ],
+                else:
+                    full_seq_write = "N/A"
+                    full_seq_read = "N/A"
+                    full_rnd1_write = "N/A"
+                    full_rnd1_read = "N/A"
+                    full_rnd32_write = "N/A"
+                    full_rnd32_read = "N/A"
 
-                [
-                    "Sequential Write, QD32, 128KiB",
-                    f"{empty_seq_write}",
-                    f"{full_seq_write}",
-                ],
-                [
-                    "Sequential Read, QD32, 128KiB",
-                    f"{empty_seq_read}",
-                    f"{full_seq_read}",
-                ],
-            ]
+                    short_full_rr = 0
+                    short_full_sr = 0
+                    short_full_rw = 0
+                    short_full_sw = 0
 
-            if short_burst_seconds != 0:
                 self.add_subheading2(f"Short Burst Performance ({short_burst_seconds} seconds)")
+                table_data = [
+                    ["IO PATTERN", "EMPTY DRIVE", "DRIVE 90% FULL"],
+                    ["Random Write, QD1, 4KiB", f"{empty_rnd1_write}", f"{full_rnd1_write}"],
+                    ["Random Read, QD1, 4KiB", f"{empty_rnd1_read}", f"{full_rnd1_read}"],
+                    ["Random Write, QD32, 4KiB", f"{empty_rnd32_write}", f"{full_rnd32_write}"],
+                    ["Random Read, QD32, 4KiB", f"{empty_rnd32_read}", f"{full_rnd32_read}"],
+                    ["Sequential Write, QD32, 128KiB", f"{empty_seq_write}", f"{full_seq_write}"],
+                    ["Sequential Read, QD32, 128KiB", f"{empty_seq_read}", f"{full_seq_read}"],
+                ]
                 self.add_table(table_data, widths=[160, 120, 120])
 
-                short_empty_rnd = [as_float(empty_rnd1_read)]
-                short_full_rnd = [as_float(full_rnd1_read)]
-                short_empty_seq = [as_float(empty_seq_read)]
-                short_full_seq = [as_float(full_seq_read)]
+            if os.path.exists(long_burst_test_file) or os.path.exists(long_burst_full_test_file):
+                if os.path.exists(long_burst_test_file):
+                    with open(long_burst_test_file, "r") as file_object:
+                        json_data = json.load(file_object)
+                        data = json_data["data"]
+                        long_burst_minutes = data["io runtime sec"] / 60
+                        empty_seq_write = (
+                            f"{data['bursts']['Sequential Write, QD32, 128KiB']['bandwidth']:0.3f} GB/s"
+                        )
+                        empty_seq_read = (
+                            f"{data['bursts']['Sequential Read, QD32, 128KiB']['bandwidth']:0.3f} GB/s"
+                        )
+                        empty_rnd1_write = f"{data['bursts']['Random Write, QD1, 4KiB']['bandwidth']:0.3f} GB/s"
+                        empty_rnd1_read = f"{data['bursts']['Random Read, QD1, 4KiB']['bandwidth']:0.3f} GB/s"
 
-                short_empty_rnd_w = [as_float(empty_rnd1_write)]
-                short_full_rnd_w = [as_float(full_rnd1_write)]
-                short_empty_seq_w = [as_float(empty_seq_write)]
-                short_full_seq_w = [as_float(full_seq_write)]
+                        long_empty_rr = as_float(empty_rnd1_read)
+                        long_empty_sr = as_float(empty_seq_read)
+                        long_empty_rw = as_float(empty_rnd1_write)
+                        long_empty_sw = as_float(empty_seq_write)
+                else:
+                    empty_seq_write = "N/A"
+                    empty_seq_read = "N/A"
+                    empty_rnd1_write = "N/A"
+                    empty_rnd1_read = "N/A"
 
+                    long_empty_rr = 0
+                    long_empty_sr = 0
+                    long_empty_rw = 0
+                    long_empty_sw = 0
 
-            if os.path.exists(long_burst_test_file):
+                if os.path.exists(long_burst_full_test_file):
+                    with open(long_burst_full_test_file, "r") as file_object:
+                        json_data = json.load(file_object)
+                        data = json_data["data"]
+                        long_burst_minutes = data["io runtime sec"] / 60
+                        full_seq_write = (
+                            f"{data['bursts']['Sequential Write, QD32, 128KiB']['bandwidth']:0.3f} GB/s"
+                        )
+                        full_seq_read = f"{data['bursts']['Sequential Read, QD32, 128KiB']['bandwidth']:0.3f} GB/s"
+                        full_rnd1_write = f"{data['bursts']['Random Write, QD1, 4KiB']['bandwidth']:0.3f} GB/s"
+                        full_rnd1_read = f"{data['bursts']['Random Read, QD1, 4KiB']['bandwidth']:0.3f} GB/s"
 
-                with open(long_burst_test_file, "r") as file_object:
-                    json_data = json.load(file_object)
-                    data = json_data["data"]
-                    long_burst_minutes = json_data["data"]["io runtime sec"] / 60
-              #      self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes) - Empty Drive")
-                table_rows = [["IO PATTERN", "AVERAGE", "FIRST SEC", "FIRST 15 SEC", "LAST 120 SEC"]]
-                for burst_type in data["bursts"]:
-                    table_rows.append(
-                        [
-                            burst_type,
-                            f"{data['bursts'][burst_type]['bandwidth']:.3f} GB/s",
-                            f"{data['bursts'][burst_type]['1 second bandwidth']:.3f} GB/s",
-                            f"{data['bursts'][burst_type]['15 second bandwidth']:.3f} GB/s",
-                            f"{data['bursts'][burst_type]['end bandwidth']:.3f} GB/s",
-                        ]
-                    )
-          #      self.add_table(table_rows, [160, 85, 85, 85, 85])
+                        long_full_rr = as_float(full_rnd1_read)
+                        long_full_sr = as_float(full_seq_read)
+                        long_full_rw = as_float(full_rnd1_write)
+                        long_full_sw = as_float(full_seq_write)
+                else:
+                    full_seq_write = "N/A"
+                    full_seq_read = "N/A"
+                    full_rnd1_write = "N/A"
+                    full_rnd1_read = "N/A"
 
-                long_empty_rnd = [
-                    data['bursts']["Random Read, QD1, 4KiB"]['bandwidth']
-                ]
-                long_empty_seq = [
-                    data['bursts']["Sequential Read, QD32, 128KiB"]['bandwidth']
-                ]
-                long_empty_rnd_w = [
-                    data['bursts']["Random Write, QD1, 4KiB"]['bandwidth']
-                ]
-                long_empty_seq_w = [
-                    data['bursts']["Sequential Write, QD32, 128KiB"]['bandwidth']
-                ]
-
-
-
-            if os.path.exists(long_burst_full_test_file):
-                with open(long_burst_full_test_file, "r") as file_object:
-                    json_data = json.load(file_object)
-                    full_data = json_data["data"]
-                    long_burst_minutes = json_data["data"]["io runtime sec"] / 60
-                #    self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes) - Drive 90% Full")
-                table_rows = [["IO PATTERN", "AVERAGE", "FIRST SEC", "FIRST 15 SEC", "LAST 120 SEC"]]
-                for burst_type in full_data["bursts"]:
-                    table_rows.append(
-                        [
-                            burst_type,
-                            f"{full_data['bursts'][burst_type]['bandwidth']:.3f} GB/s",
-                            f"{full_data['bursts'][burst_type]['1 second bandwidth']:.3f} GB/s",
-                            f"{full_data['bursts'][burst_type]['15 second bandwidth']:.3f} GB/s",
-                            f"{full_data['bursts'][burst_type]['end bandwidth']:.3f} GB/s",
-                        ]
-                    )
-              #  self.add_table(table_rows, [160, 85, 85, 85, 85])
+                    long_full_rr = 0
+                    long_full_sr = 0
+                    long_full_rw = 0
+                    long_full_sw = 0
 
                 table_data = [
-                ["IO PATTERN", "EMPTY DRIVE", "DRIVE 90% FULL"],
-                [
-                    "Random Write, QD1, 4KiB",
-                    f"{data['bursts']['Random Write, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
-                    f"{full_data['bursts']['Random Write, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
-                ],
-                [
-                    "Random Read, QD1, 4KiB",
-                    f"{data['bursts']['Random Read, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
-                    f"{full_data['bursts']['Random Read, QD1, 4KiB']['bandwidth']:0.3f} GB/s",
-                ],
-
-                [
-                    "Sequential Write, QD32, 128KiB",
-                    f"{data['bursts']['Sequential Write, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
-                    f"{full_data['bursts']['Sequential Write, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
-                ],
-                [
-                    "Sequential Read, QD32, 128KiB",
-                    f"{data['bursts']['Sequential Read, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
-                    f"{full_data['bursts']['Sequential Read, QD32, 128KiB']['bandwidth']:0.3f} GB/s",
-                ],
+                    ["IO PATTERN", "EMPTY DRIVE", "DRIVE 90% FULL"],
+                    ["Random Write, QD1, 4KiB", f"{empty_rnd1_write}", f"{full_rnd1_write}"],
+                    ["Random Read, QD1, 4KiB", f"{empty_rnd1_read}", f"{full_rnd1_read}"],
+                    ["Sequential Write, QD32, 128KiB", f"{empty_seq_write}", f"{full_seq_write}"],
+                    ["Sequential Read, QD32, 128KiB", f"{empty_seq_read}", f"{full_seq_read}"],
                 ]
-
                 self.add_subheading2(f"Long Burst Performance ({long_burst_minutes} minutes)")
                 self.add_table(table_data, widths=[160, 120, 120])
 
-                long_full_rnd = [
-                    data['bursts']["Random Read, QD1, 4KiB"]['bandwidth']
-                ]
-                long_full_seq = [
-                    data['bursts']["Sequential Read, QD32, 128KiB"]['bandwidth']
-                ]
-
-                long_full_rnd_w = [
-                    data['bursts']["Random Write, QD1, 4KiB"]['bandwidth']
-                ]
-                long_full_seq_w = [
-                    data['bursts']["Sequential Write, QD32, 128KiB"]['bandwidth']
-                ]
+                # add the bar charts
 
                 self.add_paragraph("<br/><br/>")
                 self.add_subheading2("Random Reads, QD1, 4KiB")
-                self.add_performance_bar_charts([short_empty_rnd[0],long_empty_rnd[0]], [short_full_rnd[0], long_full_rnd[0]])
-                self.add_paragraph("<br/><br/>")
+                self.add_performance_bar_charts([short_empty_rr, long_empty_rr], [short_full_rr, long_full_rr])
 
+                self.add_paragraph("<br/><br/>")
                 self.add_subheading2("Random Writes, QD1, 4KiB")
-                self.add_performance_bar_charts([short_empty_rnd_w[0],long_empty_rnd_w[0]], [short_full_rnd_w[0], long_full_rnd_w[0]])
-                self.add_paragraph("")
+                self.add_performance_bar_charts([short_empty_rw, long_empty_rw], [short_full_rw, long_full_rw])
+
                 self.add_pagebreak()
                 self.add_subheading2("Sequential Reads, QD32, 128KiB")
-                self.add_performance_bar_charts([short_empty_seq[0],long_empty_seq[0]], [short_full_seq[0], long_full_seq[0]])
+                self.add_performance_bar_charts([short_empty_sr, long_empty_sr], [short_full_sr, long_full_sr])
                 self.add_paragraph("<br/><br/>")
 
                 self.add_subheading2("Sequential Writes, QD32, 128KiB")
-                self.add_performance_bar_charts([short_empty_seq_w[0],long_empty_seq_w[0]], [short_full_seq_w[0], long_full_seq_w[0]])
-
+                self.add_performance_bar_charts([short_empty_sw, long_empty_sw], [short_full_sw, long_full_sw])
 
     def _add_references(self):
         self.add_pagebreak()
@@ -1357,7 +1303,6 @@ class NvmeReport(InfoReport):
         self._elements.append(convert_plot_to_image(fig, ax))
         plt.close("all")
 
-
     def add_performance_bar_charts(self, empty, full):
         """Plot bar graphs for short/long term peformance."""
         fig, ax = plt.subplots(figsize=(6, 1.5))
@@ -1380,7 +1325,6 @@ class NvmeReport(InfoReport):
 
         self._elements.append(convert_plot_to_image(fig, ax))
         plt.close("all")
-
 
     def _add_performance_row(self, name, data, iops=False):
         """Add row to report bandwidth or iops table."""

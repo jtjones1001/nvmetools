@@ -13,6 +13,10 @@ nvmecmd path.  Copy these commands into the terminal and run them.
     sudo chmod 777 <path to nvmecmd>
     sudo setcap cap_sys_admin,cap_dac_override=ep <path to nvmecmd>
 
+.. note::
+
+    Most Test Suites use fio to generate IO traffic and therefore this must be installed before
+    running any Test Suites.  fio can be found here: https://github.com/axboe/fio
 
 .. warning::
 

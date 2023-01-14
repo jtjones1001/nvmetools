@@ -30,6 +30,9 @@ To disable pycache in venv...
 To change firefox view mode for PDF report:
    about:config, pdfjs.defaultZoomValue to page-fit
 
+To install fio:
+   Fedora:  sudo yum -y install fio
+
 """
 import os
 from importlib.metadata import metadata

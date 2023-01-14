@@ -39,6 +39,7 @@ import time
 
 
 from nvmetools import DEFAULT_INFO_DIRECTORY, TEST_SUITE_DIRECTORY, USER_INFO_DIRECTORY, __version__
+from nvmetools.apps.fio import check_fio_installation
 from nvmetools.apps.nvmecmd import check_nvmecmd_permissions
 from nvmetools.support.conversions import as_duration, is_admin
 from nvmetools.support.log import start_logger
@@ -632,7 +633,11 @@ class TestSuite:
         else:
             log = start_logger(self.directory, logging.DEBUG, "console.log")
 
+        if not os.path.exists(self.volume):
+            self.stop(f"Volume {self.volume} does not exist")
+
         check_nvmecmd_permissions()
+        check_fio_installation()
         self.get_drive_specification()
         results_file = os.path.join(self.directory, RESULTS_FILE)
         with open(results_file, "w", encoding="utf-8") as file_object:

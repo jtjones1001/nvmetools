@@ -70,7 +70,11 @@ class _FioMissing(Exception):
     def __init__(self, fio_exec):
         self.code = 60
         self.nvmetools = True
-        super().__init__(f" Missing fio application: {fio_exec}  Install fio and try again.")
+        error_msg = " fio utility could not be found.\n\n"
+        error_msg += f" Expected fio utility here: {FIO_EXEC}\n\n"
+        error_msg += f"    Install the fio utility to above location.\n"
+        error_msg += f"    fio project:  https://github.com/axboe/fio\n"
+        super().__init__(error_msg)
 
 
 class _FioBadJson(Exception):
@@ -410,6 +414,11 @@ class FioFiles:
         self.filepath = os.path.join(_get_fio_target_directory(self.volume), self.filename)
         self.os_filepath = self.filepath.replace(r"\:", ":")
         return self
+
+
+def check_fio_installation():
+    if not os.path.exists(FIO_EXEC):
+        raise _FioMissing(FIO_EXEC)
 
 
 def space_for_big_file(info, volume):

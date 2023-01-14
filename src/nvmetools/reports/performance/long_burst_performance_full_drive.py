@@ -82,11 +82,11 @@ def report(report, test_result):
         """These plots are for writes using random addressing, block size of 4 KiB, and queue
         depth of 1."""
     )
-    data_directory = os.path.join(test_dir, "4_random_write", "sample_info")
-    bandwidth_file = os.path.join(test_dir, "4_random_write", "bandwidth_write.csv")
+    data_directory = os.path.join(test_dir, "5_random_write", "sample_info")
+    bandwidth_file = os.path.join(test_dir, "5_random_write", "bandwidth_write.csv")
 
     if ref_directory is not None:
-        ref_data_directory = os.path.join(ref_directory, "4_random_write", "sample_info")
+        ref_data_directory = os.path.join(ref_directory, "5_random_write", "sample_info")
 
     report.add_subheading2("Temperature (Including Idle)")
     report.add_temperature_plot(data_directory)
@@ -101,11 +101,11 @@ def report(report, test_result):
         """These plots are for reads using random addressing, block size of 4 KiB, and queue
         depth of 1."""
     )
-    data_directory = os.path.join(test_dir, "5_random_read", "sample_info")
-    bandwidth_file = os.path.join(test_dir, "5_random_read", "bandwidth_read.csv")
+    data_directory = os.path.join(test_dir, "6_random_read", "sample_info")
+    bandwidth_file = os.path.join(test_dir, "6_random_read", "bandwidth_read.csv")
 
     if ref_directory is not None:
-        ref_data_directory = os.path.join(ref_directory, "5_random_read", "sample_info")
+        ref_data_directory = os.path.join(ref_directory, "6_random_read", "sample_info")
 
     report.add_subheading2("Temperature (Including Idle)")
     report.add_temperature_plot(data_directory)
@@ -120,10 +120,10 @@ def report(report, test_result):
         """These plots are for writes using sequential addressing, block size of 128 KiB, and
         queue depth of 32."""
     )
-    data_directory = os.path.join(test_dir, "6_sequential_write", "sample_info")
-    bandwidth_file = os.path.join(test_dir, "6_sequential_write", "bandwidth_write.csv")
+    data_directory = os.path.join(test_dir, "7_sequential_write", "sample_info")
+    bandwidth_file = os.path.join(test_dir, "7_sequential_write", "bandwidth_write.csv")
     if ref_directory is not None:
-        ref_data_directory = os.path.join(ref_directory, "6_sequential_write", "sample_info")
+        ref_data_directory = os.path.join(ref_directory, "7_sequential_write", "sample_info")
 
     report.add_subheading2("Temperature (Including Idle)")
     report.add_temperature_plot(data_directory)
@@ -138,11 +138,11 @@ def report(report, test_result):
         """These plots are for reads using sequential addressing, block size of 128 KiB, and
         queue depth of 32."""
     )
-    data_directory = os.path.join(test_dir, "7_sequential_read", "sample_info")
-    bandwidth_file = os.path.join(test_dir, "7_sequential_read", "bandwidth_read.csv")
+    data_directory = os.path.join(test_dir, "8_sequential_read", "sample_info")
+    bandwidth_file = os.path.join(test_dir, "8_sequential_read", "bandwidth_read.csv")
 
     if ref_directory is not None:
-        ref_data_directory = os.path.join(ref_directory, "7_sequential_read", "sample_info")
+        ref_data_directory = os.path.join(ref_directory, "8_sequential_read", "sample_info")
 
     report.add_subheading2("Temperature (Including Idle)")
     report.add_temperature_plot(data_directory)
