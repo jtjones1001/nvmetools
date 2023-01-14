@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<!--
+ ToDo:
+   Company colors and fonts - branding... Use same in PDF, resume, etc.
+   Percents on donut charts
+
+   dark-blue
+   mid-blue
+   fail-red
+   pass-green
+   skip-grey
+   light-grey
+   dark-grey
+   dark-bluegreen
+
+
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Joe Jones">
+
+    <title>CTC | Test Suite Dashboard</title>
+
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="data:image/png;base64,
+        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" />
+
+    <link rel="stylesheet" type="text/css" href="./assets/bootstrap.css">
+
+    <style>
+        :root {
+            --pass-color: #ffffff;
+            --pass-bg-color: #018301;
+            --fail-color: #ffffff;
+            --fail-bg-color: #df3639;
+            --fail-muted-color: #000000;
+            --fail-muted-bg-color: #fbc4c5;
+            --pass-muted-color: #000000;
+            --pass-muted-bg-color: #e9e8e8;
+            --skip-color: #ffffff;
+            --skip-bg-color: #777777;
+
+            --title-color: #646464;
+
+            --main-bg-color: #e6edf5;
+            --sidebar-bg-color: #f2f5f7;
+            --border-color: #c8c8c8;
+
+            --header-height: 56px;
+            --bs-danger: #ffffff;
+
+            --text-darkgrey: rgb(16, 16, 16);
+            --table-border: rgb(214, 214, 214);
+        }
+
+        .body {
+            padding-top: var(--header-height);
+        }
+
+        .top-header {
+            height: var(--header-height);
+            width: 100%;
+            background-color: #334a65;
+            color: var(--bs-danger);
+
+            padding: 0px;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+        }
+
+        .top-header span {
+            position: fixed;
+            left: 90px;
+            font-size: 24px;
+            padding: 10px 10px 10px 30px;
+        }
+
+        .main-view {
+            height: calc(100% - var(--header-height));
+            width: calc(100% - 96px);
+            min-width: 1200px;
+            min-height: 400px;
+            background-color: var(--main-bg-color);
+            position: fixed;
+            top: var(--header-height);
+            left: 96px;
+            border-style: none solid none none;
+            border-width: 1px;
+            border-color: var(--border-color);
+            overflow: scroll;
+            padding: 14px;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 96px;
+            background-color: var(--sidebar-bg-color);
+            position: fixed;
+            top: var(--header-height);
+            left: 0px;
+            border-style: none solid none none;
+            border-width: 1px;
+            border-color: var(--border-color);
+            padding-top: 0px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            display: block;
+        }
+
+        .sidebar ul li {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .btn,
+        .card-title,
+        .card-body,
+        .card-footer {
+            font-size: 12px;
+        }
+
+        .card-body {
+            padding: 0.5rem 1rem;
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            min-height: 32px !important;
+            background-color: white;
+        }
+
+        .number-col {
+            width: 25px;
+            text-align: center;
+        }
+
+        .status-col {
+            width: 55px;
+            text-align: center;
+        }
+
+        .badge-pass {
+            color: var(--pass-color);
+            background-color: var(--pass-bg-color);
+            border-radius: 2px;
+        }
+
+        .badge-fail {
+            color: var(--fail-color);
+            background-color: var(--fail-bg-color);
+            border-radius: 2px;
+        }
+
+        .badge-skip {
+            color: var(--skip-color);
+            background-color: var(--skip-bg-color);
+            border-radius: 2px;
+        }
+
+        .badge-pass-value {
+            color: var(--pass-muted-color);
+            background-color: var(--pass-muted-bg-color);
+            display: inline-block;
+        }
+
+        .badge-fail-value {
+            color: var(--fail-muted-color);
+            background-color: var(--fail-muted-bg-color);
+        }
+
+        .skip-color {
+            color: #333;
+            background-color: green;
+        }
+
+        .table {
+            width: 100% !important;
+            margin-left: 0;
+            margin-top: 25px;
+        }
+
+        .table {
+            --bs-table-hover-bg: rgba(0, 0, 0, 0.04);
+        }
+
+        table tbody.big tr td {
+            padding: 4px !important;
+            padding-left: 5px !important;
+        }
+
+        .table>:not(caption)>*>* {
+            padding: .25rem .25rem;
+        }
+
+        .table>tbody>tr.active>td {
+            background: #fdffc4;
+        }
+
+        /* adjust bs var */
+
+        table th {
+            background-color: #e5e2e2 !important;
+        }
+
+        .btn-outline-secondary {
+            --bs-btn-color: var(--text-darkgrey);
+            --bs-btn-border-color: #6c757d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: var(--text-darkgrey);
+            --bs-btn-hover-border-color: #6c757d;
+            --bs-btn-focus-shadow-rgb: 108, 117, 125;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #6c757d;
+            --bs-btn-active-border-color: #6c757d;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: var(--text-darkgrey);
+            --bs-btn-disabled-bg: transparent;
+            --bs-btn-disabled-border-color: #6c757d;
+            --bs-gradient: none;
+            min-width: 110px;
+            border-left: 0px;
+        }
+
+        .btn-outline-secondary-left {
+            --bs-btn-color: var(--text-darkgrey);
+            --bs-btn-border-color: #6c757d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: var(--text-darkgrey);
+            --bs-btn-hover-border-color: #6c757d;
+            --bs-btn-focus-shadow-rgb: 108, 117, 125;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #6c757d;
+            --bs-btn-active-border-color: #6c757d;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: var(--text-darkgrey);
+            --bs-btn-disabled-bg: transparent;
+            --bs-btn-disabled-border-color: #6c757d;
+            --bs-gradient: none;
+            min-width: 110px;
+        }
+
+        .sort-list>thead {
+            cursor: pointer;
+            user-select: none;
+            -ms-user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+
+<body id="mainbody">
+
+    <div class="top-header">
+
+        <!-- base64 stream of nvme_icon.png which is CTC icon -->
+        <image
+            src="data:image/png;base64,
+            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"
+            style="width:32px;height:32px;position: fixed; top: 12px; left: 28px;" />
+
+        <span id="suite-name"> </span>
+    </div>
+
+    <!-- Sidebar used for navigation -->
+
+    <div class="sidebar">
+        <ul>
+            <li onclick="toggleView('device-view')">
+                <a id="nav-rqmt" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-hdd" viewBox="0 0 16 16">
+                        <path d="M4.5 11a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 10.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                        <path
+                            d="M16 11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V9.51c0-.418.105-.83.305-1.197l2.472-4.531A1.5 1.5 0 0 1 4.094 3h7.812a1.5 1.5 0 0 1 1.317.782l2.472 4.53c.2.368.305.78.305 1.198V11zM3.655 4.26 1.592 8.043C1.724 8.014 1.86 8 2 8h12c.14 0 .276.014.408.042L12.345 4.26a.5.5 0 0 0-.439-.26H4.094a.5.5 0 0 0-.44.26zM1 10v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1z" />
+                    </svg>
+                </a>
+            </li>
+            <li onclick="toggleView('system-view')">
+                <a id="nav-rqmt" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--title-color)"
+                        class="bi bi-pc-display" viewBox="0 0 16 16">
+                        <path
+                            d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V1Zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0Zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0ZM9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5ZM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5ZM1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2H1.5Z" />
+                    </svg>
+                </a>
+            </li>
+    </div>
+
+    <!-- Main page with several views that are displayed based on sidebar selection -->
+
+    <div class="main-view">
+
+        <section id="device-view" class="view">
+            <div class="row align-items-top justify-content-center">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">DEVICE INFORMATION </p>
+
+                            <div class="btn-toolbar mb-3">
+
+                                <div class="input-group input-group-sm ">
+                                    <input id="parameter-search" style="margin-right:20px;" type="text"
+                                        onkeyup="updateParameterListTable(parameterData)" spellcheck="false"
+                                        placeholder=" SEARCH...">
+                                </div>
+
+                                <div class="btn-group  btn-group-sm ">
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(summary)"
+                                        name="btnradio" id="summary" autocomplete="off" checked>
+                                    <label class="btn btn-outline-secondary-left" for="summary">SUMMARY</label>
+
+                                    <input type="radio" class="btn-check"
+                                        onchange="updateParameterListTable(parameters)" name="btnradio" id="all"
+                                        autocomplete="off">
+                                    <label class="btn btn-outline-secondary " for="all">ALL</label>
+
+                                    <input type="radio" class="btn-check"
+                                        onchange="updateParameterListTable(smart);console.log(parameterData.length)"
+                                        name="btnradio" id="smart" autocomplete="off">
+                                    <label class="btn btn-outline-secondary" for="smart">SMART</label>
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(firmware)"
+                                        name="btnradio" id="fw" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="fw">Firmware</label>
+
+                                    <input type="radio" class="btn-check"
+                                        onchange="updateParameterListTable(power);console.log(parameterData.length)"
+                                        name="btnradio" id="power" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="power">Power</label>
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(pci)"
+                                        name="btnradio" id="pci" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="pci">PCI</label>
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(thermal)"
+                                        name="btnradio" id="thermal" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="thermal">Thermal</label>
+
+
+                                    <input type="radio" class="btn-check" onchange="updateParameterListTable(data)"
+                                        name="btnradio" id="data" autocomplete="off">
+                                    <label class="btn  btn-outline-secondary" for="data">Data</label>
+
+                                </div>
+                            </div>
+
+                            <table id="device parameters" style="word-break:break-all"
+                                class="table parameter-list sort-list">
+                                <thead>
+                                    <tr>
+                                        <th style="width:360px;" data-column="name" data-order="desc"> PARAMETER </th>
+                                        <th style="width:270px;" data-column="value" data-order="desc"> START VALUE</th>
+                                        <th data-column="description" data-order="desc"> DESCRIPTION </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- This view lists the host parameters -->
+
+        <section id="system-view" class="view d-none">
+            <div class="row align-items-top justify-content-center">
+                <div class="col-5">
+                    <div class="card">
+                        <div class="card-body text-left p-10">
+                            <p class="card-title">HOST SYSTEM INFORMATION </p>
+                            <table id="host parameters" style="word-break:break-all" class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50%" data-column="name" data-order="desc"> PARAMETER </th>
+                                        <th style="width:50%;" data-column="value" data-order="desc"> VALUE </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Hostname</td>
+                                        <td id="hostname"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manufacturer</td>
+                                        <td id="host_mfg"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Model</td>
+                                        <td id="host_model"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>BIOS Version</td>
+                                        <td id="host_bios"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>OS</td>
+                                        <td id="host_os"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>UUID</td>
+                                        <td id="host_uuid"> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./assets/data.js"></script>
+    <script src="./assets/bootstrap.bundle.min.js"></script>
+    <script src="./assets/chart.min.js"></script>
+
+    <script>
+
+        let main_body = document.getElementById('mainbody');
+        let parameterData = summary
+
+        console.log(parameterData)
+        function sortTableData(dataset, tableData) {
+            let column = dataset.column
+            let order = dataset.order
+
+            if (order === 'desc') {
+                dataset.order = "asc";
+                tableData = tableData.sort((a, b) =>
+                    a[column] > b[column] ? 1 : a[column] == b[column] && a['number'] > b['number'] ? 1 : -1
+                )
+            } else {
+                dataset.order = "desc";
+                tableData = tableData.sort((a, b) =>
+                    a[column] < b[column] ? 1 : a[column] == b[column] && a['number'] < b['number'] ? 1 : -1
+                )
+            }
+            return tableData
+        }
+
+        document.querySelectorAll('.sort-list th').forEach(function (header, index) {
+            header.addEventListener('click', function () {
+
+                let tableData = parameterData
+                const tableId = this.parentNode.parentNode.parentNode.id
+
+                console.log(`Sort list on ${tableId} col: ${this.dataset.column}`)
+
+                if (this.parentNode.parentNode.parentNode.classList.contains("test-list")) {
+                    sortedTestList = sortTableData(this.dataset, sortedTestList)
+                    updateTestListTable(this.parentNode.parentNode.parentNode.id, sortedTestList)
+                }
+                else if (this.parentNode.parentNode.parentNode.classList.contains("rqmt-list")) {
+                    sortTableData(this.dataset, sortedRqmtList)
+                    updateRequirementListTable(this.parentNode.parentNode.parentNode.id, sortedRqmtList)
+                }
+                else if (this.parentNode.parentNode.parentNode.classList.contains("verification-list")) {
+                    sortTableData(this.dataset, selectedVerificationListData)
+                    updateVerificationListTable(selectedVerificationListData)
+                }
+                else {
+                    sortTableData(this.dataset, parameterData)
+                    updateParameterListTable(parameterData)
+                }
+            })
+        })
+
+        function updateParameterListTable(userData) {
+            if (userData === null) { userData = parameterData; console.info("updateParameterListTable with size is null"); }
+            else { parameterData = userData; console.info("updateParameterListTable with size " + parameterData.length); }
+
+            let startTime = Date.now();
+            let mystring = "";  // load to string because faster
+            var activeTableBody = document.getElementById("device parameters").getElementsByTagName('tbody')[0];
+            activeTableBody.innerHTML = '';
+
+            var filteredData = []
+
+            const value = document.getElementById("parameter-search").value
+
+
+            for (var i in userData) {
+                let hasValue = false;
+
+                if (userData[i].name != undefined && userData[i].name.toLowerCase().includes(value)) { hasValue = true; }
+                if (userData[i].description != undefined && userData[i].description.toLowerCase().includes(value)) { hasValue = true; }
+                if (userData[i].value != undefined && userData[i].value.toLowerCase().includes(value)) { hasValue = true; }
+
+                if (hasValue) { filteredData.push(userData[i]) }
+            }
+
+            for (var i in filteredData) {
+                mystring += `<tr>
+                    <td>${filteredData[i].name}</td>
+                    <td>${filteredData[i].value}</td>
+                    <td>${filteredData[i].description}</td>
+                    </tr>`
+            }
+            activeTableBody.innerHTML = mystring;
+        }
+
+        function toggleView(newView) {
+            allViews = document.getElementsByClassName("view");
+            for (let i = 0; i < allViews.length; i++) {
+                allViews[i].classList.remove("d-block")
+                allViews[i].classList.add("d-none")
+            }
+            activeView = document.getElementById(newView);
+            activeView.classList.remove("d-none")
+            activeView.classList.add("d-block")
+        }
+
+        //---------  Update the dashboard with values from results.json  -------------//
+        // Update the tables with initial values
+        updateParameterListTable(parameterData)
+
+        document.getElementById('suite-name').innerHTML = `NVME ${info["nvme"]["description"]}`;
+        document.getElementById('hostname').innerHTML = `${systemData['hostname']}`;
+        document.getElementById('host_mfg').innerHTML = `${systemData['manufacturer']}`;
+        document.getElementById('host_model').innerHTML = `${systemData['model']}`;
+        document.getElementById('host_bios').innerHTML = `${systemData['bios version']}`;
+        document.getElementById('host_os').innerHTML = `${systemData['os']}`;
+        document.getElementById('host_uuid').innerHTML = `${systemData['uuid']}`;
+
+        console.log(systemData)
+
+
+    </script>
+</body>
+
+</html>

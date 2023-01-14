@@ -1699,3 +1699,76 @@ def _encode_png_icon(icon_file):
         base64_encoded_data = base64.b64encode(binary_file_data)
         base64_message = base64_encoded_data.decode("utf-8")
         print(base64_message)
+
+
+def create_info_dashboard(info, directory):
+
+    dashboard_file = os.path.join(directory, "info.html")
+
+    with open(os.path.join(directory, "nvme.info.json"),"r") as file_object:
+        info_data = json.load(file_object)
+        metadata = info_data["metadata"]
+        parameters = info_data["parameters"]
+
+    with open(os.path.join(RESOURCE_DIRECTORY, "html", "index-info.html"), "r") as file_object:
+        lines = file_object.readlines()
+
+        write_lines = []
+        for line in lines:
+            if line.find("./assets/data.js") != -1:
+
+                write_lines.append("<script>\n")
+
+                view_filter_file = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "filter.json")
+                with open(view_filter_file, "r") as file_object:
+                    filters = json.load(file_object)
+                    mystring = (
+                        f"const systemData = {json.dumps(metadata['system'], sort_keys=False, indent=4)};\n\n"
+                    )
+
+                    mystring += f"const parameters = {json.dumps(parameters, sort_keys=False, indent=4)};\n\n"
+                    mystring += f"\n const info = {json.dumps(info_data, sort_keys=False, indent=4)};\n\n"
+
+                    for filtername, filtervalues in filters.items():
+                        matching_parameters = []
+                        for parameter in parameters:
+                            if parameter["name"] in filtervalues:
+                                matching_parameters.append(parameter)
+
+                        mystring += f"const {filtername} = "
+                        mystring += f"{json.dumps(matching_parameters, sort_keys=False, indent=4)};\n\n"
+
+                write_lines.extend(mystring.split("\n"))
+                write_lines.append("</script>")
+
+            elif line.find("./assets/bootstrap.css") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.css")
+                write_lines.append("<style>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</style>")
+
+            elif line.find("./assets/bootstrap.bundle.min.js") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.bundle.min.js")
+                write_lines.append("<script>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+
+            elif line.find("./assets/chart.min.js") != -1:
+                write_lines.append("<script>")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "chart.min.js")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+
+            else:
+                write_lines.append(line)
+
+    with open(dashboard_file, "w") as file_object:
+        file_object.writelines(write_lines)
+
+
+    webbrowser.open(dashboard_file, new=2)
+
+    log.info(f" Dashboard:    {dashboard_file}", indent=False)
