@@ -175,6 +175,15 @@ def verify_empty_drive(test, volume, info):
         rqmts.verify_empty_drive(step, free_space, disk_size)
 
 
+def verify_full_drive(test, volume, info):
+
+    disk_size = float(info.parameters["Size"])
+    free_space = psutil.disk_usage(volume).free
+
+    with TestStep(test, "Full drive", "Verify the drive is full.") as step:
+        rqmts.verify_full_drive(step, free_space, disk_size)
+
+
 def start_info_samples(test, cmd_file="state", delay_sec=10):
     """Start sampling SMART and power state info every second.
 

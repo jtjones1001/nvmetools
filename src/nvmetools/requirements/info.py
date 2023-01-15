@@ -310,3 +310,19 @@ def verify_empty_drive(step, free_space, disk_size):
         verified=(percent_free_space > 90),
         value=f"{percent_free_space:0.1f}%",
     )
+
+
+def verify_full_drive(step, free_space, disk_size):
+
+    if disk_size == 0:
+        percent_free_space = 0
+    else:
+        percent_free_space = free_space / disk_size * 100
+
+    verification(
+        rqmt_id=32,
+        step=step,
+        title="Disk free space must be less than 10%",
+        verified=(percent_free_space < 10),
+        value=f"{percent_free_space:0.1f}%",
+    )

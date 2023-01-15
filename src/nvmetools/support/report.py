@@ -38,7 +38,7 @@ from nvmetools import RESOURCE_DIRECTORY, RESULTS_FILE, TEST_SUITE_DIRECTORY
 from nvmetools.support.conversions import BYTES_IN_GB, KIB_TO_GB, MS_IN_SEC, as_int, as_io, as_float
 from nvmetools.support.custom_reportlab import (
     FAIL_COLOR,
-    FAIL_TEXT_STYLE,
+    FAIL_TABLE_TEXT_STYLE,
     HEADING_STYLE,
     Heading,
     LIMIT_COLOR,
@@ -480,7 +480,7 @@ class NvmeReport(InfoReport):
         if write_data is not None:
             ax.plot(time_data, write_data, label="Write BW", linewidth=2)
         if read_data is not None:
-            ax.plot(time_data, read_data, label="Read BW", linewidth=1)
+            ax.plot(time_data, read_data, label="Read BW", linewidth=2)
 
         ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
         plt.legend(bbox_to_anchor=(1.05, 0.5), loc="center left")
@@ -783,13 +783,10 @@ class NvmeReport(InfoReport):
 
     def _add_requirement_summary(self):
         self.add_subheading("Requirement Verification Summary")
-        self.add_paragraph(
-            """A requirement can be verified multiple times within a test suite.  The table below
-            lists the results for each attempt to verify a requirement."""
-        )
+        self.add_paragraph("""The table below lists the results for each attempt to verify a requirement.""")
         req_table = [["REQUIREMENT", "PASS", "FAIL"]]
         for req in sorted(self._requirements):
-            pstyle = TEXT_STYLE if self._requirements[req]["FAIL"] == 0 else FAIL_TEXT_STYLE
+            pstyle = TABLE_TEXT_STYLE if self._requirements[req]["FAIL"] == 0 else FAIL_TABLE_TEXT_STYLE
             req_table.append(
                 [
                     Paragraph(self._requirements[req]["title"], pstyle),
@@ -1601,7 +1598,11 @@ def create_dashboard(results_directory, show_dashboard=True):
 
                     mystring += "const verificationListData = "
                     mystring += f"{json.dumps(data['verifications'], sort_keys=False, indent=4)};\n\n"
-
+                    if "end_info" in data["data"]:
+                        mystring += "const compareInfo = true;"
+                    else:
+                        mystring += "const compareInfo = null;"
+                    mystring += f"const compareSystemData = null;\n\n"
                     parameters = []
                     for name, value in start_parameters.items():
 
@@ -1644,17 +1645,27 @@ def create_dashboard(results_directory, show_dashboard=True):
 
                 write_lines.extend(mystring.split("\n"))
                 write_lines.append("</script>")
-
+            elif line.find("./assets/dashboard.css") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.css")
+                write_lines.append("<style>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</style>")
             elif line.find("./assets/bootstrap.css") != -1:
                 html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.css")
                 write_lines.append("<style>")
                 with open(html_input, "r") as file_object:
                     write_lines.extend(file_object.readlines())
                 write_lines.append("</style>")
-
             elif line.find("./assets/bootstrap.bundle.min.js") != -1:
                 html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.bundle.min.js")
                 write_lines.append("<script>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+            elif line.find("./assets/dashboard.js") != -1:
+                write_lines.append("<script>")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.js")
                 with open(html_input, "r") as file_object:
                     write_lines.extend(file_object.readlines())
                 write_lines.append("</script>")
@@ -1678,10 +1689,131 @@ def create_dashboard(results_directory, show_dashboard=True):
     log.info(f" Dashboard:    {dashboard_file}", indent=False)
 
 
+def create_info_dashboard(directory, info_file, compare_info_file):
+
+    dashboard_file = os.path.join(directory, "info.html")
+
+    with open(info_file, "r") as file_object:
+        info_data = json.load(file_object)
+        metadata = info_data["_metadata"]
+        parameters = info_data["nvme"]["parameters"]
+        final_parameters = []
+        for parameter in parameters:
+            final_parameters.append(
+                {
+                    "name": parameters[parameter]["name"],
+                    "value": parameters[parameter]["value"],
+                    "change": None,
+                    "description": parameters[parameter]["description"],
+                }
+            )
+
+    if compare_info_file != "":
+        with open(compare_info_file, "r") as file_object:
+            compare_info_data = json.load(file_object)
+            compare_metadata = compare_info_data["_metadata"]
+            compare_parameters = compare_info_data["nvme"]["parameters"]
+
+            final_parameters = []
+            for parameter in parameters:
+                if parameter in compare_parameters:
+                    if compare_parameters[parameter]["value"] == parameters[parameter]["value"]:
+                        change = ""
+                    else:
+                        change = compare_parameters[parameter]["value"]
+                else:
+                    change = "N/A"
+
+                final_parameters.append(
+                    {
+                        "name": parameters[parameter]["name"],
+                        "value": parameters[parameter]["value"],
+                        "change": change,
+                        "description": parameters[parameter]["description"],
+                    }
+                )
+
+    with open(os.path.join(RESOURCE_DIRECTORY, "html", "index-info.html"), "r") as file_object:
+        lines = file_object.readlines()
+
+        write_lines = []
+        for line in lines:
+            if line.find("./assets/data.js") != -1:
+                write_lines.append("<script>\n")
+                view_filter_file = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "filter.json")
+                with open(view_filter_file, "r") as file_object:
+                    filters = json.load(file_object)
+                    mystring = (
+                        f"const systemData = {json.dumps(metadata['system'], sort_keys=False, indent=4)};\n\n"
+                    )
+                    if compare_info_file != "":
+                        mystring += f"const compareSystemData = {json.dumps(compare_metadata['system'], sort_keys=False, indent=4)};\n\n"
+                        mystring += f"\n const compareInfo = {json.dumps(compare_info_data, sort_keys=False, indent=4)};\n\n"
+                    else:
+                        mystring += f"const compareSystemData = null;\n\n"
+                        mystring += f"\n const compareInfo = null;\n\n"
+
+                    mystring += (
+                        f"const parameters = {json.dumps(final_parameters, sort_keys=False, indent=4)};\n\n"
+                    )
+                    mystring += f"\n const info = {json.dumps(info_data, sort_keys=False, indent=4)};\n\n"
+
+                    for filtername, filtervalues in filters.items():
+                        matching_parameters = []
+                        for parameter in final_parameters:
+                            if parameter["name"] in filtervalues:
+                                matching_parameters.append(parameter)
+
+                        mystring += f"const {filtername} = "
+                        mystring += f"{json.dumps(matching_parameters, sort_keys=False, indent=4)};\n\n"
+
+                write_lines.extend(mystring.split("\n"))
+                write_lines.append("</script>")
+
+            elif line.find("./assets/bootstrap.css") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.css")
+                write_lines.append("<style>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</style>")
+            elif line.find("./assets/dashboard.css") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.css")
+                write_lines.append("<style>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</style>")
+            elif line.find("./assets/bootstrap.bundle.min.js") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.bundle.min.js")
+                write_lines.append("<script>")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+
+            elif line.find("./assets/chart.min.js") != -1:
+                write_lines.append("<script>")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "chart.min.js")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+            elif line.find("./assets/dashboard.js") != -1:
+                write_lines.append("<script>")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.js")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+            else:
+                write_lines.append(line)
+
+    with open(dashboard_file, "w") as file_object:
+        file_object.writelines(write_lines)
+
+    webbrowser.open(dashboard_file, new=2)
+
+    log.info(f" Dashboard:    {dashboard_file}", indent=False)
+
+
 def create_reports(results_directory, title="N/A", description="N/A", show_dashboard=True):
-
     try:
-
         log.info(f" Logs:         {results_directory}", indent=False)
         pdf = NvmeReport(results_directory=results_directory, title=title, description=description)
         pdf.save()
@@ -1699,76 +1831,3 @@ def _encode_png_icon(icon_file):
         base64_encoded_data = base64.b64encode(binary_file_data)
         base64_message = base64_encoded_data.decode("utf-8")
         print(base64_message)
-
-
-def create_info_dashboard(info, directory):
-
-    dashboard_file = os.path.join(directory, "info.html")
-
-    with open(os.path.join(directory, "nvme.info.json"),"r") as file_object:
-        info_data = json.load(file_object)
-        metadata = info_data["metadata"]
-        parameters = info_data["parameters"]
-
-    with open(os.path.join(RESOURCE_DIRECTORY, "html", "index-info.html"), "r") as file_object:
-        lines = file_object.readlines()
-
-        write_lines = []
-        for line in lines:
-            if line.find("./assets/data.js") != -1:
-
-                write_lines.append("<script>\n")
-
-                view_filter_file = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "filter.json")
-                with open(view_filter_file, "r") as file_object:
-                    filters = json.load(file_object)
-                    mystring = (
-                        f"const systemData = {json.dumps(metadata['system'], sort_keys=False, indent=4)};\n\n"
-                    )
-
-                    mystring += f"const parameters = {json.dumps(parameters, sort_keys=False, indent=4)};\n\n"
-                    mystring += f"\n const info = {json.dumps(info_data, sort_keys=False, indent=4)};\n\n"
-
-                    for filtername, filtervalues in filters.items():
-                        matching_parameters = []
-                        for parameter in parameters:
-                            if parameter["name"] in filtervalues:
-                                matching_parameters.append(parameter)
-
-                        mystring += f"const {filtername} = "
-                        mystring += f"{json.dumps(matching_parameters, sort_keys=False, indent=4)};\n\n"
-
-                write_lines.extend(mystring.split("\n"))
-                write_lines.append("</script>")
-
-            elif line.find("./assets/bootstrap.css") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.css")
-                write_lines.append("<style>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</style>")
-
-            elif line.find("./assets/bootstrap.bundle.min.js") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.bundle.min.js")
-                write_lines.append("<script>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</script>")
-
-            elif line.find("./assets/chart.min.js") != -1:
-                write_lines.append("<script>")
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "chart.min.js")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</script>")
-
-            else:
-                write_lines.append(line)
-
-    with open(dashboard_file, "w") as file_object:
-        file_object.writelines(write_lines)
-
-
-    webbrowser.open(dashboard_file, new=2)
-
-    log.info(f" Dashboard:    {dashboard_file}", indent=False)

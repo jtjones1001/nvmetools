@@ -40,6 +40,7 @@ from nvmetools.support.info import Info
 from nvmetools.support.log import start_logger
 from nvmetools.support.report import create_info_dashboard
 
+
 def _parse_arguments():
     """Parse input arguments from command line."""
     parser = argparse.ArgumentParser(
@@ -47,10 +48,13 @@ def _parse_arguments():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("-n", "--nvme", type=int, default=0, help="NVMe drive to read", metavar="#")
+    parser.add_argument("-i", "--info", default="", help="File with NVMe info")
+    parser.add_argument("-c", "--compare", default="", help="File with NVMe info to compare")
+
     return vars(parser.parse_args())
 
 
-def read_nvme(nvme=0, as_list=False, as_hex=False, as_all=False, describe=False, create_pdf=False, verbose=False):
+def read_nvme(nvme=0, info="", compare=""):
     """Display and log NVMe information.
 
     Reads NVMe information using the nvmecmd utility. This utility creates a file named nvme.info.json
@@ -58,11 +62,14 @@ def read_nvme(nvme=0, as_list=False, as_hex=False, as_all=False, describe=False,
     information as an html dashboard (info.html).
     """
     try:
-        directory = os.path.join(os.path.abspath("."),"viewnvme")
+        directory = os.path.join(os.path.abspath("."), "viewnvme")
         os.makedirs(directory, exist_ok=True)
         start_logger(directory, logging.INFO, "viewnvme.log")
-        info = Info(nvme=nvme,directory=directory)
-        create_info_dashboard(info, directory)
+        if info == "":
+            Info(nvme=nvme, directory=directory)
+            info = os.path.join(directory, "nvme.info.json")
+
+        create_info_dashboard(directory, info, compare)
         sys.exit()
 
     except Exception as e:

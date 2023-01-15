@@ -91,7 +91,7 @@ TEXT_STYLE = ParagraphStyle(
     spaceAfter=8,
     textColor=TEXT_COLOR,
 )
-FAIL_TEXT_STYLE = ParagraphStyle(
+FAIL_TABLE_TEXT_STYLE = ParagraphStyle(
     "fail",
     fontName="Helvetica-BOLD",
     fontSize=TABLE_FONT_SIZE,

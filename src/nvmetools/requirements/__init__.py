@@ -41,6 +41,7 @@ from nvmetools.requirements.info import (
     throttle_time_within_limit,
     usage_within_limit,
     verify_empty_drive,
+    verify_full_drive,
 )
 from nvmetools.requirements.performance import (
     random_read_4k_qd1_bandwidth,

@@ -1,21 +1,5 @@
 <!doctype html>
 <html lang="en">
-<!--
- ToDo:
-   Company colors and fonts - branding... Use same in PDF, resume, etc.
-   Percents on donut charts
-
-   dark-blue
-   mid-blue
-   fail-red
-   pass-green
-   skip-grey
-   light-grey
-   dark-grey
-   dark-bluegreen
-
-
--->
 
 <head>
     <meta charset="utf-8">
@@ -23,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Joe Jones">
 
-    <title>CTC | Test Suite Dashboard</title>
+    <title>EPIC| NVMe Info</title>
 
     <link rel="icon" type="image/png" sizes="16x16"
         href="data:image/png;base64,
@@ -58,240 +42,14 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACJ3gDv96x/Y/UohAAAAABJRU5ErkJggg==" />
 
     <link rel="stylesheet" type="text/css" href="./assets/bootstrap.css">
-
-    <style>
-        :root {
-            --pass-color: #ffffff;
-            --pass-bg-color: #018301;
-            --fail-color: #ffffff;
-            --fail-bg-color: #df3639;
-            --fail-muted-color: #000000;
-            --fail-muted-bg-color: #fbc4c5;
-            --pass-muted-color: #000000;
-            --pass-muted-bg-color: #e9e8e8;
-            --skip-color: #ffffff;
-            --skip-bg-color: #777777;
-
-            --title-color: #646464;
-
-            --main-bg-color: #e6edf5;
-            --sidebar-bg-color: #f2f5f7;
-            --border-color: #c8c8c8;
-
-            --header-height: 56px;
-            --bs-danger: #ffffff;
-
-            --text-darkgrey: rgb(16, 16, 16);
-            --table-border: rgb(214, 214, 214);
-        }
-
-        .body {
-            padding-top: var(--header-height);
-        }
-
-        .top-header {
-            height: var(--header-height);
-            width: 100%;
-            background-color: #334a65;
-            color: var(--bs-danger);
-
-            padding: 0px;
-            position: fixed;
-            top: 0px;
-            left: 0px;
-        }
-
-        .top-header span {
-            position: fixed;
-            left: 90px;
-            font-size: 24px;
-            padding: 10px 10px 10px 30px;
-        }
-
-        .main-view {
-            height: calc(100% - var(--header-height));
-            width: calc(100% - 96px);
-            min-width: 1200px;
-            min-height: 400px;
-            background-color: var(--main-bg-color);
-            position: fixed;
-            top: var(--header-height);
-            left: 96px;
-            border-style: none solid none none;
-            border-width: 1px;
-            border-color: var(--border-color);
-            overflow: scroll;
-            padding: 14px;
-        }
-
-        .sidebar {
-            height: 100%;
-            width: 96px;
-            background-color: var(--sidebar-bg-color);
-            position: fixed;
-            top: var(--header-height);
-            left: 0px;
-            border-style: none solid none none;
-            border-width: 1px;
-            border-color: var(--border-color);
-            padding-top: 0px;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            display: block;
-        }
-
-        .sidebar ul li {
-            margin-top: 40px;
-            margin-bottom: 40px;
-        }
-
-        .btn,
-        .card-title,
-        .card-body,
-        .card-footer {
-            font-size: 12px;
-        }
-
-        .card-body {
-            padding: 0.5rem 1rem;
-        }
-
-        .card-title {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .card-footer {
-            min-height: 32px !important;
-            background-color: white;
-        }
-
-        .number-col {
-            width: 25px;
-            text-align: center;
-        }
-
-        .status-col {
-            width: 55px;
-            text-align: center;
-        }
-
-        .badge-pass {
-            color: var(--pass-color);
-            background-color: var(--pass-bg-color);
-            border-radius: 2px;
-        }
-
-        .badge-fail {
-            color: var(--fail-color);
-            background-color: var(--fail-bg-color);
-            border-radius: 2px;
-        }
-
-        .badge-skip {
-            color: var(--skip-color);
-            background-color: var(--skip-bg-color);
-            border-radius: 2px;
-        }
-
-        .badge-pass-value {
-            color: var(--pass-muted-color);
-            background-color: var(--pass-muted-bg-color);
-            display: inline-block;
-        }
-
-        .badge-fail-value {
-            color: var(--fail-muted-color);
-            background-color: var(--fail-muted-bg-color);
-        }
-
-        .skip-color {
-            color: #333;
-            background-color: green;
-        }
-
-        .table {
-            width: 100% !important;
-            margin-left: 0;
-            margin-top: 25px;
-        }
-
-        .table {
-            --bs-table-hover-bg: rgba(0, 0, 0, 0.04);
-        }
-
-        table tbody.big tr td {
-            padding: 4px !important;
-            padding-left: 5px !important;
-        }
-
-        .table>:not(caption)>*>* {
-            padding: .25rem .25rem;
-        }
-
-        .table>tbody>tr.active>td {
-            background: #fdffc4;
-        }
-
-        /* adjust bs var */
-
-        table th {
-            background-color: #e5e2e2 !important;
-        }
-
-        .btn-outline-secondary {
-            --bs-btn-color: var(--text-darkgrey);
-            --bs-btn-border-color: #6c757d;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-bg: var(--text-darkgrey);
-            --bs-btn-hover-border-color: #6c757d;
-            --bs-btn-focus-shadow-rgb: 108, 117, 125;
-            --bs-btn-active-color: #fff;
-            --bs-btn-active-bg: #6c757d;
-            --bs-btn-active-border-color: #6c757d;
-            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-            --bs-btn-disabled-color: var(--text-darkgrey);
-            --bs-btn-disabled-bg: transparent;
-            --bs-btn-disabled-border-color: #6c757d;
-            --bs-gradient: none;
-            min-width: 110px;
-            border-left: 0px;
-        }
-
-        .btn-outline-secondary-left {
-            --bs-btn-color: var(--text-darkgrey);
-            --bs-btn-border-color: #6c757d;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-bg: var(--text-darkgrey);
-            --bs-btn-hover-border-color: #6c757d;
-            --bs-btn-focus-shadow-rgb: 108, 117, 125;
-            --bs-btn-active-color: #fff;
-            --bs-btn-active-bg: #6c757d;
-            --bs-btn-active-border-color: #6c757d;
-            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-            --bs-btn-disabled-color: var(--text-darkgrey);
-            --bs-btn-disabled-bg: transparent;
-            --bs-btn-disabled-border-color: #6c757d;
-            --bs-gradient: none;
-            min-width: 110px;
-        }
-
-        .sort-list>thead {
-            cursor: pointer;
-            user-select: none;
-            -ms-user-select: none;
-            -webkit-user-select: none;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./assets/dashboard.css">
 </head>
 
 <body id="mainbody">
 
     <div class="top-header">
 
-        <!-- base64 stream of nvme_icon.png which is CTC icon -->
+        <!-- base64 stream of nvme_icon.png -->
         <image
             src="data:image/png;base64,
             iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpSIVBwuKOGSoThZERcSpVL
@@ -325,7 +83,8 @@
             AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACJ3gDv96x/Y/UohAAAAABJRU5ErkJggg=="
             style="width:32px;height:32px;position: fixed; top: 12px; left: 28px;" />
 
-        <span id="suite-name"> </span>
+        <span id="suite-name" style="position: fixed; left: 100px; top: 8px; font-size: 24px; padding: 0px;"> </span>
+
     </div>
 
     <!-- Sidebar used for navigation -->
@@ -413,8 +172,22 @@
                                 </div>
                             </div>
 
+                            <table id="device parameters compare" style="word-break:break-all"
+                                class="table parameter-list sort-list d-none">
+                                <thead>
+                                    <tr>
+                                        <th style="width:360px;" data-column="name" data-order="desc"> PARAMETER </th>
+                                        <th style="width:270px;" data-column="value" data-order="desc"> VALUE</th>
+                                        <th style="width:270px;" data-column="change" data-order="desc"> COMPARE (IF
+                                            CHANGED) </th>
+                                        <th data-column="description" data-order="desc"> DESCRIPTION </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                             <table id="device parameters" style="word-break:break-all"
-                                class="table parameter-list sort-list">
+                                class="table parameter-list sort-list d-none">
                                 <thead>
                                     <tr>
                                         <th style="width:360px;" data-column="name" data-order="desc"> PARAMETER </th>
@@ -425,7 +198,6 @@
                                 <tbody>
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
@@ -436,11 +208,22 @@
 
         <section id="system-view" class="view d-none">
             <div class="row align-items-top justify-content-center">
-                <div class="col-5">
+                <div class="col-10">
                     <div class="card">
                         <div class="card-body text-left p-10">
                             <p class="card-title">HOST SYSTEM INFORMATION </p>
-                            <table id="host parameters" style="word-break:break-all" class="table">
+                            <table id="host parameters compare" style="word-break:break-all" class="table d-none">
+                                <thead>
+                                    <tr>
+                                        <th style="width:20%" data-column="name" data-order="desc"> PARAMETER </th>
+                                        <th style="width:40%;" data-column="value" data-order="desc"> VALUE </th>
+                                        <th style="width:40%;" data-column="value" data-order="desc"> COMPARE VALUE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <table id="host parameters" style="word-break:break-all" class="table d-none">
                                 <thead>
                                     <tr>
                                         <th style="width:50%" data-column="name" data-order="desc"> PARAMETER </th>
@@ -448,30 +231,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Hostname</td>
-                                        <td id="hostname"> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Manufacturer</td>
-                                        <td id="host_mfg"> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Model</td>
-                                        <td id="host_model"> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>BIOS Version</td>
-                                        <td id="host_bios"> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>OS</td>
-                                        <td id="host_os"> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>UUID</td>
-                                        <td id="host_uuid"> </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -484,118 +243,14 @@
     <script src="./assets/data.js"></script>
     <script src="./assets/bootstrap.bundle.min.js"></script>
     <script src="./assets/chart.min.js"></script>
-
+    <script src="./assets/dashboard.js"></script>
     <script>
+        const model = info['nvme']['description']
+        const host_date = info['_metadata']['date']
 
-        let main_body = document.getElementById('mainbody');
-        let parameterData = summary
-
-        console.log(parameterData)
-        function sortTableData(dataset, tableData) {
-            let column = dataset.column
-            let order = dataset.order
-
-            if (order === 'desc') {
-                dataset.order = "asc";
-                tableData = tableData.sort((a, b) =>
-                    a[column] > b[column] ? 1 : a[column] == b[column] && a['number'] > b['number'] ? 1 : -1
-                )
-            } else {
-                dataset.order = "desc";
-                tableData = tableData.sort((a, b) =>
-                    a[column] < b[column] ? 1 : a[column] == b[column] && a['number'] < b['number'] ? 1 : -1
-                )
-            }
-            return tableData
-        }
-
-        document.querySelectorAll('.sort-list th').forEach(function (header, index) {
-            header.addEventListener('click', function () {
-
-                let tableData = parameterData
-                const tableId = this.parentNode.parentNode.parentNode.id
-
-                console.log(`Sort list on ${tableId} col: ${this.dataset.column}`)
-
-                if (this.parentNode.parentNode.parentNode.classList.contains("test-list")) {
-                    sortedTestList = sortTableData(this.dataset, sortedTestList)
-                    updateTestListTable(this.parentNode.parentNode.parentNode.id, sortedTestList)
-                }
-                else if (this.parentNode.parentNode.parentNode.classList.contains("rqmt-list")) {
-                    sortTableData(this.dataset, sortedRqmtList)
-                    updateRequirementListTable(this.parentNode.parentNode.parentNode.id, sortedRqmtList)
-                }
-                else if (this.parentNode.parentNode.parentNode.classList.contains("verification-list")) {
-                    sortTableData(this.dataset, selectedVerificationListData)
-                    updateVerificationListTable(selectedVerificationListData)
-                }
-                else {
-                    sortTableData(this.dataset, parameterData)
-                    updateParameterListTable(parameterData)
-                }
-            })
-        })
-
-        function updateParameterListTable(userData) {
-            if (userData === null) { userData = parameterData; console.info("updateParameterListTable with size is null"); }
-            else { parameterData = userData; console.info("updateParameterListTable with size " + parameterData.length); }
-
-            let startTime = Date.now();
-            let mystring = "";  // load to string because faster
-            var activeTableBody = document.getElementById("device parameters").getElementsByTagName('tbody')[0];
-            activeTableBody.innerHTML = '';
-
-            var filteredData = []
-
-            const value = document.getElementById("parameter-search").value
-
-
-            for (var i in userData) {
-                let hasValue = false;
-
-                if (userData[i].name != undefined && userData[i].name.toLowerCase().includes(value)) { hasValue = true; }
-                if (userData[i].description != undefined && userData[i].description.toLowerCase().includes(value)) { hasValue = true; }
-                if (userData[i].value != undefined && userData[i].value.toLowerCase().includes(value)) { hasValue = true; }
-
-                if (hasValue) { filteredData.push(userData[i]) }
-            }
-
-            for (var i in filteredData) {
-                mystring += `<tr>
-                    <td>${filteredData[i].name}</td>
-                    <td>${filteredData[i].value}</td>
-                    <td>${filteredData[i].description}</td>
-                    </tr>`
-            }
-            activeTableBody.innerHTML = mystring;
-        }
-
-        function toggleView(newView) {
-            allViews = document.getElementsByClassName("view");
-            for (let i = 0; i < allViews.length; i++) {
-                allViews[i].classList.remove("d-block")
-                allViews[i].classList.add("d-none")
-            }
-            activeView = document.getElementById(newView);
-            activeView.classList.remove("d-none")
-            activeView.classList.add("d-block")
-        }
-
-        //---------  Update the dashboard with values from results.json  -------------//
-        // Update the tables with initial values
+        document.getElementById('suite-name').innerHTML = `${info["nvme"]["description"]}`;
         updateParameterListTable(parameterData)
-
-        document.getElementById('suite-name').innerHTML = `NVME ${info["nvme"]["description"]}`;
-        document.getElementById('hostname').innerHTML = `${systemData['hostname']}`;
-        document.getElementById('host_mfg').innerHTML = `${systemData['manufacturer']}`;
-        document.getElementById('host_model').innerHTML = `${systemData['model']}`;
-        document.getElementById('host_bios').innerHTML = `${systemData['bios version']}`;
-        document.getElementById('host_os').innerHTML = `${systemData['os']}`;
-        document.getElementById('host_uuid').innerHTML = `${systemData['uuid']}`;
-
-        console.log(systemData)
-
-
+        updateHostListTable(info, compareInfo, systemData, compareSystemData)
     </script>
 </body>
 
