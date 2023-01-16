@@ -27,7 +27,7 @@ def data_compression(suite):
         # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-        fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"]))
+        fio_file = steps.get_fio_performance_file(test)
         steps.wait_for_idle(test)
 
         # -----------------------------------------------------------------------------------------
