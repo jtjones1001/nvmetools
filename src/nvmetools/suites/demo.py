@@ -2,16 +2,20 @@
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
 import platform
+import sys
 import time
 
 from nvmetools import TestSuite, fio, tests
-
+from nvmetools.support.conversions import is_windows_admin
 
 def big_demo(args):
     """Demonstration Test Suite with all NVMe Test Cases.
 
     Test suite with all possible test cases that creates a big report for demonstration.
     """
+    if not is_windows_admin():
+        print("This Test Suite must be run as Administrator.")
+        sys.exit(1)
 
     with TestSuite("Big Demo", big_demo.__doc__, **args) as suite:
 

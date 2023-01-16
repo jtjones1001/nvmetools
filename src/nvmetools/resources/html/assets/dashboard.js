@@ -1,35 +1,17 @@
-let main_body = document.getElementById('mainbody');
+/*-------------------------------------------------------------------------------------
+ Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
+------------------------------------------------------------------------------------*/
 let parameterData = summary
-
 let selectedTest = 1
 let selectedRequirement = 0
 let selectedRequirementName = ""
-
-function passValue(value) { return `<td>${value}</td>` }
-function failValue(value) { return `<td style="color:red;font-weight:bold;">${value}</td>` }
 
 const failBadge = `<td class="status-col"><span class="badge badge-fail">FAIL</span></td>`
 const passBadge = `<td class="status-col"><span class="badge badge-pass">PASS</span></td>`
 const skipBadge = `<td class="status-col"><span class="badge badge-skip">SKIP</span></td>`
 
-
-function sortTableData(dataset, tableData) {
-    let column = dataset.column
-    let order = dataset.order
-
-    if (order === 'desc') {
-        dataset.order = "asc";
-        tableData = tableData.sort((a, b) =>
-            a[column] > b[column] ? 1 : a[column] == b[column] && a['number'] > b['number'] ? 1 : -1
-        )
-    } else {
-        dataset.order = "desc";
-        tableData = tableData.sort((a, b) =>
-            a[column] < b[column] ? 1 : a[column] == b[column] && a['number'] < b['number'] ? 1 : -1
-        )
-    }
-    return tableData
-}
+function passValue(value) { return `<td>${value}</td>` }
+function failValue(value) { return `<td style="color:red;font-weight:bold;">${value}</td>` }
 
 document.querySelectorAll('.sort-list th').forEach(function (header, index) {
     header.addEventListener('click', function () {
@@ -57,6 +39,124 @@ document.querySelectorAll('.sort-list th').forEach(function (header, index) {
         }
     })
 })
+
+function collapseTests(x) {
+    document.getElementById("expanded").classList.add("d-none")
+    document.getElementById("collapsed").classList.remove("d-none")
+}
+
+function donut_chart(element_by_id, labels, values) {
+    let main_body = document.getElementById('mainbody');
+    const tmpChart = new Chart(element_by_id, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: [
+                    getComputedStyle(main_body).getPropertyValue("--pass-bg-color"),
+                    getComputedStyle(main_body).getPropertyValue("--fail-bg-color"),
+                    getComputedStyle(main_body).getPropertyValue("--skip-bg-color")
+                ],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: false,
+            plugins: {
+                legend: { display: true, position: 'right', labels: { boxWidth: 15 } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context, data) {
+                                let label = context.label
+                                let value = context.formattedValue;
+                                let sum = 0
+                                let dataArr = context.chart.data.datasets[0].data
+                                dataArr.map(data => {sum += Number(data) })
+                                return label + ": " + value + " (" + (value*100/sum).toFixed(1) + '%)'
+                        }
+                    }
+                }
+            }
+        }
+    })
+};
+
+function expandTests(x) {
+    document.getElementById("collapsed").classList.add("d-none")
+    document.getElementById("expanded").classList.remove("d-none")
+}
+
+function formatReq(requirement) {
+    reqString = `<tr> <td>${requirement["title"]}</td>`
+    if (requirement["result"] == "PASSED") {
+        reqString += `${passValue(requirement["value"])} ${passBadge}</tr>`
+    }
+    else {
+        reqString += `${failValue(requirement["value"])} ${failBadge}</tr>`
+    }
+    return reqString
+}
+
+function setRqmt(newRequirement) {
+    selectedRequirement = newRequirement
+    updateRequirementListTable("rqmt list", sortedRqmtList)
+    updateRequirementListTable("rqmt view list", sortedRqmtList)
+    updateVerificationListTable(selectedVerificationListData)
+}
+
+function setRqmtView(newRequirement) {
+    setRqmt(newRequirement)
+    toggleView('rqmt-view');
+}
+
+function setTestView(newselectedTest) {
+    selectedTest = newselectedTest
+    var testViewListBody = document.getElementById('test view list').getElementsByTagName('tbody')[0];
+
+    for (let i = 0; i < testViewListBody.rows.length; i++) {
+        testViewListBody.rows[i].classList.remove("active")
+        if (testViewListBody.rows[i].cells[0].innerHTML == selectedTest) {
+            testViewListBody.rows[i].classList.add("active")
+        }
+    }
+    testDetails = document.getElementsByClassName("test-detail")
+    for (let i = 0; i < testDetails.length; i++) {
+        testDetails[i].classList.add("d-none")
+    }
+
+    let activeDetail = document.getElementById(`test${selectedTest}`)
+    activeDetail.classList.remove("d-none")
+    toggleView('test-view');
+}
+
+function sortTableData(dataset, tableData) {
+    let column = dataset.column
+    let order = dataset.order
+    if (order === 'desc') {
+        dataset.order = "asc";
+        tableData = tableData.sort((a, b) =>
+            a[column] > b[column] ? 1 : a[column] == b[column] && a['number'] > b['number'] ? 1 : -1
+        )
+    } else {
+        dataset.order = "desc";
+        tableData = tableData.sort((a, b) =>
+            a[column] < b[column] ? 1 : a[column] == b[column] && a['number'] < b['number'] ? 1 : -1
+        )
+    }
+    return tableData
+}
+
+function toggleView(newView) {
+    allViews = document.getElementsByClassName("view");
+    for (let i = 0; i < allViews.length; i++) {
+        allViews[i].classList.remove("d-block")
+        allViews[i].classList.add("d-none")
+    }
+    activeView = document.getElementById(newView);
+    activeView.classList.remove("d-none")
+    activeView.classList.add("d-block")
+}
 
 function updateHostListTable(info, compareInfo, systemData, compareSystemData) {
     if (compareSystemData !== null) {
@@ -186,6 +286,7 @@ function updateParameterListTable(userData) {
     }
     activeTableBody.innerHTML = mystring;
 }
+
 function updateRequirementListTable(tableId, tableData) {
     console.log(`updateRequirementListTable(${tableId}, tableData), selectedReq=${selectedRequirement}, tableId=${tableId}`)
 
@@ -251,76 +352,6 @@ function updateRequirementListTable(tableId, tableData) {
     activeTableBody.innerHTML = testString
 }
 
-function updateTestListTable(tableId, tableData) {
-    console.log(`updateTestListTable(${tableId}, tableData)`)
-
-    testString = ""
-    for (let test in tableData) {
-        let resultBadge = failBadge
-        if (tableData[test]["result"] == "PASSED") {
-            resultBadge = passBadge
-        }
-        if (tableData[test]["result"] == "SKIPPED") {
-            resultBadge = skipBadge
-        }
-
-        if (selectedTest == tableData[test]['number'] && tableId == "test view list") {
-            testString += `
-            <tr class="active" onclick="setTestView(${tableData[test]['number']})">
-            <td class="number-col">${tableData[test]['number']}</td>
-            <td>${tableData[test]['title']}</td>
-            ${resultBadge}</tr>`
-        }
-        else {
-            testString += `
-            <tr onclick="setTestView(${tableData[test]['number']})">
-            <td class="number-col">${tableData[test]['number']}</td>
-            <td>${tableData[test]['title']}</td>
-            ${resultBadge}</tr>`
-        }
-    }
-    const activeTable = document.getElementById(tableId)
-    var activeTableBody = activeTable.getElementsByTagName('tbody')[0]
-    activeTableBody.innerHTML = testString
-}
-function updateVerificationListTable(tableData) {
-    console.log(`updateVerificationListTable(tableData)`)
-    let testString = ""
-    for (let index in tableData) {
-
-        console.log(tableData[index]["value"])
-
-        if ((selectedRequirement == 0) || (tableData[index]["title"] == selectedRequirementName)) {
-            testString += `<tr>
-                        <td class="text-center">${tableData[index]["number"]}</td>
-                        <td>${tableData[index]["title"]}</td>`
-
-            if (tableData[index]["result"] == "PASSED") {
-                testString += `${passValue(tableData[index]["value"])}</td>
-                        <td class="text-center">${tableData[index]["test number"]}</td>
-                        <td>${tableData[index]["test"]}</td>
-                        ${passBadge}</tr>`
-            }
-            else {
-                testString += `${failValue(tableData[index]["value"])}</td>
-                        <td class="text-center">${tableData[index]["test number"]}</td>
-                        <td>${tableData[index]["test"]}</td>
-                        ${failBadge}</tr>`
-            }
-        }
-    }
-    document.getElementById('rqmt verifications').getElementsByTagName('tbody')[0].innerHTML = testString
-}
-
-
-function expandTests(x) {
-    document.getElementById("collapsed").classList.add("d-none")
-    document.getElementById("expanded").classList.remove("d-none")
-}
-function collapseTests(x) {
-    document.getElementById("expanded").classList.add("d-none")
-    document.getElementById("collapsed").classList.remove("d-none")
-}
 function updateTestDetailTable() {
     testString = ""
     for (let index in testListData) {
@@ -391,96 +422,64 @@ function updateTestDetailTable() {
     document.getElementById('test-list-details').innerHTML = testString
 }
 
-function formatReq(requirement) {
-    reqString = `<tr> <td>${requirement["title"]}</td>`
-    if (requirement["result"] == "PASSED") {
-        reqString += `${passValue(requirement["value"])} ${passBadge}</tr>`
-    }
-    else {
-        reqString += `${failValue(requirement["value"])} ${failBadge}</tr>`
-    }
-    return reqString
-}
+function updateTestListTable(tableId, tableData) {
+    console.log(`updateTestListTable(${tableId}, tableData)`)
 
-function toggleView(newView) {
-    allViews = document.getElementsByClassName("view");
-    for (let i = 0; i < allViews.length; i++) {
-        allViews[i].classList.remove("d-block")
-        allViews[i].classList.add("d-none")
-    }
-    activeView = document.getElementById(newView);
-    activeView.classList.remove("d-none")
-    activeView.classList.add("d-block")
-}
-function setTestView(newselectedTest) {
+    testString = ""
+    for (let test in tableData) {
+        let resultBadge = failBadge
+        if (tableData[test]["result"] == "PASSED") {
+            resultBadge = passBadge
+        }
+        if (tableData[test]["result"] == "SKIPPED") {
+            resultBadge = skipBadge
+        }
 
-    console.log(`setTestView(${newselectedTest}) called`)
-
-    selectedTest = newselectedTest
-    var testViewListBody = document.getElementById('test view list').getElementsByTagName('tbody')[0];
-
-    for (let i = 0; i < testViewListBody.rows.length; i++) {
-        testViewListBody.rows[i].classList.remove("active")
-        if (testViewListBody.rows[i].cells[0].innerHTML == selectedTest) {
-            testViewListBody.rows[i].classList.add("active")
+        if (selectedTest == tableData[test]['number'] && tableId == "test view list") {
+            testString += `
+            <tr class="active" onclick="setTestView(${tableData[test]['number']})">
+            <td class="number-col">${tableData[test]['number']}</td>
+            <td>${tableData[test]['title']}</td>
+            ${resultBadge}</tr>`
+        }
+        else {
+            testString += `
+            <tr onclick="setTestView(${tableData[test]['number']})">
+            <td class="number-col">${tableData[test]['number']}</td>
+            <td>${tableData[test]['title']}</td>
+            ${resultBadge}</tr>`
         }
     }
-    testDetails = document.getElementsByClassName("test-detail")
-    for (let i = 0; i < testDetails.length; i++) {
-        testDetails[i].classList.add("d-none")
-    }
-
-    let activeDetail = document.getElementById(`test${selectedTest}`)
-    activeDetail.classList.remove("d-none")
-    toggleView('test-view');
+    const activeTable = document.getElementById(tableId)
+    var activeTableBody = activeTable.getElementsByTagName('tbody')[0]
+    activeTableBody.innerHTML = testString
 }
 
-function setRqmt(newRequirement) {
-    selectedRequirement = newRequirement
-    updateRequirementListTable("rqmt list", sortedRqmtList)
-    updateRequirementListTable("rqmt view list", sortedRqmtList)
-    updateVerificationListTable(selectedVerificationListData)
+function updateVerificationListTable(tableData) {
+    console.log(`updateVerificationListTable(tableData)`)
+    let testString = ""
+    for (let index in tableData) {
 
-}
-function setRqmtView(newRequirement) {
-    setRqmt(newRequirement)
-    toggleView('rqmt-view');
-}
-function donut_chart(element_by_id, labels, values) {
-    const tmpChart = new Chart(element_by_id, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: values,
-                backgroundColor: [
-                    getComputedStyle(main_body).getPropertyValue("--pass-bg-color"),
-                    getComputedStyle(main_body).getPropertyValue("--fail-bg-color"),
-                    getComputedStyle(main_body).getPropertyValue("--skip-bg-color")
-                ],
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: false,
+        console.log(tableData[index]["value"])
 
-            plugins: {
-                legend: { display: true, position: 'right', labels: { boxWidth: 15 } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context, data) {
-                                let label = context.label
-                                let value = context.formattedValue;
-                                let sum = 0
-                                let dataArr = context.chart.data.datasets[0].data
-                                dataArr.map(data => {sum += Number(data) })
+        if ((selectedRequirement == 0) || (tableData[index]["title"] == selectedRequirementName)) {
+            testString += `<tr>
+                        <td class="text-center">${tableData[index]["number"]}</td>
+                        <td>${tableData[index]["title"]}</td>`
 
-                                return label + ": " + value + " (" + (value*100/sum).toFixed(1) + '%)'
-                        }
-                    }
-                }
-
+            if (tableData[index]["result"] == "PASSED") {
+                testString += `${passValue(tableData[index]["value"])}</td>
+                        <td class="text-center">${tableData[index]["test number"]}</td>
+                        <td>${tableData[index]["test"]}</td>
+                        ${passBadge}</tr>`
+            }
+            else {
+                testString += `${failValue(tableData[index]["value"])}</td>
+                        <td class="text-center">${tableData[index]["test number"]}</td>
+                        <td>${tableData[index]["test"]}</td>
+                        ${failBadge}</tr>`
             }
         }
-    })
-};
+    }
+    document.getElementById('rqmt verifications').getElementsByTagName('tbody')[0].innerHTML = testString
+}

@@ -1,30 +1,24 @@
-
+/*
+*  --------------------------------------------------------------------------------------
+*   Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
+*   --------------------------------------------------------------------------------------
+*/
 :root {
-    --header-background: #334a65;
+    --header-height: 56px;
 
-
-    --pass-color: #ffffff;
-    --pass-bg-color: #018301;
-    --fail-color: #ffffff;
-    --fail-bg-color: #df3639;
-    --fail-muted-color: #000000;
-    --fail-muted-bg-color: #fbc4c5;
-    --pass-muted-color: #000000;
-    --pass-muted-bg-color: #e9e8e8;
-    --skip-color: #ffffff;
-    --skip-bg-color: #777777;
-
-    --title-color: #646464;
-
+    --header-bg-color: #334a65;
     --main-bg-color: #e6edf5;
     --sidebar-bg-color: #f2f5f7;
     --border-color: #c8c8c8;
+    --table-header-bg-color: #e5e2e2;
 
-    --header-height: 56px;
-    --bs-danger: #ffffff;
-
+    --icon-grey: #646464;
     --text-darkgrey: rgb(16, 16, 16);
-    --table-border: rgb(214, 214, 214);
+    --text-highlight: #fdffc4;
+
+    --pass-bg-color: #018301;
+    --fail-bg-color: #df3639;
+    --skip-bg-color: #777777;
 }
 
 .body {
@@ -34,20 +28,27 @@
 .top-header {
     height: var(--header-height);
     width: 100%;
-    background-color: var(--header-background);
-    color: var(--bs-danger);
-
+    background-color: var(--header-bg-color);
+    color: white;
     padding: 0px;
     position: fixed;
     top: 0px;
     left: 0px;
 }
 
-.top-header span {
+.dashboard-title {
     position: fixed;
-    left: 90px;
+    left: 100px;
+    top: 8px;
     font-size: 24px;
-    padding: 10px 10px 10px 30px;
+    padding: 0px;
+}
+.test-suite-result {
+    position: fixed;
+    left: 100px;
+    top: 15px;
+    font-size: 18px;
+    padding: 3px 20px 5px 20px;
 }
 
 .main-view {
@@ -121,37 +122,21 @@
 }
 
 .badge-pass {
-    color: var(--pass-color);
+    color: white;
     background-color: var(--pass-bg-color);
     border-radius: 2px;
 }
 
 .badge-fail {
-    color: var(--fail-color);
+    color: white;
     background-color: var(--fail-bg-color);
     border-radius: 2px;
 }
 
 .badge-skip {
-    color: var(--skip-color);
+    color: white;
     background-color: var(--skip-bg-color);
     border-radius: 2px;
-}
-
-.badge-pass-value {
-    color: var(--pass-muted-color);
-    background-color: var(--pass-muted-bg-color);
-    display: inline-block;
-}
-
-.badge-fail-value {
-    color: var(--fail-muted-color);
-    background-color: var(--fail-muted-bg-color);
-}
-
-.skip-color {
-    color: #333;
-    background-color: green;
 }
 
 .table {
@@ -174,29 +159,27 @@ table tbody.big tr td {
 }
 
 .table>tbody>tr.active>td {
-    background: #fdffc4;
+    background: var(--text-highlight);
 }
 
-/* adjust bs var */
-
 table th {
-    background-color: #e5e2e2 !important;
+    background-color: var(--table-header-bg-color) !important;
 }
 
 .btn-outline-secondary {
     --bs-btn-color: var(--text-darkgrey);
-    --bs-btn-border-color: var(--header-background);
+    --bs-btn-border-color: var(--header-bg-color);
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: var(--text-darkgrey);
-    --bs-btn-hover-border-color: var(--header-background);
+    --bs-btn-hover-border-color: var(--header-bg-color);
     --bs-btn-focus-shadow-rgb: 108, 117, 125;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: var(--header-background);
-    --bs-btn-active-border-color: var(--header-background);
+    --bs-btn-active-bg: var(--header-bg-color);
+    --bs-btn-active-border-color: var(--header-bg-color);
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     --bs-btn-disabled-color: var(--text-darkgrey);
     --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: var(--header-background);
+    --bs-btn-disabled-border-color: var(--header-bg-color);
     --bs-gradient: none;
     min-width: 110px;
     border-left: 0px;
@@ -204,22 +187,21 @@ table th {
 
 .btn-outline-secondary-left {
     --bs-btn-color: var(--text-darkgrey);
-    --bs-btn-border-color: var(--header-background);
+    --bs-btn-border-color: var(--header-bg-color);
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: var(--text-darkgrey);
-    --bs-btn-hover-border-color: var(--header-background);
+    --bs-btn-hover-border-color: var(--header-bg-color);
     --bs-btn-focus-shadow-rgb: 108, 117, 125;
     --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: var(--header-background);
-    --bs-btn-active-border-color: var(--header-background);
+    --bs-btn-active-bg: var(--header-bg-color);
+    --bs-btn-active-border-color: var(--header-bg-color);
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     --bs-btn-disabled-color: var(--text-darkgrey);
     --bs-btn-disabled-bg: transparent;
-    --bs-btn-disabled-border-color: var(--header-background);
+    --bs-btn-disabled-border-color: var(--header-bg-color);
     --bs-gradient: none;
     min-width: 110px;
 }
-
 
 .sort-list>thead {
     cursor: pointer;
