@@ -403,6 +403,8 @@ class NvmeReport(InfoReport):
 
         if title == "":
             title = NvmeReport._DEFAULT_TITLE
+        else:
+            title = title + " Test Suite"
         if description == "":
             self.description = NvmeReport._DEFAULT_DESCRIPTION
         else:

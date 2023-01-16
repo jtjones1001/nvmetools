@@ -14,3 +14,7 @@ readnvme
 --------
 .. automodule:: nvmetools.console.readnvme
 
+viewnvme
+--------
+.. automodule:: nvmetools.console.viewnvme
+

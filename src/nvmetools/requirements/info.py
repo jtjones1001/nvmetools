@@ -287,12 +287,17 @@ def review_wear_values(step):
 
 def no_errors_reading_samples(step, info_samples):
 
+    if info_samples.return_code == 0:
+        result = "PASS"
+    else:
+        result = "FAIL"
+
     verification(
         rqmt_id=31,
         step=step,
-        title="Number of errors reading samples shall be 0",
+        title="No errors shall occur reading information samples",
         verified=(info_samples.return_code == 0),
-        value=info_samples.return_code,
+        value=result,
     )
 
 

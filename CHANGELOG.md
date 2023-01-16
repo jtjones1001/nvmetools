@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.5.0
+
+ Added viewnvme command.  Several bug fixes and improvements in the test cases and reporting.
+
+### Improvements
+- Added viewnvme command
+- Improvements and bug fixes in the html resources
+- Bug fixes in the test cases, reporting, and framework
+
+
 ## v0.4.3
 
  Updated to support PCIe gen4/5 devices, several bug fixes in framework to stop on fail

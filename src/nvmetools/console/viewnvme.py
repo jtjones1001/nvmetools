@@ -9,8 +9,10 @@ from the OS.
 
 **Command Line Parameters**
     --nvme, -n      Integer NVMe device number, can be found using listnvme.
+    --info, -i      Optional file to read information from (instead of from device)
+    --compare, -c   Optional file that contain information to compare against
 
-The following log files are saved to the working directory:
+The following log files are saved to the working directory under viewnvme:
 
     - readnvme.log contains the console output
     - nvme.info.json contains the NVMe parameters in json format
@@ -26,8 +28,6 @@ The following log files are saved to the working directory:
     .. code-block:: python
 
         viewnvme  --nvme 0
-
-    * `Example html output (info.html) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_hex/readnvme.log>`_
 
 """  # noqa: E501
 import argparse

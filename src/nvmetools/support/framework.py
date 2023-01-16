@@ -821,7 +821,9 @@ def update_suite_summary(state):
     # update result if not aborted
 
     if state["result"] != ABORTED:
-        test_fails = sum(ver["result"] is not PASSED for ver in state["tests"])
+        test_fails  = sum(ver["result"] is FAILED for ver in state["tests"])
+        test_fails += sum(ver["result"] is ABORTED for ver in state["tests"])
+
         if test_fails == 0 and not state["force fail"]:
             state["result"] = PASSED
         else:
