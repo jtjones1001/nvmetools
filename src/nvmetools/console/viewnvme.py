@@ -29,6 +29,8 @@ The following log files are saved to the working directory under viewnvme:
 
         viewnvme  --nvme 0
 
+   * `Example info.html <https://htmlpreview.github.io/?https://raw.githubusercontent.com/jtjones1001/nvmetools/main/docs/examples/viewnvme/info.html>`_
+
 """  # noqa: E501
 import argparse
 import logging
