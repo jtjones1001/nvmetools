@@ -11,8 +11,8 @@ Click these links for examples of the information and test reporting provided by
 - `NVMe Information <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme/readnvme.log>`_
 - `NVMe Information (all parameters) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_all/readnvme.log>`_
 - `NVMe Information (hex format) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/readnvme_hex/readnvme.log>`_
-- `Test Dashboard <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/03da67a81119e3b1d0a366e36c964796fd3a5683/docs/examples/big_demo/dashboard.html>`_
-- `Test Report <https://raw.githubusercontent.com/jtjones1001/nvmetools/03da67a81119e3b1d0a366e36c964796fd3a5683/docs/examples/big_demo/report.pdf>`_
+- `Test Dashboard <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/d680e14fbbd71ede2d5ff0a154e40e2dfe467b43/docs/examples/big_demo/dashboard.html>`_
+- `Test Report <https://raw.githubusercontent.com/jtjones1001/nvmetools/d680e14fbbd71ede2d5ff0a154e40e2dfe467b43/docs/examples/big_demo/report.pdf>`_
 
 .. warning::
    The NVMe Test Cases provided in this release are examples only.
