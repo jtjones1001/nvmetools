@@ -45,8 +45,8 @@ Command Line Parameters
 
         testnvme  big_demo  --nvme 1 --volume g:
 
-    - `big_demo report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/big_demo/report.pdf>`_
-    - `big_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/big_demo/dashboard.html>`_
+    - `big_demo report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/d680e14fbbd71ede2d5ff0a154e40e2dfe467b43/docs/examples/big_demo/report.pdf>`_
+    - `big_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/d680e14fbbd71ede2d5ff0a154e40e2dfe467b43/docs/examples/big_demo/dashboard.html>`_
 
 """  # noqa: E501
 import argparse
