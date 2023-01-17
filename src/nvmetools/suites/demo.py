@@ -77,7 +77,7 @@ def short_demo(args):
 
     Test suite with a few Test Cases that run very quickly for short demonstrations.
     """
-    with TestSuite("Short demo", short_demo.__doc__, **args) as suite:
+    with TestSuite("Short Demo", short_demo.__doc__, **args) as suite:
 
         info = tests.suite_start_info(suite)
 

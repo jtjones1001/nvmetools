@@ -40,7 +40,7 @@ in commercial computers (e.g. laptops).
 
 Change History
 --------------
-- `CHANGELOG <https://github.com/jtjones1001/nvmetools/blob/03da67a81119e3b1d0a366e36c964796fd3a5683/CHANGELOG.md>`_
+- `CHANGELOG <https://raw.githubusercontent.com/jtjones1001/nvmetools/main/CHANGELOG.md>`_
 
 
 .. Hidden TOCs
