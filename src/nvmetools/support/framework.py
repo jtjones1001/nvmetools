@@ -633,7 +633,7 @@ class TestSuite:
         else:
             log = start_logger(self.directory, logging.DEBUG, "console.log")
 
-        if not os.path.exists(self.volume):
+        if hasattr(self, "volume") and not os.path.exists(self.volume):
             self.stop(f"Volume {self.volume} does not exist")
 
         check_nvmecmd_permissions()
@@ -788,7 +788,9 @@ def update_suite_summary(state):
 
     state["summary"]["tests"]["total"] = len(state["tests"])
     state["summary"]["tests"]["pass"] = sum(test["result"] == PASSED for test in state["tests"])
-    state["summary"]["tests"]["fail"] = sum(test["result"] == FAILED for test in state["tests"])
+    state["summary"]["tests"]["fail"] = sum(test["result"] == FAILED for test in state["tests"]) + sum(
+        test["result"] == ABORTED for test in state["tests"]
+    )
     state["summary"]["tests"]["skip"] = sum(test["result"] == SKIPPED for test in state["tests"])
 
     for test in state["tests"]:
@@ -821,7 +823,7 @@ def update_suite_summary(state):
     # update result if not aborted
 
     if state["result"] != ABORTED:
-        test_fails  = sum(ver["result"] is FAILED for ver in state["tests"])
+        test_fails = sum(ver["result"] is FAILED for ver in state["tests"])
         test_fails += sum(ver["result"] is ABORTED for ver in state["tests"])
 
         if test_fails == 0 and not state["force fail"]:

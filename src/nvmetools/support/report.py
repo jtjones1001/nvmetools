@@ -35,7 +35,7 @@ import numpy as np
 
 import nvmetools.reports as pdf_reports
 from nvmetools import RESOURCE_DIRECTORY, RESULTS_FILE, TEST_SUITE_DIRECTORY
-from nvmetools.support.conversions import BYTES_IN_GB, KIB_TO_GB, MS_IN_SEC, as_int, as_io, as_float
+from nvmetools.support.conversions import BYTES_IN_GB, KIB_TO_GB, MS_IN_SEC, as_float, as_int, as_io
 from nvmetools.support.custom_reportlab import (
     FAIL_COLOR,
     FAIL_TABLE_TEXT_STYLE,
@@ -1604,7 +1604,7 @@ def create_dashboard(results_directory, show_dashboard=True):
                         mystring += "const compareInfo = true;"
                     else:
                         mystring += "const compareInfo = null;"
-                    mystring += f"const compareSystemData = null;\n\n"
+                    mystring += "const compareSystemData = null;\n\n"
                     parameters = []
                     for name, value in start_parameters.items():
 
@@ -1752,8 +1752,8 @@ def create_info_dashboard(directory, info_file, compare_info_file):
                         mystring += f"const compareSystemData = {json.dumps(compare_metadata['system'], sort_keys=False, indent=4)};\n\n"
                         mystring += f"\n const compareInfo = {json.dumps(compare_info_data, sort_keys=False, indent=4)};\n\n"
                     else:
-                        mystring += f"const compareSystemData = null;\n\n"
-                        mystring += f"\n const compareInfo = null;\n\n"
+                        mystring += "const compareSystemData = null;\n\n"
+                        mystring += "const compareInfo = null;\n\n"
 
                     mystring += (
                         f"const parameters = {json.dumps(final_parameters, sort_keys=False, indent=4)};\n\n"

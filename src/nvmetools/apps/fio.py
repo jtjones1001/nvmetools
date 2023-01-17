@@ -72,8 +72,8 @@ class _FioMissing(Exception):
         self.nvmetools = True
         error_msg = " fio utility could not be found.\n\n"
         error_msg += f" Expected fio utility here: {FIO_EXEC}\n\n"
-        error_msg += f"    Install the fio utility to above location.\n"
-        error_msg += f"    fio project:  https://github.com/axboe/fio\n"
+        error_msg += "    Install the fio utility to above location.\n"
+        error_msg += "    fio project:  https://github.com/axboe/fio\n"
         super().__init__(error_msg)
 
 

@@ -41,6 +41,10 @@ def functional(args):
     Args:
         args: dictionary of NVMe parameters passed from testnvme command
     """
+    if not is_windows_admin():
+        print("This Test Suite must be run as Administrator.")
+        sys.exit(1)
+
     with TestSuite("Functional", functional.__doc__, **args) as suite:
 
         info = tests.suite_start_info(suite)

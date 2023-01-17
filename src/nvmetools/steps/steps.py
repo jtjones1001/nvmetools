@@ -21,12 +21,13 @@ easily be imported and run as shown here.
 
 """
 import os
-import psutil
 import time
 
 from nvmetools import Info, InfoSamples, TestStep, log, rqmts
 from nvmetools.apps.fio import FioFiles
 from nvmetools.support.conversions import BYTES_IN_GB
+
+import psutil
 
 
 def test_start_info(test):

@@ -230,10 +230,47 @@ def simple():
     assert suite.state['summary']['tests']['fail'] == 2
     assert suite.state['summary']['tests']['pass'] == 2
     assert suite.state['summary']['verifications']['total'] == 2
+    assert suite.state['result'] == "FAILED"
+
+def simple_skip():
+
+    with TestSuite("bvt simple skip") as suite:
+        suite.create_reports=False
+        with TestCase(suite,"test1") as test:
+            test.skip()
+        with TestCase(suite,"test2") as test:
+            test.skip("message")
+        with TestCase(suite,"test3") as test:
+            with TestStep(test,"step1") as step:
+                rqmts._force_pass(step)
+
+    assert suite.state['summary']['tests']['total'] == 3
+    assert suite.state['summary']['tests']['fail'] == 0
+    assert suite.state['summary']['tests']['pass'] == 1
+    assert suite.state['summary']['verifications']['total'] == 1
+    assert suite.state['result'] == "PASSED"
+
+def simple_abort():
+
+    with TestSuite("bvt simple abort") as suite:
+        suite.create_reports=False
+        with TestCase(suite,"test1") as test:
+            with TestStep(test,"step1") as step:
+                rqmts._force_pass(step)
+                a = 1 / 0
+
+    assert suite.state['summary']['tests']['total'] == 1
+    assert suite.state['summary']['tests']['fail'] == 1
+    assert suite.state['summary']['tests']['pass'] == 0
+    assert suite.state['summary']['verifications']['total'] == 1
+    assert suite.state['result'] == "FAILED"
 
 verify_stop_on_fail()
 verify_step_stop()
 verify_test_stop()
 verify_suite_stop()
 simple()
+simple_skip()
+simple_abort()
+
 

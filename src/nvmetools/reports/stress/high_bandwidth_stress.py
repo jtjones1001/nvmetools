@@ -51,7 +51,7 @@ def report(report, test_result):
     report.add_table(table_rows, [125, 125, 125, 125])
 
     report.add_paragraph(
-        f"""This temperature plot includes idle time before and after the IO stress. In this plot,
+        """This temperature plot includes idle time before and after the IO stress. In this plot,
         verify the temperature behaves as expected.  For details see <u>Analyze temperature and
         bandwidth plots with nvmecmd</u> [5]"""
     )
