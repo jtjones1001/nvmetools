@@ -18,21 +18,28 @@ The first test case in every Test Suite is suite_start_info and the last test ca
 
 Firmware
 --------
-.. automodule:: nvmetools.suites.firmware
+This suite runs Test Cases to verify firmware update, firmware activate, firmware download,
+and firmware security features.
 
 Functional
 ----------
-.. automodule:: nvmetools.suites.functional
-.. automodule:: nvmetools.suites.stress
+This suite runs Test Cases to verify the admin commands, SMART attrbiutes, timestamp, and
+short self-test.
+
+Health
+------
+Check NVMe is a short Test Suite that verifies drive health and wear by running the drive
+diagnostic, reviewing SMART data and Self-Test history.
 
 Performance
 -----------
-.. automodule:: nvmetools.suites.performance
+Measures IO peformance for several conditions including short and long bursts of reads
+and writes.
 
 Selftest
 --------
-.. automodule:: nvmetools.suites.health
-.. automodule:: nvmetools.suites.selftest
+This suite runs Test Cases to verify the short and extended versions of the self-test.
 
-
-
+Stress
+------
+This suite runs Test Cases to stress the drive in several different ways
