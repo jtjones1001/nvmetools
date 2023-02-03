@@ -9,13 +9,8 @@ import platform
 import time
 
 from nvmetools import TestSuite, tests
-from nvmetools.support.conversions import is_windows_admin
 
-if not is_windows_admin():
-    raise Exception("This Test Suite must be run as Administrator.")
-
-
-with TestSuite("Big Demo", __doc__) as suite:
+with TestSuite("Big Demo", __doc__, winadmin=True) as suite:
 
     info = tests.suite_start_info(suite)
     tests.admin_commands(suite)

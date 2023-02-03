@@ -53,6 +53,18 @@ STARTED = "STARTED"
 
 RESULTS_FILE = "result.json"
 
+class _NoAdmin(Exception):
+    def __init__(self):
+        self.code = 70
+        self.nvmetools = True
+        super().__init__(" Test Suite must be run as admin.")
+
+class _NoWinAdmin(Exception):
+    def __init__(self):
+        self.code = 71
+        self.nvmetools = True
+        super().__init__(" Test Suite must be run as Windows administrator.")
+
 
 class TestStep:
     stop_on_fail = False
@@ -483,6 +495,9 @@ class TestSuite:
     stop_on_fail = False
     uid = None
     result_directory = TEST_RESULT_DIRECTORY
+    admin = False
+    winadmin = False
+
 
     __force_fail = False
 
@@ -566,6 +581,11 @@ class TestSuite:
 
         for item in kwargs.items():
             self.__setattr__(item[0], item[1])
+
+        if self.admin:
+            raise _NoAdmin()
+        if platform.system == "Windows" and self.winadmin:
+            raise _NoWinAdmin()
 
         description_lines = description.split("\n")
         self._description = description_lines[0]
