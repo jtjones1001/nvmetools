@@ -13,15 +13,12 @@ from nvmetools.reports.performance import (
     big_file_writes,
     data_compression,
     data_deduplication,
-    file_writes,
     idle_latency,
     long_burst_performance,
     long_burst_performance_full_drive,
-    long_burst_performance_retrim,
     read_buffer,
     short_burst_performance,
     short_burst_performance_full_drive,
-    short_burst_performance_retrim,
 )
 from nvmetools.reports.selftest import extended_selftest, short_diagnostic, short_selftest
 from nvmetools.reports.smart import (
