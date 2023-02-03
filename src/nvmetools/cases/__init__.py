@@ -33,14 +33,11 @@ from nvmetools.cases.performance.big_file_writes import big_file_writes
 from nvmetools.cases.performance.data_compression import data_compression
 from nvmetools.cases.performance.data_deduplication import data_deduplication
 from nvmetools.cases.performance.data_deduplication import data_deduplication
-from nvmetools.cases.performance.file_writes import file_writes
 from nvmetools.cases.performance.long_burst_performance import long_burst_performance
 from nvmetools.cases.performance.long_burst_performance_full import long_burst_performance_full
-from nvmetools.cases.performance.long_burst_performance_retrim import long_burst_performance_retrim
 from nvmetools.cases.performance.read_buffer import read_buffer
 from nvmetools.cases.performance.short_burst_performance import short_burst_performance
 from nvmetools.cases.performance.short_burst_performance_full import short_burst_performance_full
-from nvmetools.cases.performance.short_burst_performance_retrim import short_burst_performance_retrim
 from nvmetools.cases.selftest.extended_selftest import extended_selftest
 from nvmetools.cases.selftest.short_diagnostic import short_diagnostic
 from nvmetools.cases.selftest.short_selftest import short_selftest
