@@ -7,12 +7,14 @@ This package uses the following:
    - black formatter with the wider line length defined in pyproject.toml
    - flakeheaven linter with custom settings defined in pyproject.toml
 
-To update version update both pyproject.toml and docs/conf.py
+To disable pycache...
+   export PYTHONDONTWRITEBYTECODE=1
 
-To release package to test pypi:
+To create a package:
+   Update version in both pyproject.toml and docs/conf.py
+   find . -name ".DS_Store" -delete print  (OS-X only)
    python3 -m build
-   twine check dist/*
-   twine upload -r testpypi dist/*
+   twine upload -r testpypi dist/* or twine upload dist/*
 
 To update the Read The Docs (RTD) documentation (https://readthedocs.org):
    - update the files in docs directory and RTD will build the documentation when checked into github
@@ -24,14 +26,12 @@ To update the Read The Docs (RTD) documentation (https://readthedocs.org):
       - The Google Docstring format.  Style Guide:  http://google.github.io/styleguide/pyguide.html
       - Sphinx extension: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 
-To disable pycache in venv...
-   export PYTHONDONTWRITEBYTECODE=1
-
 To change firefox view mode for PDF report:
    about:config, pdfjs.defaultZoomValue to page-fit
 
 To install fio:
    Fedora:  sudo yum -y install fio
+   Ubuntu:  sudo apt -y install fio
 
 """
 import os
@@ -48,6 +48,7 @@ except Exception:
     __version__ = "N/A"
 
 TEST_SUITE_DIRECTORY = os.path.expanduser("~/Documents/nvmetools/suites")
+TEST_RESULT_DIRECTORY = os.path.expanduser("~/Documents/nvmetools/results")
 USER_INFO_DIRECTORY = os.path.expanduser("~/Documents/nvmetools/drives")
 
 PACKAGE_DIRECTORY = os.path.dirname(__file__)

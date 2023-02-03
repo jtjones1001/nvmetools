@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.5.1
+
+### Improvements
+- Removed pycache and hidden OS files from the build
+- Updated nvmecmd to version that supports sanitize
+- Changed testnvme so user can easily add their own test suites
+
 ## v0.5.0
 
  Added viewnvme command.  Several bug fixes and improvements in the test cases and reporting.

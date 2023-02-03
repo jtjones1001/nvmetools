@@ -7,7 +7,7 @@
 
 Runs an NVME Test Suite defined in the nvmetools.suite package.
 
-Logs results to a directory in ~/Documents/nvmetools/suites/<suite>.  The directory name is
+Logs results to a directory in ~/Documents/nvmetools/results/<suite>.  The directory name is
 defined by the uid command line parameter.  If uid was not specified the directory name is
 based on the date and time the command was run.
 
@@ -50,8 +50,11 @@ Command Line Parameters
 
 """  # noqa: E501
 import argparse
+import os
 import sys
 
+
+from nvmetools import TestSuite, TestCase, TestStep, tests, steps, rqmts, TEST_SUITE_DIRECTORY, PACKAGE_DIRECTORY
 import nvmetools.suites as suites
 import nvmetools.support.console as console
 
@@ -101,15 +104,33 @@ def main():
         parser.add_argument("-i", "--uid", help="unique id for directory name")
 
         args = vars(parser.parse_args())
+        args["result directory"] = os.path.expanduser("~/Documents/nvmetools/results")
 
-        suite_function = getattr(suites, args["suite"], None)
-        if suite_function is None:
+        for item in args.items():
+            setattr(TestSuite, item[0], item[1])
+
+        filename = f"{args['suite']}.py"
+
+        # find the test suite file.
+
+        filepath = os.path.abspath(filename)
+        if not os.path.exists(filepath):
+            filepath = os.path.join(TEST_SUITE_DIRECTORY, filename)
+        if not os.path.exists(filepath):
+            filepath = os.path.join(PACKAGE_DIRECTORY, "suites", filename)
+        if not os.path.exists(filepath):
             print(f"FATAL ERROR: Test Suite {args['suite']} was not found")
             sys.exit(1)
-        else:
-            suite_function(args)
 
-        sys.exit(0)
+        with open(filepath, "r") as file_object:
+            code = file_object.read()
+
+        global suite
+        exec(code, globals())
+        if suite.state["result"] == "PASSED":
+            sys.exit(0)
+        else:
+            sys.exit(2)
 
     except Exception as e:
         console.exit_on_exception(e)

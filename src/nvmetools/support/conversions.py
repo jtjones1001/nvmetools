@@ -67,7 +67,7 @@ def as_duration(seconds):
 
 
 def as_io(description):
-    """Convert string into a dictionar of IO payload parameters."""
+    """Convert string into a dictionary of IO payload parameters."""
     try:
         io = {}
 

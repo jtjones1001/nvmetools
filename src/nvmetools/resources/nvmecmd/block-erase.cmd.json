@@ -1,0 +1,11 @@
+{
+  "command type": "sanitize",
+  "short description": "Sanitize block erase",
+  "display sample interval in sec": 2,
+  "sanitize type": "block",
+  "read command times": true,
+  "read smart data": true,
+  "high priority": false,
+  "high resolution timer": false
+
+}

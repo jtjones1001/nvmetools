@@ -12,5 +12,5 @@ from nvmetools.steps.steps import (
     test_start_info,
     verify_empty_drive,
     verify_full_drive,
-    wait_for_idle,
+    idle_wait,
 )

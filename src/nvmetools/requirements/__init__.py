@@ -46,6 +46,7 @@ from nvmetools.requirements.info import (
 from nvmetools.requirements.performance import (
     random_read_4k_qd1_bandwidth,
     random_write_4k_qd1_bandwidth,
+    review_first_burst_bandwidth,
     review_io_bandwidth,
     review_power_entry_timeout,
     review_power_exit_latency,

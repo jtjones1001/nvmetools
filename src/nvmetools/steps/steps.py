@@ -185,7 +185,7 @@ def verify_full_drive(test, volume, info):
         rqmts.verify_full_drive(step, free_space, disk_size)
 
 
-def start_info_samples(test, cmd_file="state", delay_sec=10):
+def start_info_samples(test, cmd_file="state", delay_sec=10, interval_ms=1000):
     """Start sampling SMART and power state info every second.
 
     Args:
@@ -193,13 +193,15 @@ def start_info_samples(test, cmd_file="state", delay_sec=10):
         cmd_file: cmd file to use for reading samples
         delay_sec: Seconds to delay before returning, guarantees some sample
     """
-    with TestStep(test, "Sample info", "Start sampling SMART and power state info every second.") as step:
+    with TestStep(
+        test, "Sample info", f"Start sampling SMART and power state info every {interval_ms/1000:0.1f} seconds."
+    ) as step:
         info_samples = InfoSamples(
             test.suite.nvme,
             directory=step.directory,
             wait=False,
             samples=100000,
-            interval=1000,
+            interval=interval_ms,
             cmd_file=cmd_file,
         )
         log.debug(f"Waiting {delay_sec} seconds to start IO")
@@ -222,7 +224,7 @@ def stop_info_samples(test, info_samples, delay_sec=10):
         rqmts.no_errors_reading_samples(step, info_samples)
 
 
-def wait_for_idle(test, wait_sec=180):
+def idle_wait(test, wait_sec=180):
     """Wait for drive to return to idle.
 
     Args:

@@ -34,7 +34,7 @@ def read_disturb_stress(suite):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_small_file(test)
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         # Write the file to use.  Write and verify the target file. Write 2x the file size so that

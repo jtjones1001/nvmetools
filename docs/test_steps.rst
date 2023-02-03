@@ -17,4 +17,4 @@ IO Data File (fio)
 
 Wait
 ----
-.. autofunction:: wait_for_idle
+.. autofunction:: idle_wait

@@ -28,7 +28,7 @@ def temperature_cycle_stress(suite, cycles=2):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_stress_file(test, float(start_info.parameters["Size"]))
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         #  Run cycles of IO and idle

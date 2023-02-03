@@ -29,7 +29,7 @@ def high_bandwidth_stress(suite, run_time_sec=180):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_stress_file(test, float(start_info.parameters["Size"]))
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         #  Run high bandwidth IO. High bandwidth is achieved using sequential addressing, high

@@ -38,7 +38,7 @@ def short_burst_performance_full(suite):
         fio_file = steps.get_fio_performance_file(test)
 
         steps.verify_full_drive(test, suite.volume, start_info)
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         # Run short bursts of the four different IO patterns at different block sizes and queue depths

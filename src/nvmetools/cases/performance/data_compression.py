@@ -28,7 +28,7 @@ def data_compression(suite):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_performance_file(test)
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         #  Run IO with compressible and incompressible data

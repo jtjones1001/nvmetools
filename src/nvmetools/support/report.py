@@ -1156,12 +1156,15 @@ class NvmeReport(InfoReport):
         else:
             self._add_bandwidth_plot(time_data, None, read_data, vlines=vlines, height=height)
 
-    def add_bigfile_write_plot(self, data_dir, file_size=None):
+    def add_bigfile_write_plot(self, data_dir, file_size=None, offset=0, height=2):
         """Plot bandwidth for cont writes including file markers"""
         time_data = []
         write_data = []
         vlines = []
-        file_write_data = 0
+        if file_size is None:
+            file_write_data = 0
+        else:
+            file_write_data = file_size * offset / BYTES_IN_GB
 
         with open(os.path.join(data_dir, "nvme_attributes.csv"), newline="") as file_object:
             rows = csv.reader(file_object)
@@ -1171,6 +1174,7 @@ class NvmeReport(InfoReport):
                 write_data.append(float(row[4]))
 
                 if file_size is not None:
+
                     if file_write_data == 0 and float(row[4]) != 0:
                         vlines.append(float(row[0]))
 
@@ -1180,9 +1184,113 @@ class NvmeReport(InfoReport):
                         file_write_data = 0
 
         if file_size is None:
-            self._add_bandwidth_plot(time_data, write_data, None)
+            self._add_bandwidth_plot(time_data, write_data, None, height=height)
         else:
-            self._add_bandwidth_plot(time_data, write_data, None, vlines=vlines)
+            self._add_bandwidth_plot(time_data, write_data, None, vlines=vlines, height=height)
+
+    def add_bigfile_bar_chart(self, labels, values):
+        """Plot bar graphs for IO bursts commands."""
+        fig, ax = plt.subplots(figsize=(6, 1.5))
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(False)
+        y_position = [i for i, _ in enumerate(labels)]
+        bars = plt.barh(y_position, values)
+        ax.bar_label(bars, padding=2, fmt="%.3f")
+        plt.yticks(y_position, labels)
+        plt.xlabel("Bandwidth (GB/s)")
+        self._elements.append(convert_plot_to_image(fig, ax))
+        plt.close("all")
+
+    def add_bigfile_bandwidth_plot(self, fio_bw_log, time_limit=None, width=6.5, height=2):
+        """Plot bandwidth from fio bandwidth logfile."""
+        time_data = []
+        bw_data = []
+        cum_data = []
+        total_data = 0
+        total_time = 0
+
+        with open(fio_bw_log, newline="") as file_object:
+            rows = csv.reader(file_object)
+            for row in rows:
+                row_time = int(row[0]) / MS_IN_SEC
+                if time_limit and row_time > time_limit:
+                    break
+
+                time_data.append(row_time)
+                bw_data.append(int(row[1]) * KIB_TO_GB)
+
+                sample_time = (int(row[0]) - total_time) / MS_IN_SEC
+                sample_data = int(row[1]) * KIB_TO_GB * sample_time
+                total_data += sample_data
+                total_time += sample_time
+
+                cum_data.append(total_data)
+
+        fig, ax = plt.subplots(figsize=(6, 2))
+
+        ax.ticklabel_format(style="plain", axis="y")
+        ax.set_xlabel("Time (Sec)")
+        ax.set_ylabel("Bandwidth (GB/s)")
+
+        ax.plot(time_data, bw_data)
+
+        ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
+
+        self._elements.append(convert_plot_to_image(fig, ax))
+        plt.close("all")
+
+        fig, ax = plt.subplots(figsize=(6, 2))
+        ax.ticklabel_format(style="plain", axis="y")
+        ax.set_xlabel("Time (Sec)")
+        ax.set_ylabel("Data Written (GB)")
+        ax.plot(time_data, cum_data)
+        ax.get_yaxis().set_label_coords(self._LABEL_X, 0.5)
+        self._elements.append(convert_plot_to_image(fig, ax))
+        plt.close("all")
+
+    def get_bigfile_bandwidth_info(self, fio_bw_log, start=0, end=1e9):
+        """Plot bandwidth from fio bandwidth logfile."""
+        file_data = 0
+        file_time = 0
+
+        cache_data = 0
+        cache_time = 0
+
+        total_data = 0
+        total_time = 0
+
+        with open(fio_bw_log, newline="") as file_object:
+            rows = csv.reader(file_object)
+            for row in rows:
+
+                sample_time = int(row[0]) / MS_IN_SEC - total_time
+                sample_data = int(row[1]) * KIB_TO_GB * sample_time
+                total_data += sample_data
+                total_time += sample_time
+
+                if total_data >= start and total_data < end:
+                    file_data += sample_data
+                    file_time += sample_time
+
+            average_bandwidth = file_data / file_time
+            cache_limit = average_bandwidth * 2
+
+            for row in rows:
+
+                sample_time = int(row[0]) / MS_IN_SEC - total_time
+                sample_data = int(row[1]) * KIB_TO_GB * sample_time
+                total_data += sample_data
+                total_time += sample_time
+
+                if total_data >= start and total_data < end:
+                    if int(row[1]) * KIB_TO_GB > cache_limit:
+                        cache_data += sample_data
+                        cache_time += sample_time
+
+            average_cache_bandwidth = cache_data / cache_time
+
+        return (average_bandwidth, average_cache_bandwidth, file_data, cache_data)
 
     def add_description(self, text):
         self.add_subheading("DESCRIPTION")
@@ -1470,7 +1578,7 @@ class NvmeReport(InfoReport):
             self._elements.append(convert_plot_to_image(fig, ax))
             plt.close("all")
 
-    def add_temperature_plot(self, data_dir, ymin=20, width=6.5, height=2.5):
+    def add_temperature_plot(self, data_dir, ymin=20, width=6.5, height=2):
         """Plot temperature data with throttle limits shown."""
         times, temps, write, read = self._get_info_attributes(data_dir)
         fig, ax = plt.subplots(figsize=(width, height))

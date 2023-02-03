@@ -40,7 +40,7 @@ def background_smart(suite):
         # -----------------------------------------------------------------------------------------
         # Wait to ensure drive is back to idle temperature and no garbage collection underway
         # -----------------------------------------------------------------------------------------
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         # SMART baseline
@@ -103,7 +103,7 @@ def background_smart(suite):
         # -----------------------------------------------------------------------------------------
         # Wait to ensure drive is back to idle temperature and no garbage collection underway
         # -----------------------------------------------------------------------------------------
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         # Run fio and Get Log Page 2 concurrently.

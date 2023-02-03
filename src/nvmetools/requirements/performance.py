@@ -104,3 +104,14 @@ def review_io_bandwidth(step):
         verified=False,
         value="REVIEW",
     )
+
+
+def review_first_burst_bandwidth(step):
+
+    verification(
+        rqmt_id=57,
+        step=step,
+        title="Bandwidth of first IO write burst should match write cache bandwidth",
+        verified=False,
+        value="REVIEW",
+    )

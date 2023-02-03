@@ -26,7 +26,7 @@ def big_file_reads(suite):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
         fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"]))
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         test.data["io size"] = int(FILE_READS * fio_file.file_size)
         test.data["disk size"] = float(start_info.parameters["Size"])

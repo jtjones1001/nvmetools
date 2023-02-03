@@ -38,7 +38,7 @@ import shutil
 import time
 
 
-from nvmetools import DEFAULT_INFO_DIRECTORY, TEST_SUITE_DIRECTORY, USER_INFO_DIRECTORY, __version__
+from nvmetools import DEFAULT_INFO_DIRECTORY, TEST_RESULT_DIRECTORY, USER_INFO_DIRECTORY, __version__
 from nvmetools.apps.fio import check_fio_installation
 from nvmetools.apps.nvmecmd import check_nvmecmd_permissions
 from nvmetools.support.conversions import as_duration, is_admin
@@ -482,6 +482,7 @@ class TestSuite:
     show_dashboard = True
     stop_on_fail = False
     uid = None
+    result_directory = TEST_RESULT_DIRECTORY
 
     __force_fail = False
 
@@ -589,7 +590,7 @@ class TestSuite:
             time.sleep(1)
 
         self.directory = os.path.realpath(
-            os.path.join(TEST_SUITE_DIRECTORY, title.lower().replace(" ", "_"), self.uid)
+            os.path.join(TEST_RESULT_DIRECTORY, title.lower().replace(" ", "_"), self.uid)
         )
         if os.path.exists(self.directory):
             shutil.rmtree(self.directory)

@@ -33,7 +33,7 @@ def long_burst_performance_full(suite):
         fio_file = steps.get_fio_performance_file(test)
 
         steps.verify_full_drive(test, suite.volume, start_info)
-        steps.wait_for_idle(test)
+        steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------
         # Multiple Steps : Run the bursts with the target IO types

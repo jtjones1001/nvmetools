@@ -55,7 +55,7 @@ FIO_VERIFY_FILE = "fio_verify.bin"
 FIO_PERFORMANCE_FILE = "fio_performance.bin"
 
 
-BIG_FILE_SIZE = 0.90
+BIG_FILE_SIZE = 0.95
 SMALL_FILE_SIZE = 1024 * 1024 * 1024
 
 if "Windows" == platform.system():
@@ -343,9 +343,10 @@ class FioFiles:
     def __init__(self, directory, volume):
         self.directory = directory
         self.volume = volume
-        self.bigfile_path = os.path.join(_get_fio_target_directory(volume), FIO_BIG_FILE)
-        self.verifyfile_path = os.path.join(_get_fio_target_directory(volume), FIO_VERIFY_FILE)
-        self.performancefile_path = os.path.join(_get_fio_target_directory(volume), FIO_PERFORMANCE_FILE)
+        self.fio_directory =  _get_fio_target_directory(self.volume)
+        self.bigfile_path = os.path.join(self.fio_directory, FIO_BIG_FILE)
+        self.verifyfile_path = os.path.join(self.fio_directory, FIO_VERIFY_FILE)
+        self.performancefile_path = os.path.join(self.fio_directory, FIO_PERFORMANCE_FILE)
 
     def create(self, big=False, verify=False, disk_size=None, wait_sec=0):
         if big:
@@ -402,8 +403,8 @@ class FioFiles:
 
     def get(self, big=False, verify=False, disk_size=None, wait_sec=0):
         if big:
-            self.file_size = int(0.90 * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
-            self.file_size_gb = int(0.90 * disk_size / BYTES_IN_GIB)
+            self.file_size = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
+            self.file_size_gb = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB)
 
             self.filename = FIO_BIG_FILE
         else:
@@ -429,3 +430,27 @@ def space_for_big_file(info, volume):
     disk_size = float(info.parameters["Size"])
     file_size = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
     return file_size < psutil.disk_usage(volume).free
+
+
+def os_trim(directory, volume, wait_time_sec=600):
+    if platform.system() == "Windows":
+        RunProcess(["defrag.exe", volume, "/Retrim"], directory, wait=True, timeout_sec=300)
+    else:
+        RunProcess(["fstrim", volume], directory, wait=True, timeout_sec=300)
+    time.sleep(wait_time_sec)
+
+
+def clean_fio_files(volume):
+
+    bigfile_path = os.path.join(_get_fio_target_directory(volume), FIO_BIG_FILE)
+    verifyfile_path = os.path.join(_get_fio_target_directory(volume), FIO_VERIFY_FILE)
+    performancefile_path = os.path.join(_get_fio_target_directory(volume), FIO_PERFORMANCE_FILE)
+
+    if os.path.exists(bigfile_path):
+        os.remove(bigfile_path)
+
+    if os.path.exists(verifyfile_path):
+        os.remove(verifyfile_path)
+
+    if os.path.exists(performancefile_path):
+        os.remove(performancefile_path)
