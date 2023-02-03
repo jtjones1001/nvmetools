@@ -37,8 +37,10 @@ This example checks the health of NVMe 0.
    behavior does not occur in Linux or WinPE.
 """  # noqa: E501
 import argparse
+import os
+import sys
 
-import nvmetools.suites as suites
+from nvmetools import PACKAGE_DIRECTORY
 import nvmetools.support.console as console
 
 
@@ -79,8 +81,16 @@ def main():
         parser.add_argument("-i", "--uid", help="unique id for directory name")
         args = vars(parser.parse_args())
 
-        suites.health(args)
+        filepath = os.path.join(PACKAGE_DIRECTORY, "suites", "health.py")
+        with open(filepath, "r") as file_object:
+            code = file_object.read()
 
+        global suite
+        exec(code, globals())
+        if suite.state["result"] == "PASSED":
+            sys.exit(0)
+        else:
+            sys.exit(2)
     except Exception as e:
         console.exit_on_exception(e)
 

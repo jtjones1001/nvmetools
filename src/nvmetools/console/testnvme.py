@@ -119,8 +119,8 @@ def main():
         if not os.path.exists(filepath):
             filepath = os.path.join(PACKAGE_DIRECTORY, "suites", filename)
         if not os.path.exists(filepath):
-            print(f"FATAL ERROR: Test Suite {args['suite']} was not found")
-            sys.exit(1)
+            raise console.NoTestSuite(args['suite'])
+
 
         with open(filepath, "r") as file_object:
             code = file_object.read()

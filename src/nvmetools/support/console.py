@@ -29,3 +29,10 @@ def exit_on_exception(e):
         log.error(e)
 
     sys.exit(e.code)
+
+
+class NoTestSuite(Exception):
+    def __init__(self, suite):
+        self.code = 80
+        self.nvmetools = True
+        super().__init__(f" Test Suite {suite} was not found")
