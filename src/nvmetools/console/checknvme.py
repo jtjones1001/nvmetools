@@ -8,7 +8,7 @@
 Verifies the NVMe drive health by running the short self-test diagnostic, checking the SMART
 attributes for errors and log page 6 for prior self-test failures.
 
-Logs results to a directory in ~/Documents/nvmetools/suites/check_nvme_health.  The directory name
+Logs results to a directory in ~/Documents/nvmetools/results/check_nvme_health.  The directory name
 is defined by the uid command line parameter.  If uid was not specified the directory name is
 based on the date and time the command was run.
 
@@ -50,7 +50,7 @@ def main():
 
     The NVMe to test must be specified.  Run the listnvme command to display the NVMe numbers.
 
-    Logs results to a directory in ~/Documents/nvmetools/suites/check_nvme.  The directory name is
+    Logs results to a directory in ~/Documents/nvmetools/results/check_nvme_health.  The directory name is
     defined by the uid argument.  If uid was not specified the directory name is defined by the date
     and time the command was run.
     """

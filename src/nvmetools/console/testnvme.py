@@ -5,7 +5,9 @@
 
 .. highlight:: none
 
-Runs an NVME Test Suite defined in the nvmetools.suite package.
+Runs the NVME Test Suite defined in the file provided.  The test suite file is a python file.
+By default testnvme first looks for the file in the local directory, then in the
+~/Documents/nvmetools/suites directory, and lastly in the the nvmetools package.
 
 Logs results to a directory in ~/Documents/nvmetools/results/<suite>.  The directory name is
 defined by the uid command line parameter.  If uid was not specified the directory name is
@@ -20,9 +22,9 @@ based on the date and time the command was run.
    Test Suites with self-test tests must be run as Administrator on Windows OS.
 
 Command Line Parameters
-    --suite         Name of test suite to run
-    --nvme, -n      Integer NVMe device number, can be found using listnvme.
-    --volume, -v    Volume to test
+    suite           Required positional argument.  Name of test suite to run
+    --nvme, -n      Required. Integer NVMe device number, can be found using listnvme.
+    --volume, -v    Required. Volume to test
     --uid, -i       String to use for the results directory name.  Must be unique.
     --loglevel, -l  The amount of information to display, integer, 0 is least and 3 is most.
 
@@ -53,9 +55,7 @@ import argparse
 import os
 import sys
 
-
-from nvmetools import TestSuite, TestCase, TestStep, tests, steps, rqmts, TEST_SUITE_DIRECTORY, PACKAGE_DIRECTORY
-import nvmetools.suites as suites
+from nvmetools import TestSuite, TEST_SUITE_DIRECTORY, PACKAGE_DIRECTORY
 import nvmetools.support.console as console
 
 
@@ -68,7 +68,7 @@ def main():
     command to display the NVMe numbers.   The logical volume must reside on the physical NVMe drive
     being tested.
 
-    Logs results to a directory in ~/Documents/nvmetools/suites/<suite>.  The directory name is
+    Logs results to a directory in ~/Documents/nvmetools/results/<suite>.  The directory name is
     defined by the uid argument.  If uid was not specified the directory name is defined by the date
     and time the command was run.
     """
@@ -77,7 +77,7 @@ def main():
             description=main.__doc__,
             formatter_class=lambda prog: argparse.RawDescriptionHelpFormatter(prog, max_help_position=50),
         )
-        parser.add_argument("-s", "--suite", required=True, help="test suite to run")
+        parser.add_argument("suite", required=True, help="test suite to run")
 
         parser.add_argument(
             "-n",
