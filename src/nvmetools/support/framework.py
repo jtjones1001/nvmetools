@@ -584,7 +584,7 @@ class TestSuite:
 
         if self.admin:
             raise _NoAdmin()
-        if platform.system == "Windows" and self.winadmin:
+        if platform.system() == "Windows" and self.winadmin:
             raise _NoWinAdmin()
 
         description_lines = description.split("\n")

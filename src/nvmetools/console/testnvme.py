@@ -77,7 +77,7 @@ def main():
             description=main.__doc__,
             formatter_class=lambda prog: argparse.RawDescriptionHelpFormatter(prog, max_help_position=50),
         )
-        parser.add_argument("suite", required=True, help="test suite to run")
+        parser.add_argument("suite", help="test suite to run")
 
         parser.add_argument(
             "-n",
