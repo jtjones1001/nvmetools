@@ -40,8 +40,8 @@ import argparse
 import os
 import sys
 
-from nvmetools import PACKAGE_DIRECTORY
 import nvmetools.support.console as console
+from nvmetools import PACKAGE_DIRECTORY, TestSuite
 
 
 def main():
@@ -80,6 +80,9 @@ def main():
         )
         parser.add_argument("-i", "--uid", help="unique id for directory name")
         args = vars(parser.parse_args())
+
+        for item in args.items():
+            setattr(TestSuite, item[0], item[1])
 
         filepath = os.path.join(PACKAGE_DIRECTORY, "suites", "health.py")
         with open(filepath, "r") as file_object:

@@ -55,8 +55,8 @@ import argparse
 import os
 import sys
 
-from nvmetools import TestSuite, TEST_SUITE_DIRECTORY, PACKAGE_DIRECTORY
 import nvmetools.support.console as console
+from nvmetools import PACKAGE_DIRECTORY, TEST_SUITE_DIRECTORY, TestSuite
 
 
 def main():
@@ -119,8 +119,7 @@ def main():
         if not os.path.exists(filepath):
             filepath = os.path.join(PACKAGE_DIRECTORY, "suites", filename)
         if not os.path.exists(filepath):
-            raise console.NoTestSuite(args['suite'])
-
+            raise console.NoTestSuite(args["suite"])
 
         with open(filepath, "r") as file_object:
             code = file_object.read()

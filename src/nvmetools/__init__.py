@@ -12,7 +12,7 @@ To disable pycache...
 
 To create a package:
    Update version in both pyproject.toml and docs/conf.py
-   find . -name ".DS_Store" -delete print  (OS-X only)
+   find . -name ".DS_Store" -delete -print  (OS-X only)
    python3 -m build
    twine upload -r testpypi dist/* or twine upload dist/*
 

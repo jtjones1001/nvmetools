@@ -343,7 +343,7 @@ class FioFiles:
     def __init__(self, directory, volume):
         self.directory = directory
         self.volume = volume
-        self.fio_directory =  _get_fio_target_directory(self.volume)
+        self.fio_directory = _get_fio_target_directory(self.volume)
         self.bigfile_path = os.path.join(self.fio_directory, FIO_BIG_FILE)
         self.verifyfile_path = os.path.join(self.fio_directory, FIO_VERIFY_FILE)
         self.performancefile_path = os.path.join(self.fio_directory, FIO_PERFORMANCE_FILE)
@@ -429,7 +429,12 @@ def space_for_big_file(info, volume):
         return True
     disk_size = float(info.parameters["Size"])
     file_size = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
-    return file_size < psutil.disk_usage(volume).free
+
+    # shutil, psutil, and df return wrong number of bytes on some version of linux
+    # value is off by 1000/1024 so use the percent because ratio is correct
+
+    percent_free = 100.0 - psutil.disk_usage(volume).percent
+    return file_size < (disk_size * percent_free)
 
 
 def os_trim(directory, volume, wait_time_sec=600):

@@ -2,6 +2,7 @@
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
 import csv
+import math
 import os
 import time
 
@@ -81,7 +82,6 @@ def big_file_writes(suite):
         test.data["block size kib"] = BLOCK_SIZE_KIB = 128
         test.data["queue depth"] = QUEUE_DEPTH = 32
         test.data["burst delay sec"] = BURST_DELAY_SEC = [1, 2, 4, 8, 16, 32, 64, 0]
-        test.data["offset gib"] = OFFSETS_GIB = [0, 64, 128, 192, 160, 0, 0]
         test.data["file writes"] = []
         test.data["bursts"] = []
         # -----------------------------------------------------------------------------------------
@@ -307,10 +307,10 @@ def big_file_writes(suite):
                         "cache bw": write_data[3],
                     }
                 )
-                if (offset + BURST_IO_SIZE + BYTES_IN_GB + BURST_IO_SIZE) > fio_file.file_size:
+                offset =  math.ceil((offset + BURST_IO_SIZE) / BYTES_IN_GIB) * BYTES_IN_GIB
+                if (offset + BURST_IO_SIZE) > fio_file.file_size:
                     offset = 0
-                else:
-                    offset += BURST_IO_SIZE + BYTES_IN_GB
+
 
                 predelay = delay
                 time.sleep(delay)

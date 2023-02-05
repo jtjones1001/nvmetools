@@ -32,7 +32,6 @@ from nvmetools.cases.performance.big_file_reads import big_file_reads
 from nvmetools.cases.performance.big_file_writes import big_file_writes
 from nvmetools.cases.performance.data_compression import data_compression
 from nvmetools.cases.performance.data_deduplication import data_deduplication
-from nvmetools.cases.performance.data_deduplication import data_deduplication
 from nvmetools.cases.performance.idle_latency import idle_latency
 from nvmetools.cases.performance.long_burst_performance import long_burst_performance
 from nvmetools.cases.performance.long_burst_performance_full import long_burst_performance_full

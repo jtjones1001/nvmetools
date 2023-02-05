@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nvmetools"
-version = "0.5.2"
+version = "0.5.5"
 description = "Basic tools for working with NVMe SSD on Windows or Linux"
 readme = "README.md"
 authors = [{ name = "Joe Jones", email = "joejones@chargetrap.com" }]
@@ -69,7 +69,7 @@ show_source = true
 
 [tool.flakeheaven.plugins]
 pyflakes = ["+*", "-F401"]
-flake8-bandit = ["+*","-S404","-S603","-S602","-S311"] # Use subprocess
+flake8-bandit = ["+*","-S404","-S603","-S602","-S311","-S102"] # Use subprocess
 flake8-bugbear =  ["+*"]
 flake8-annotations = ["-*"] # self doesn't need type annotation
 flake8-docstrings = ["-*"]

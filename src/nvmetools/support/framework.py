@@ -41,7 +41,7 @@ import time
 from nvmetools import DEFAULT_INFO_DIRECTORY, TEST_RESULT_DIRECTORY, USER_INFO_DIRECTORY, __version__
 from nvmetools.apps.fio import check_fio_installation
 from nvmetools.apps.nvmecmd import check_nvmecmd_permissions
-from nvmetools.support.conversions import as_duration, is_admin
+from nvmetools.support.conversions import as_duration, is_admin, is_windows_admin
 from nvmetools.support.log import start_logger
 from nvmetools.support.report import create_reports
 
@@ -53,11 +53,13 @@ STARTED = "STARTED"
 
 RESULTS_FILE = "result.json"
 
+
 class _NoAdmin(Exception):
     def __init__(self):
         self.code = 70
         self.nvmetools = True
         super().__init__(" Test Suite must be run as admin.")
+
 
 class _NoWinAdmin(Exception):
     def __init__(self):
@@ -498,7 +500,6 @@ class TestSuite:
     admin = False
     winadmin = False
 
-
     __force_fail = False
 
     def __init__(self, title, description="", *args, **kwargs):
@@ -582,9 +583,9 @@ class TestSuite:
         for item in kwargs.items():
             self.__setattr__(item[0], item[1])
 
-        if self.admin:
+        if self.admin and not is_admin():
             raise _NoAdmin()
-        if platform.system() == "Windows" and self.winadmin:
+        if platform.system() == "Windows" and self.winadmin and not is_windows_admin():
             raise _NoWinAdmin()
 
         description_lines = description.split("\n")
