@@ -13,9 +13,12 @@ from the OS.
 
 The following log files are saved to the working directory under viewnvme:
 
-    - readnvme.log contains the console output
+    - viewnvme.log contains the console output
+    - viewnvme.html is a html format report
+
+    And for each NVMe read there is a folder with:
+
     - nvme.info.json contains the NVMe parameters in json format
-    - info.html is a html format report
     - nvmecmd.trace.log and trace.log are trace file for debug if something goes wrong
     - read.summary.json contains information on the Admin commands used
 
@@ -28,7 +31,7 @@ The following log files are saved to the working directory under viewnvme:
 
         viewnvme  --nvme 0
 
-   * `Example info.html <https://htmlpreview.github.io/?https://raw.githubusercontent.com/jtjones1001/nvmetools/main/docs/examples/viewnvme/info.html>`_
+   * `Example viewnvme.html <https://htmlpreview.github.io/?https://raw.githubusercontent.com/jtjones1001/nvmetools/main/docs/examples/viewnvme/info.html>`_
 
 """  # noqa: E501
 import argparse

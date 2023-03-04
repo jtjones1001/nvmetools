@@ -1,7 +1,7 @@
 # --------------------------------------------------------------------------------------
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
-"""Console command that checks the health of NVMe drive then displays result.
+"""Console command that checks the health of NVMe drive then displays information in html format.
 
 .. highlight:: none
 
@@ -19,6 +19,18 @@ Command Line Parameters
     --nvme, -n      Integer NVMe device number, can be found using listnvme.
     --extended, -x  Run the extended self-test, takes much longer than default short self-test.
 
+    The following log files are saved to the working directory under viewnvme:
+
+    - checknvme.log contains the console output
+    - viewnvme.html is a html format report
+
+    And for each NVMe read there is a folder with:
+
+    -selftest.summary contains the results of the self-test
+    - nvme.info.json contains the NVMe parameters in json format
+    - nvmecmd.trace.log and trace.log are trace file for debug if something goes wrong
+    - read.summary.json contains information on the Admin commands used
+
 **Example**
 
 This example checks the health of NVMe 0.
@@ -27,8 +39,9 @@ This example checks the health of NVMe 0.
 
    checknvme  --nvme 0
 
-* `checknvme report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/checknvme/report.pdf>`_
-* `checknvme dashboard(dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/checknvme/dashboard.html>`_
+The html dashboard displayed is the same as viewnvme:
+
+   * `Example viewnvme.html  <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/checknvme/dashboard.html>`_
 
 .. warning::
    The Windows OS driver has a bug where the self-test diagnostic fails if rerun within 10 minutes of a prior
@@ -111,9 +124,10 @@ def check_nvme(nvme=None, extended=False):
 
             for nvme_entry in base_info.info["_metadata"]["system"]["nvme list"]:
                 nvme_number = nvme_entry.split()[1]
+                info_directory = os.path.join(directory, f"nvme{nvme_number}")
 
                 log.info(f" Start: NVMe {nvme_number} self-test", indent=False)
-                selftest = Selftest(nvme=nvme_number, directory=directory, extended=False)
+                selftest = Selftest(nvme=nvme_number, directory=info_directory, extended=False)
 
                 if selftest.data["return code"] == 0:
                     result = "PASSED"
@@ -124,7 +138,7 @@ def check_nvme(nvme=None, extended=False):
 
                 log.info(f"        NVMe {nvme_number} self-test {result}", indent=False)
 
-                info_directory = os.path.join(directory, f"nvme{nvme_number}")
+
                 this_info = Info(nvme=nvme_number, directory=info_directory)
                 uid = this_info.parameters["Unique Description"]
                 all_nvme_info[uid] = this_info
@@ -135,9 +149,9 @@ def check_nvme(nvme=None, extended=False):
                     if nvme is None or nvme == nvme_number:
                         start_nvme = this_info.parameters["Unique Description"]
         else:
-
+            info_directory = os.path.join(directory, f"nvme{nvme}")
             log.info(f" Start: NVMe {nvme} self-test", indent=False)
-            selftest = Selftest(nvme=nvme, directory=directory, extended=False)
+            selftest = Selftest(nvme=nvme, directory=info_directory, extended=False)
 
             if selftest.data["return code"] == 0:
                 result = "PASSED"
@@ -148,7 +162,7 @@ def check_nvme(nvme=None, extended=False):
 
             log.info(f"        NVMe {nvme} self-test {result}", indent=False)
 
-            info_directory = os.path.join(directory, f"nvme{nvme}")
+
             this_info = Info(nvme=nvme, directory=info_directory)
 
             start_nvme = this_info.parameters["Unique Description"]
