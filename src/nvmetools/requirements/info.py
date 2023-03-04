@@ -23,21 +23,6 @@ def admin_commands_pass(step, info):
     )
 
 
-def no_critical_warnings(step, info):
-    if info.parameters["Critical Warnings"] == "No":
-        value = 0
-    else:
-        value = 1
-
-    verification(
-        rqmt_id=11,
-        step=step,
-        title="Critical warnings shall be 0",
-        verified=(value == 0),
-        value=value,
-    )
-
-
 def no_prior_selftest_failures(step, info):
 
     value = as_int(info.parameters["Number Of Failed Self-Tests"])
@@ -330,4 +315,72 @@ def verify_full_drive(step, free_space, disk_size):
         title="Disk free space must be less than 10%",
         verified=(percent_free_space < 10),
         value=f"{percent_free_space:0.1f}%",
+    )
+
+
+def available_spare_above_threshold(step, info):
+
+    spare = as_int(info.parameters["Available Spare"])
+    threshold = as_int(info.parameters["Available Spare Threshold"])
+
+    if spare > threshold:
+        value = "Pass"
+    else:
+        value = "Fail"
+
+    verification(
+        rqmt_id=33,
+        step=step,
+        title=f"Available Spare shall be greater than {threshold} %",
+        verified=(spare > threshold),
+        value=value,
+    )
+
+
+def nvm_system_reliable(step, info):
+
+    value = info.parameters["NVM Subsystem Unreliable"]
+    verification(
+        rqmt_id=34,
+        step=step,
+        title="NVM Subsystem Unreliable shall be No",
+        verified=(value == "No"),
+        value=value,
+    )
+
+
+def persistent_memory_reliable(step, info):
+
+    if "Persistent Memory Unreliable" in info.parameters:
+        value = info.parameters["Persistent Memory Unreliable"]
+        verification(
+            rqmt_id=35,
+            step=step,
+            title="Persistent Memory Unreliable shall be No ",
+            verified=(value == "No"),
+            value=value,
+        )
+
+
+def media_not_readonly(step, info):
+
+    value = info.parameters["Media in Read-only"]
+    verification(
+        rqmt_id=36,
+        step=step,
+        title="Media in read-only shall be No",
+        verified=(value == "No"),
+        value=value,
+    )
+
+
+def memory_backup_not_failed(step, info):
+
+    value = info.parameters["Volatile Memory Backup Failed"]
+    verification(
+        rqmt_id=37,
+        step=step,
+        title="Volatile memory backup fail shall be No",
+        verified=(value == "No"),
+        value=value,
     )

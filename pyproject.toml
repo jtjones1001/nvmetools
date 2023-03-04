@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nvmetools"
-version = "0.6.0"
+version = "0.6.900"
 description = "Basic tools for working with NVMe SSD on Windows or Linux"
 readme = "README.md"
 authors = [{ name = "Joe Jones", email = "joejones@chargetrap.com" }]
@@ -28,7 +28,7 @@ requires-python = ">=3.9"
 dev = ["black", "flake8", "pytest"]
 
 [project.urls]
-Homepage = "https://www.epicutils.com"
+Homepage = "https://www.nvmetools.com"
 Repository = "https://github.com/jtjones1001/nvmetools.git"
 Documentation = "https://nvmetools.readthedocs.io/en/latest/"
 

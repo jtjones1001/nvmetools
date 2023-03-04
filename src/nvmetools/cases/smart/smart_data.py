@@ -47,7 +47,14 @@ def smart_data(suite):
 
             start_counters = psutil.disk_io_counters(perdisk=True)[drive_name]
             start_info = Info(nvme=suite.nvme, directory=step.directory)
-            rqmts.no_critical_warnings(step, start_info)
+            rqmts.available_spare_above_threshold(step, start_info)
+            rqmts.nvm_system_reliable(step, start_info)
+            rqmts.persistent_memory_reliable(step, start_info)
+            rqmts.media_not_readonly(step, start_info)
+            rqmts.memory_backup_not_failed(step, start_info)
+
+            rqmts.no_media_errors(step, start_info)
+            rqmts.no_critical_time(step, start_info)
 
         # -----------------------------------------------------------------------------------------
         # Run fio
@@ -90,7 +97,17 @@ def smart_data(suite):
             end_counters = psutil.disk_io_counters(perdisk=True)[drive_name]
             end_info = Info(suite.nvme, directory=step.directory, compare_info=start_info)
 
-            rqmts.no_critical_warnings(step, end_info)
+            rqmts.available_spare_above_threshold(step, end_info)
+            rqmts.nvm_system_reliable(step, end_info)
+            rqmts.persistent_memory_reliable(step, end_info)
+            rqmts.media_not_readonly(step, end_info)
+            rqmts.memory_backup_not_failed(step, end_info)
+
+            rqmts.no_media_errors(step, end_info)
+            rqmts.no_critical_time(step, end_info)
+
+            rqmts.throttle_time_within_limit(step, start_info, suite.device["Throttle Percent Limit"])
+            rqmts.usage_within_limit(step, start_info, suite.device["Wear Percent Limit"])
             rqmts.no_errorcount_change(step, end_info)
             rqmts.no_static_parameter_changes(step, end_info)
             rqmts.no_counter_parameter_decrements(step, end_info)

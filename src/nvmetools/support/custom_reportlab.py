@@ -61,7 +61,7 @@ USABLE_HEIGHT = PAGE_HEIGHT - 2 * (V_MARGIN + FRAME_PAD)
 # ----------------------------------------------------------------------
 # report text styles
 # ----------------------------------------------------------------------
-HEADING_COLOR = "#0F2864"
+HEADING_COLOR = "#11355F"  # Old "#0F2864", new matches blog and html report
 TEXT_COLOR = "#303030"
 PASS_COLOR = "#2ca02c"  # noqa
 FAIL_COLOR = "#d62728"
@@ -164,7 +164,7 @@ def _add_header_footer(canvas, doc, drive_name):
 
     canvas.saveState()
     canvas.setFont("Helvetica", hdr_ftr_font_size)
-    canvas.drawString(x1, y1, "Epic NVMe Utilities")
+    canvas.drawString(x1, y1, "Epic! NVMe Tools")
     canvas.drawRightString(x2, y1, f"{drive_name}")
     canvas.drawString(x1, y2, short_date)
     canvas.drawRightString(x2, y2, "Page %d" % doc.page)

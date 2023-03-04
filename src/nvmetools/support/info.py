@@ -18,7 +18,7 @@ from nvmetools.support.conversions import BYTES_IN_GB, GB_IN_TB, as_datetime, as
 from nvmetools.support.log import log
 
 MAX_TEMP_SENSORS = 8
-FLOAT_COUNTERS = ["Data Read", "Data Written", "Percent Throttled"]
+FLOAT_COUNTERS = ["Data Read", "Data Written", "Data Written TB", "Minutes Throttled", "Percent Throttled"]
 
 
 class _NvmeMismatch(Exception):
@@ -203,7 +203,7 @@ class Info:
             except Exception:
                 raise Exception(f"Corrupted or missing nvmecmd file: {from_file}")
 
-            file_nvme = int(self.info["nvme"]["description"].split(":")[0].split()[-1])
+            file_nvme = int(self.info["nvme"]["parameters"]["Unique Description"]["value"].split()[1])
             if (nvme is not None) and (nvme != file_nvme):
                 raise _NvmeMismatch(nvme, file_nvme)
             self._directory = os.path.dirname(from_file)
@@ -214,6 +214,18 @@ class Info:
 
         # Add some useful parameters here, the source parameters may not exist depending on
         # the cmd file used so handle missing parameters.  Value must be string
+
+        if "command log" not in self.info["nvme"]:
+            self.info["nvme"]["command log"] = []
+
+        if "event log" not in self.info["nvme"]:
+            self.info["nvme"]["event log"] = []
+
+        if "self-test log" not in self.info["nvme"]:
+            self.info["nvme"]["self-test log"] = []
+
+        if "error log" not in self.info["nvme"]:
+            self.info["nvme"]["error log"] = []
 
         self.full_parameters["Data Used"] = {
             "compare type": "exact",
@@ -268,6 +280,8 @@ class Info:
                 po_hrs = as_int(self.full_parameters["Power On Hours"]["value"])
                 war_hrs = as_int(self.full_parameters["Warranty Hours"]["value"])
                 self.full_parameters["Warranty Used"]["value"] = f"{100 * po_hrs / war_hrs}"
+
+        """
 
         size_in_gb = ""
         if "Size" in self.full_parameters:
@@ -346,7 +360,7 @@ class Info:
             }
         except KeyError:
             pass
-
+        """
         try:
             ns1_active_lba = self.full_parameters["Namespace 1 Active LBA Format"]["value"]
             size_string = self.full_parameters[f"Namespace 1 LBA {ns1_active_lba} Data Size (LBADS)"]["value"]
@@ -1025,7 +1039,7 @@ class InfoSamples:
             for parameter in end_parameters:
                 if end_parameters[parameter]["compare type"] == "counter":
 
-                    if parameter in ["Data Read", "Data Written", "Seconds Throttled", "Percent Throttled"]:
+                    if parameter in FLOAT_COUNTERS:
                         end_value = as_float(end_parameters[parameter]["value"])
                         start_value = as_float(start_parameters[parameter]["value"])
                     else:

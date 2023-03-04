@@ -22,7 +22,7 @@ the NVMe number is the /dev/nvme number (3 = /dev/nvme3).
 
     .. code-block::
 
-        EPIC NVMe Utilities, version 0.0.7, www.epicutils.com, Copyright (C) 2022 Joe Jones
+        Epic! NVMe Tools, version 0.0.7, www.nvmetools.com, Copyright (C) 2022 Joe Jones
 
         On Window systems the NVMe number is the physical drive number.
         For example, physicaldrive2 would be listed as NVMe 2.

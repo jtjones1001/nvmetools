@@ -1,24 +1,23 @@
 # --------------------------------------------------------------------------------------
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
-"""Console command that checks the health of NVMe drive.
+"""Console command that checks the health of NVMe drive then displays result.
 
 .. highlight:: none
 
 Verifies the NVMe drive health by running the short self-test diagnostic, checking the SMART
 attributes for errors and log page 6 for prior self-test failures.
 
-Logs results to a directory in ~/Documents/nvmetools/results/check_nvme_health.  The directory name
-is defined by the uid command line parameter.  If uid was not specified the directory name is
-based on the date and time the command was run.
+If nvme is not specified then all NVMe drives are checked.
+
+Log files are saved to the working directory under checknvme.
 
 .. note::
    This command must be run as Administrator on Windows OS.
 
 Command Line Parameters
     --nvme, -n      Integer NVMe device number, can be found using listnvme.
-    --uid, -i       String to use for the results directory name.  Must be unique.
-    --loglevel, -l  The amount of information to display, integer, 0 is least and 3 is most.
+    --extended, -x  Run the extended self-test, takes much longer than default short self-test.
 
 **Example**
 
@@ -37,65 +36,140 @@ This example checks the health of NVMe 0.
    behavior does not occur in Linux or WinPE.
 """  # noqa: E501
 import argparse
+import logging
 import os
+import platform
+import shutil
 import sys
 
 import nvmetools.support.console as console
-from nvmetools import PACKAGE_DIRECTORY, TestSuite
+from nvmetools.apps.nvmecmd import Selftest
+from nvmetools.support.conversions import is_windows_admin
+from nvmetools.support.info import Info
+from nvmetools.support.log import start_logger
+from nvmetools.support.report import create_dashboard
 
 
-def main():
+class _NoWinAdmin(Exception):
+    def __init__(self):
+        self.code = 71
+        self.nvmetools = True
+        super().__init__(" This command must be run as Windows administrator.")
+
+
+class _FailedToRun(Exception):
+    def __init__(self):
+        self.code = 100
+        self.nvmetools = True
+        super().__init__(" Self-test failed to run, possible OS error, wait 10 minutes and try again.")
+
+
+def _parse_arguments():
+    """Parse input arguments from command line."""
+    parser = argparse.ArgumentParser(
+        description=check_nvme.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("-n", "--nvme", type=int, help="NVMe to read, reads all if not specified", metavar="#")
+    parser.add_argument("-x", "--extended", help="run extended self-test")
+
+    return vars(parser.parse_args())
+
+
+def check_nvme(nvme=None, extended=False):
     """Checks the health of NVMe drive.
 
     Verifies the NVMe drive health by running the short self-test diagnostic, checking the SMART
     attributes for errors and log page 6 for prior self-test failures.
 
-    The NVMe to test must be specified.  Run the listnvme command to display the NVMe numbers.
+    If nvme is not specified then all NVMe drives are checked.
 
-    Logs results to a directory in ~/Documents/nvmetools/results/check_nvme_health.  The directory name is
-    defined by the uid argument.  If uid was not specified the directory name is defined by the date
-    and time the command was run.
+    Log files are saved to the working directory under checknvme.
     """
     try:
-        parser = argparse.ArgumentParser(
-            description=main.__doc__,
-            formatter_class=lambda prog: argparse.RawDescriptionHelpFormatter(prog, max_help_position=50),
-        )
-        parser.add_argument(
-            "-n",
-            "--nvme",
-            required=True,
-            type=int,
-            default=0,
-            help="NVMe drive to check",
-            metavar="#",
-        )
-        parser.add_argument(
-            "-l",
-            "--loglevel",
-            type=int,
-            default=1,
-            help="level of detail in logging, 0 is least, 3 is most",
-            metavar="#",
-        )
-        parser.add_argument("-i", "--uid", help="unique id for directory name")
-        args = vars(parser.parse_args())
+        directory = os.path.join(os.path.abspath("."), "checknvme")
 
-        for item in args.items():
-            setattr(TestSuite, item[0], item[1])
+        if os.path.exists(directory):
+            shutil.rmtree(directory)
+        os.makedirs(directory, exist_ok=False)
 
-        filepath = os.path.join(PACKAGE_DIRECTORY, "suites", "health.py")
-        with open(filepath, "r") as file_object:
-            code = file_object.read()
+        log = start_logger(directory, logging.INFO, "checknvme.log", False)
 
-        global suite
-        exec(code, globals())
-        if suite.state["result"] == "PASSED":
-            sys.exit(0)
+        if platform.system() == "Windows" and not is_windows_admin():
+            raise _NoWinAdmin()
+
+        log.info(f" Logs: {directory}", indent=False)
+        all_nvme_info = {}
+        start_nvme = None
+
+        if nvme is None:
+            base_info = Info(nvme="*", directory=directory)
+            os.remove(os.path.join(directory, "nvme.info.json"))
+            os.remove(os.path.join(directory, "read.summary.json"))
+            if os.path.exists(os.path.join(directory, "nvmecmd.trace.log")):
+                os.remove(os.path.join(directory, "nvmecmd.trace.log"))
+
+            for nvme_entry in base_info.info["_metadata"]["system"]["nvme list"]:
+                nvme_number = nvme_entry.split()[1]
+
+                log.info(f" Start: NVMe {nvme_number} self-test", indent=False)
+                selftest = Selftest(nvme=nvme_number, directory=directory, extended=False)
+
+                if selftest.data["return code"] == 0:
+                    result = "PASSED"
+                else:
+                    result = "FAILED"
+                    if selftest.data["return code"] == 31:
+                        raise _FailedToRun()
+
+                log.info(f"        NVMe {nvme_number} self-test {result}", indent=False)
+
+                info_directory = os.path.join(directory, f"nvme{nvme_number}")
+                this_info = Info(nvme=nvme_number, directory=info_directory)
+                uid = this_info.parameters["Unique Description"]
+                all_nvme_info[uid] = this_info
+
+                log.info(f" Read: {uid}", indent=False)
+
+                if start_nvme is None:
+                    if nvme is None or nvme == nvme_number:
+                        start_nvme = this_info.parameters["Unique Description"]
         else:
-            sys.exit(2)
+
+            log.info(f" Start: NVMe {nvme} self-test", indent=False)
+            selftest = Selftest(nvme=nvme, directory=directory, extended=False)
+
+            if selftest.data["return code"] == 0:
+                result = "PASSED"
+            else:
+                result = "FAILED"
+                if selftest.data["return code"] == 31:
+                    raise _FailedToRun()
+
+            log.info(f"        NVMe {nvme} self-test {result}", indent=False)
+
+            info_directory = os.path.join(directory, f"nvme{nvme}")
+            this_info = Info(nvme=nvme, directory=info_directory)
+
+            start_nvme = this_info.parameters["Unique Description"]
+            all_nvme_info[start_nvme] = this_info
+            log.info(f" Read: {start_nvme}", indent=False)
+
+        if start_nvme is None:
+            raise console.NoNvme(nvme)
+
+        create_dashboard(directory, start_nvme, all_nvme_info)
+
+        sys.exit()
+
     except Exception as e:
         console.exit_on_exception(e)
+
+
+def main():
+    """Allow command line operation with unique arguments."""
+    args = _parse_arguments()
+    check_nvme(**args)
 
 
 if __name__ == "__main__":

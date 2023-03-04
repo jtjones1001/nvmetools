@@ -42,7 +42,7 @@ The following log files are saved to the working directory:
 
     .. code-block::
 
-        EPIC NVMe Utilities, version 0.0.8, www.epicutils.com, Copyright (C) 2022 Joe Jones
+        Epic! NVMe Tools, version 0.0.8, www.nvmetools.com, Copyright (C) 2022 Joe Jones
 
          ------------------------------------------------------------------------------------------
           NVME DRIVE 0  (/dev/nvme0)

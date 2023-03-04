@@ -61,7 +61,17 @@ def timestamp(suite):
             # stop test if drive in error state
 
             step.stop_on_fail = True
-            rqmts.no_critical_warnings(step, start_info)
+            rqmts.available_spare_above_threshold(step, start_info)
+            rqmts.nvm_system_reliable(step, start_info)
+            rqmts.persistent_memory_reliable(step, start_info)
+            rqmts.media_not_readonly(step, start_info)
+            rqmts.memory_backup_not_failed(step, start_info)
+
+            rqmts.no_media_errors(step, start_info)
+            rqmts.no_critical_time(step, start_info)
+
+            rqmts.throttle_time_within_limit(step, start_info, suite.device["Throttle Percent Limit"])
+            rqmts.usage_within_limit(step, start_info, suite.device["Wear Percent Limit"])
             step.stop_on_fail = False
 
             # Verify the absolute accuracy of the timestamp compared to the host clock, the drive

@@ -106,13 +106,22 @@ def report(report, test_result):
     report.add_table(table_data, [75, 100, 100, 100, 100])
     report.add_subheading2("Cache Size Burst Writes")
 
-    report.add_paragraph(
-        f"""Several cache size burst writes were completed with varying amount of idle time before
-        the bursts.  This idle time allows drive to flush the write cache  Each burst was
-        {data['write cache size']/BYTES_IN_GB} GB.  Writes with a bandwidth above
-        {data['write cache limit']:0,.3f} GB/s were assumed to be going to the write cache.
-        """
-    )
+    if data["write cache limit"] is None:
+        report.add_paragraph(
+            f"""Several cache size burst writes were completed with varying amount of idle time before
+            the bursts.  This idle time allows drive to flush the write cache  Each burst was
+            {data['write cache size']/BYTES_IN_GB} GB.  Writes with a bandwidth above
+            twice the average bandwidth were assumed to be going to the write cache.
+            """
+        )
+    else:
+        report.add_paragraph(
+            f"""Several cache size burst writes were completed with varying amount of idle time before
+            the bursts.  This idle time allows drive to flush the write cache  Each burst was
+            {data['write cache size']/BYTES_IN_GB} GB.  Writes with a bandwidth above
+            {data['write cache limit']:0,.3f} GB/s were assumed to be going to the write cache.
+            """
+        )
     table_data = [["Burst", "Pre-Burst Idle", "Average Bandwidth", "Cache Written", "Cache Bandwidth"]]
 
     for burst in data["bursts"]:

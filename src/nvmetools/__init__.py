@@ -33,13 +33,17 @@ To install fio:
    Fedora:  sudo yum -y install fio
    Ubuntu:  sudo apt -y install fio
 
+Linux filesystems take up a lot of space for meta data by default.  To avoid:
+
+   mkfs.ext4 -m 0 -T largefile /dev/nvme.....
+
 """
 import os
 from importlib.metadata import metadata
 
 __copyright__ = "Copyright (C) 2023 Joe Jones"
-__brandname__ = "EPIC NVMe Utilities"
-__website__ = "www.epicutils.com"
+__brandname__ = "Epic! NVMe Tools"
+__website__ = "www.nvmetools.com"
 __package_name__ = "nvmetools"
 
 try:

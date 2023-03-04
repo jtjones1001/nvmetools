@@ -28,7 +28,7 @@ def high_bandwidth_stress(suite, run_time_sec=180):
         # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-        fio_file = steps.get_fio_stress_file(test, float(start_info.parameters["Size"]))
+        fio_file = steps.get_fio_stress_file(test, float(start_info.parameters["Size"].split()[0]))
         steps.idle_wait(test)
 
         # -----------------------------------------------------------------------------------------

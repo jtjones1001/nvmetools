@@ -41,6 +41,10 @@ def suite_start_info(suite):
                 "metadata": info.metadata,
                 "full_parameters": info.full_parameters,
                 "parameters": info.parameters,
+                "command log": info.info["nvme"]["command log"],
+                "event log": info.info["nvme"]["event log"],
+                "self-test log": info.info["nvme"]["self-test log"],
+                "error log": info.info["nvme"]["error log"],
             }
             suite.get_drive_specification()
 
@@ -51,14 +55,17 @@ def suite_start_info(suite):
 
         with TestStep(test, "Verify info", "Verify drive is healthy and not worn out.") as step:
 
-            rqmts.no_critical_warnings(step, info)
+            rqmts.available_spare_above_threshold(step, info)
+            rqmts.nvm_system_reliable(step, info)
+            rqmts.persistent_memory_reliable(step, info)
+            rqmts.media_not_readonly(step, info)
+            rqmts.memory_backup_not_failed(step, info)
+
             rqmts.no_media_errors(step, info)
             rqmts.no_critical_time(step, info)
 
             rqmts.throttle_time_within_limit(step, info, suite.device["Throttle Percent Limit"])
             rqmts.usage_within_limit(step, info, suite.device["Wear Percent Limit"])
-            rqmts.data_written_within_limit(step, info, suite.device["Wear Percent Limit"])
-            rqmts.power_on_hours_within_limit(step, info, suite.device["Wear Percent Limit"])
 
             rqmts.no_prior_selftest_failures(step, info)
 

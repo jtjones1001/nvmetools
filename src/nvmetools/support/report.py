@@ -756,7 +756,7 @@ class NvmeReport(InfoReport):
                 2.  fio, https://fio.readthedocs.io/en/latest/index.html
                 <br/><br/>
 
-                3.  nvmecmd,  https://www.epicutils.com
+                3.  nvmecmd,  https://www.nvmetools.com
                 <br/><br/>
 
                 4.  Read and compare NVMe information with nvmecmd
@@ -1666,127 +1666,160 @@ class NvmeReport(InfoReport):
         save_reportlab_report(self.filepath, self._elements, drive=self.drive_name, add_header_footer=True)
 
 
-def create_dashboard(results_directory, show_dashboard=True):
+def create_dashboard(results_directory, nvme_uid=None, all_nvme_info=None, show_dashboard=True):
 
-    dashboard_file = os.path.join(results_directory, "dashboard.html")
+    if all_nvme_info is None:
+        test_view = True
+        dashboard_file = os.path.join(results_directory, "testnvme.html")
+    else:
+        test_view = False
+        dashboard_file = os.path.join(results_directory, "viewnvme.html")
 
-    with open(os.path.join(RESOURCE_DIRECTORY, "html", "index.html"), "r") as file_object:
+    with open(os.path.join(RESOURCE_DIRECTORY, "html", "template.html"), "r") as file_object:
+
         lines = file_object.readlines()
 
         write_lines = []
         for line in lines:
-            if line.find("./assets/data.js") != -1:
-                json_result_file = os.path.join(results_directory, RESULTS_FILE)
+
+            if line.find("./data.js") != -1:
+                all_nvme = {}
                 write_lines.append("<script>\n")
 
-                view_filter_file = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "filter.json")
+                view_filter_file = os.path.join(RESOURCE_DIRECTORY, "html", "filter.json")
                 with open(view_filter_file, "r") as file_object:
                     filters = json.load(file_object)
+                    mystring = f"const filters = {json.dumps(filters, sort_keys=False, indent=4)};\n"
+                    mystring += 'var globalParameterView = "summary"\n'
+                    mystring += 'var globalSelectedSection = "summary"\n'
 
-                with open(json_result_file, "r") as file_object:
-                    data = json.load(file_object)
+                if test_view:
+                    mystring += "const testView = true;\n\n"
+                    mystring += "var globalSelectedTest = 1\n"
+                    mystring += "var globalSelectedTest = 1\n"
+                    mystring += "var globalSelectedRequirement = 0\n"
 
-                    metadata = data["data"]["start_info"]["metadata"]
-                    start_parameters = data["data"]["start_info"]["full_parameters"]
+                    json_result_file = os.path.join(results_directory, RESULTS_FILE)
+                    with open(json_result_file, "r") as file_object:
+                        data = json.load(file_object)
 
-                    rqmts = []
-                    for index, rqmt in enumerate(data["rqmts"]):
-                        rqmts.append(
-                            {
-                                "number": index + 1,
-                                "title": rqmt,
-                                "pass": data["rqmts"][rqmt]["pass"],
-                                "fail": data["rqmts"][rqmt]["fail"],
-                            }
+                        start_parameters = data["data"]["start_info"]["full_parameters"]
+                        nvme_uid = start_parameters["Unique Description"]["value"]
+                        all_nvme[nvme_uid] = {
+                            "parameters": data["data"]["end_info"]["full_parameters"],
+                            "system": data["data"]["start_info"]["metadata"]["system"],
+                            "command log": data["data"]["end_info"]["command log"],
+                            "error log": data["data"]["end_info"]["error log"],
+                            "event log": data["data"]["end_info"]["event log"],
+                            "self-test log": data["data"]["end_info"]["self-test log"],
+                        }
+
+                        rqmts = []
+                        for index, rqmt in enumerate(data["rqmts"]):
+                            rqmts.append(
+                                {
+                                    "number": index + 1,
+                                    "title": rqmt,
+                                    "pass": data["rqmts"][rqmt]["pass"],
+                                    "fail": data["rqmts"][rqmt]["fail"],
+                                }
+                            )
+                        mystring += f"const rqmtListData = {json.dumps(rqmts, sort_keys=False, indent=4)};\n\n"
+                        mystring += (
+                            f"const testListData = {json.dumps(data['tests'], sort_keys=False, indent=4)};\n\n"
                         )
 
-                    mystring = f"const rqmtListData = {json.dumps(rqmts, sort_keys=False, indent=4)};\n\n"
-                    mystring += f"const testListData = {json.dumps(data['tests'], sort_keys=False, indent=4)};\n\n"
+                        for index, _ver in enumerate(data["verifications"]):
+                            data["verifications"][index]["value"] = str(data["verifications"][index]["value"])
 
-                    for index, _ver in enumerate(data["verifications"]):
-                        data["verifications"][index]["value"] = str(data["verifications"][index]["value"])
+                        mystring += "const verificationListData = "
+                        mystring += f"{json.dumps(data['verifications'], sort_keys=False, indent=4)};\n\n"
 
-                    mystring += "const verificationListData = "
-                    mystring += f"{json.dumps(data['verifications'], sort_keys=False, indent=4)};\n\n"
-                    if "end_info" in data["data"]:
-                        mystring += "const compareInfo = true;"
-                    else:
-                        mystring += "const compareInfo = null;"
-                    mystring += "const compareSystemData = null;\n\n"
-                    parameters = []
-                    for name, value in start_parameters.items():
+                        mystring += f"\n const info = {json.dumps(data, sort_keys=False, indent=4)};\n\n"
 
-                        if "end_info" in data["data"]:
-                            end_parameters = data["data"]["end_info"]["full_parameters"]
+                else:
+                    mystring += "const testView = false;\n\n"
+                    all_nvme = {}
+                    for uid in all_nvme_info:
+                        if "Device Tree" in all_nvme_info[uid].metadata["system"]:
+                            all_nvme_info[uid].metadata["system"].pop("Device Tree")
+                        all_nvme[uid] = {
+                            "parameters": all_nvme_info[uid].info["nvme"]["parameters"],
+                            "system": all_nvme_info[uid].metadata["system"],
+                            "command log": [],
+                            "error log": [],
+                            "event log": [],
+                            "self-test log": [],
+                            "health": {},
+                        }
 
-                            if end_parameters[name]["value"] == value["value"]:
-                                change = ""
-                            else:
-                                change = end_parameters[name]["value"]
+                        if "self-test log" in all_nvme_info[uid].info["nvme"]:
+                            all_nvme[uid]["self-test log"] = all_nvme_info[uid].info["nvme"]["self-test log"]
 
-                        else:
-                            change = "N/A"
+                        if "command log" in all_nvme_info[uid].info["nvme"]:
+                            all_nvme[uid]["command log"] = all_nvme_info[uid].info["nvme"]["command log"]
 
-                        parameters.append(
-                            {
-                                "name": value["name"],
-                                "value": value["value"],
-                                "change": change,
-                                "description": value["description"],
-                            }
-                        )
+                        if "error log" in all_nvme_info[uid].info["nvme"]:
+                            all_nvme[uid]["error log"] = all_nvme_info[uid].info["nvme"]["error log"]
 
-                    mystring += (
-                        f"const systemData = {json.dumps(metadata['system'], sort_keys=False, indent=4)};\n\n"
-                    )
+                        if "event log" in all_nvme_info[uid].info["nvme"]:
+                            all_nvme[uid]["event log"] = all_nvme_info[uid].info["nvme"]["event log"]
 
-                    mystring += f"const parameters = {json.dumps(parameters, sort_keys=False, indent=4)};\n\n"
-                    data.pop("data")
-                    mystring += f"\n const info = {json.dumps(data, sort_keys=False, indent=4)};\n\n"
+                        add_health_info(all_nvme[uid])
 
-                    for filtername, filtervalues in filters.items():
-                        matching_parameters = []
-                        for parameter in parameters:
-                            if parameter["name"] in filtervalues:
-                                matching_parameters.append(parameter)
+                mystring += "const compareParameters = null;"
 
-                        mystring += f"const {filtername} = "
-                        mystring += f"{json.dumps(matching_parameters, sort_keys=False, indent=4)};\n\n"
+                mystring += "const compareInfo = null;"
+                mystring += "const compareSystemData = null;\n\n"
 
-                write_lines.extend(mystring.split("\n"))
-                write_lines.append("</script>")
-            elif line.find("./assets/dashboard.css") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.css")
+                mystring += f'var activeNvme = "{nvme_uid}";\n\n'
+                mystring += f"const allData = {json.dumps(all_nvme, sort_keys=False, indent=4)};\n\n"
+
+                for string_line in mystring.split("\n"):
+                    write_lines.extend(string_line + "\n")
+                write_lines.append("</script>\n")
+
+            elif line.find("./template.css") != -1:
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "template.css")
                 write_lines.append("<style>")
                 with open(html_input, "r") as file_object:
                     write_lines.extend(file_object.readlines())
                 write_lines.append("</style>")
-            elif line.find("./assets/bootstrap.css") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.css")
-                write_lines.append("<style>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</style>")
-            elif line.find("./assets/bootstrap.bundle.min.js") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.bundle.min.js")
+            elif line.find("./template.js") != -1:
                 write_lines.append("<script>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</script>")
-            elif line.find("./assets/dashboard.js") != -1:
-                write_lines.append("<script>")
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.js")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "template.js")
                 with open(html_input, "r") as file_object:
                     write_lines.extend(file_object.readlines())
                 write_lines.append("</script>")
 
-            elif line.find("./assets/chart.min.js") != -1:
+            elif line.find("./viewFunctions.js") != -1:
                 write_lines.append("<script>")
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "chart.min.js")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "viewFunctions.js")
                 with open(html_input, "r") as file_object:
                     write_lines.extend(file_object.readlines())
                 write_lines.append("</script>")
 
+            elif line.find("./updateFunctions.js") != -1:
+                write_lines.append("<script>")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "updateFunctions.js")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+
+            elif line.find("./dropdown.js") != -1:
+                write_lines.append("<script>")
+                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "dropdown.js")
+                with open(html_input, "r") as file_object:
+                    write_lines.extend(file_object.readlines())
+                write_lines.append("</script>")
+
+            elif line.find("./chart.min.js") != -1:
+                if test_view:
+                    write_lines.append("<script>")
+                    html_input = os.path.join(RESOURCE_DIRECTORY, "html", "chart.min.js")
+                    with open(html_input, "r") as file_object:
+                        write_lines.extend(file_object.readlines())
+                    write_lines.append("</script>")
             else:
                 write_lines.append(line)
 
@@ -1796,130 +1829,8 @@ def create_dashboard(results_directory, show_dashboard=True):
     if show_dashboard:
         webbrowser.open(dashboard_file, new=2)
 
-    log.info(f" Dashboard:    {dashboard_file}", indent=False)
-
-
-def create_info_dashboard(directory, info_file, compare_info_file):
-
-    dashboard_file = os.path.join(directory, "info.html")
-
-    with open(info_file, "r") as file_object:
-        info_data = json.load(file_object)
-        metadata = info_data["_metadata"]
-        parameters = info_data["nvme"]["parameters"]
-        final_parameters = []
-        for parameter in parameters:
-            final_parameters.append(
-                {
-                    "name": parameters[parameter]["name"],
-                    "value": parameters[parameter]["value"],
-                    "change": None,
-                    "description": parameters[parameter]["description"],
-                }
-            )
-
-    if compare_info_file != "":
-        with open(compare_info_file, "r") as file_object:
-            compare_info_data = json.load(file_object)
-            compare_metadata = compare_info_data["_metadata"]
-            compare_parameters = compare_info_data["nvme"]["parameters"]
-
-            final_parameters = []
-            for parameter in parameters:
-                if parameter in compare_parameters:
-                    if compare_parameters[parameter]["value"] == parameters[parameter]["value"]:
-                        change = ""
-                    else:
-                        change = compare_parameters[parameter]["value"]
-                else:
-                    change = "N/A"
-
-                final_parameters.append(
-                    {
-                        "name": parameters[parameter]["name"],
-                        "value": parameters[parameter]["value"],
-                        "change": change,
-                        "description": parameters[parameter]["description"],
-                    }
-                )
-
-    with open(os.path.join(RESOURCE_DIRECTORY, "html", "index-info.html"), "r") as file_object:
-        lines = file_object.readlines()
-
-        write_lines = []
-        for line in lines:
-            if line.find("./assets/data.js") != -1:
-                write_lines.append("<script>\n")
-                view_filter_file = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "filter.json")
-                with open(view_filter_file, "r") as file_object:
-                    filters = json.load(file_object)
-                    mystring = (
-                        f"const systemData = {json.dumps(metadata['system'], sort_keys=False, indent=4)};\n\n"
-                    )
-                    if compare_info_file != "":
-                        mystring += f"const compareSystemData = {json.dumps(compare_metadata['system'], sort_keys=False, indent=4)};\n\n"
-                        mystring += f"\n const compareInfo = {json.dumps(compare_info_data, sort_keys=False, indent=4)};\n\n"
-                    else:
-                        mystring += "const compareSystemData = null;\n\n"
-                        mystring += "const compareInfo = null;\n\n"
-
-                    mystring += (
-                        f"const parameters = {json.dumps(final_parameters, sort_keys=False, indent=4)};\n\n"
-                    )
-                    mystring += f"\n const info = {json.dumps(info_data, sort_keys=False, indent=4)};\n\n"
-
-                    for filtername, filtervalues in filters.items():
-                        matching_parameters = []
-                        for parameter in final_parameters:
-                            if parameter["name"] in filtervalues:
-                                matching_parameters.append(parameter)
-
-                        mystring += f"const {filtername} = "
-                        mystring += f"{json.dumps(matching_parameters, sort_keys=False, indent=4)};\n\n"
-
-                write_lines.extend(mystring.split("\n"))
-                write_lines.append("</script>")
-
-            elif line.find("./assets/bootstrap.css") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.css")
-                write_lines.append("<style>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</style>")
-            elif line.find("./assets/dashboard.css") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.css")
-                write_lines.append("<style>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</style>")
-            elif line.find("./assets/bootstrap.bundle.min.js") != -1:
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "bootstrap.bundle.min.js")
-                write_lines.append("<script>")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</script>")
-
-            elif line.find("./assets/chart.min.js") != -1:
-                write_lines.append("<script>")
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "chart.min.js")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</script>")
-            elif line.find("./assets/dashboard.js") != -1:
-                write_lines.append("<script>")
-                html_input = os.path.join(RESOURCE_DIRECTORY, "html", "assets", "dashboard.js")
-                with open(html_input, "r") as file_object:
-                    write_lines.extend(file_object.readlines())
-                write_lines.append("</script>")
-            else:
-                write_lines.append(line)
-
-    with open(dashboard_file, "w") as file_object:
-        file_object.writelines(write_lines)
-
-    webbrowser.open(dashboard_file, new=2)
-
-    log.info(f" Dashboard:    {dashboard_file}", indent=False)
+    log.info("")
+    log.info(f" Displaying {dashboard_file}", indent=False)
 
 
 def create_reports(results_directory, title="N/A", description="N/A", show_dashboard=True):
@@ -1927,7 +1838,8 @@ def create_reports(results_directory, title="N/A", description="N/A", show_dashb
         log.info(f" Logs:         {results_directory}", indent=False)
         pdf = NvmeReport(results_directory=results_directory, title=title, description=description)
         pdf.save()
-        create_dashboard(results_directory, show_dashboard)
+        create_dashboard(results_directory, None, None, show_dashboard)
+
         log.info(f" Report:       {os.path.join(results_directory,'report.pdf')}", indent=False)
 
     except Exception:
@@ -1941,3 +1853,238 @@ def _encode_png_icon(icon_file):
         base64_encoded_data = base64.b64encode(binary_file_data)
         base64_message = base64_encoded_data.decode("utf-8")
         print(base64_message)
+
+
+def update_health(current, new):
+    if new == "Critical":
+        return new
+    elif new == "Suspect":
+        if current == "Critical":
+            return current
+        else:
+            return new
+    else:
+        return current
+
+
+def add_health_info(info):
+
+    GOOD = "good"
+    CRITICAL = "critical"
+    SUSPECT = "suspect"
+    MISSING = "missing"
+
+    p = info["parameters"]
+
+    # Get diagnostic health
+
+    if len(info["self-test log"]) == 0:
+
+        info["health"]["dt-fails"] = {"state": GOOD, "group": "DIAGNOSTIC SELF-TEST"}
+        info["health"]["dt-last"] = {"state": GOOD, "group": "DIAGNOSTIC SELF-TEST"}
+
+        info["parameters"]["Last Self-test"] = {
+            "name": "Last Self-test",
+            "value": " ",
+            "description": "Last self-test diagnostic result",
+        }
+
+    else:
+
+        last = info["self-test log"][0]
+
+        info["parameters"]["Last Self-test"] = {
+            "name": "Last Self-test",
+            "value": f"{last['Result']}<br>{last['Type']}<br>Ran @ hr {last['Power On Hours']}",
+            "description": "Last self-test diagnostic result",
+        }
+
+        if p["Number Of Failed Self-Tests"]["value"] == "0":
+            info["health"]["dt-fails"] = {"state": GOOD, "group": "DIAGNOSTIC SELF-TEST"}
+        else:
+            info["health"]["dt-fails"] = {"state": CRITICAL, "group": "DIAGNOSTIC SELF-TEST"}
+
+        if last["Result"] == "Failed":
+            info["health"]["dt-last"] = {"state": CRITICAL, "group": "DIAGNOSTIC SELF-TEST"}
+        else:
+            info["health"]["dt-last"] = {"state": GOOD, "group": "DIAGNOSTIC SELF-TEST"}
+
+    # Usage health
+
+    data_written_gb = float(p["Data Written"]["value"].replace(",", "").split()[0])
+    poh = int(p["Power On Hours"]["value"].replace(",", "").split()[0])
+    drive_size = float(p["Size in GB"]["value"].split()[0])
+    drive_writes = data_written_gb / drive_size
+    drive_writes_per_hr = poh / drive_writes
+
+    info["parameters"]["Drive Writes"] = {
+        "name": "Drive Writes",
+        "value": f"{drive_writes:0.1f}<br>{drive_writes_per_hr:0.1f} hr/write",
+        "description": "Data written divided by drive size",
+    }
+    info["parameters"]["Drive Writes Per Hour"] = {
+        "name": "Drive Writes Per Hour",
+        "value": f"{drive_writes_per_hr:0.1f}<br>{drive_writes_per_hr:0.1f} hrs/write",
+        "description": "Hours to complete a drive write on average",
+    }
+
+    # Usage Tile
+
+    if int(p["Percentage Used"]["value"].split()[0]) < 100:
+        info["health"]["usage-used"] = {"state": GOOD, "group": "USAGE"}
+    else:
+        info["health"]["usage-used"] = {"state": SUSPECT, "group": "USAGE"}
+
+    if int(p["Available Spare"]["value"].split()[0]) < int(p["Available Spare Threshold"]["value"].split()[0]):
+        info["health"]["usage-used"] = {"state": CRITICAL, "group": "USAGE"}
+    else:
+        info["health"]["usage-used"] = {"state": GOOD, "group": "USAGE"}
+
+    # Temperature Tile
+
+    info["health"]["temp-comp"] = {"state": "Good", "group": "TEMPERATURE"}
+
+    # Throttle Tile
+
+    if float(p["Percent Throttled"]["value"].split()[0]) < 1.0:
+        info["health"]["thr-total"] = {"state": GOOD, "group": "TIME THROTTLED"}
+    elif float(p["Percent Throttled"]["value"].split()[0]) < 10.0:
+        info["health"]["thr-total"] = {"state": SUSPECT, "group": "TIME THROTTLED"}
+    else:
+        info["health"]["thr-total"] = {"state": CRITICAL, "group": "TIME THROTTLED"}
+
+    if int(p["Critical Composite Temperature Time"]["value"].split()[0]) == 0:
+        info["health"]["thr-cctemp"] = {"state": GOOD, "group": "TIME THROTTLED"}
+    elif int(p["Critical Composite Temperature Time"]["value"].split()[0]) < 5:
+        info["health"]["thr-cctemp"] = {"state": SUSPECT, "group": "TIME THROTTLED"}
+    else:
+        info["health"]["thr-cctemp"] = {"state": CRITICAL, "group": "TIME THROTTLED"}
+
+    info["health"]["thr-wctemp"] = {"state": GOOD, "group": "TIME THROTTLED"}
+
+    if p["Host Controlled Thermal Management (HCTMA)"]["value"] == "Supported":
+        info["health"]["thr-tmt1"] = {"state": GOOD, "group": "TIME THROTTLED"}
+        info["health"]["thr-tmt2"] = {"state": GOOD, "group": "TIME THROTTLED"}
+
+    # Persistent Tile
+
+    if p["Persistent Event Log"]["value"] == "Supported":
+
+        smart_errors = int(p["Volatile Backup Memory Failure Events"]["value"])
+        if "Persistent Memory Unreliable Events" in p:
+            smart_errors += int(p["Persistent Memory Unreliable Events"]["value"])
+        smart_errors = int(p["NVM Subsystem Unreliable Events"]["value"])
+        smart_errors = int(p["Media Read-only Events"]["value"])
+
+        if smart_errors == 0:
+            info["health"]["pe-tile-smart"] = {"state": GOOD, "group": "PERSISTENT EVENTS"}
+        else:
+            info["health"]["pe-tile-smart"] = {"state": CRITICAL, "group": "PERSISTENT EVENTS"}
+
+        info["parameters"]["SMART Errors"] = {
+            "name": "SMART Errors",
+            "value": f"{smart_errors}",
+            "description": "SMART errors events in Log Page D",
+        }
+
+        pci_errors = int(p["PCIe Link Inactive Events"]["value"])
+        pci_errors += int(p["PCIe Link Status Change Events"]["value"])
+        pci_errors += int(p["PCIe Uncorrectable Fatal Errors"]["value"])
+        pci_errors += int(p["PCIe Uncorrectable Non-fatal Errors"]["value"])
+
+        pci_correctable = int(p["PCIe Correctable Errors"]["value"])
+
+        info["health"]["pe-tile-pci"] = {"state": GOOD, "group": "PERSISTENT EVENTS"}
+        if pci_correctable > 0:
+            info["health"]["pe-tile-pci"] = {"state": SUSPECT, "group": "PERSISTENT EVENTS"}
+        if pci_errors > 0:
+            info["health"]["pe-tile-pci"] = {"state": CRITICAL, "group": "PERSISTENT EVENTS"}
+
+        info["parameters"]["PCIe Errors"] = {
+            "name": "PCIe Errors",
+            "value": f"{pci_errors+pci_correctable}",
+            "description": "PCIe errors events in Log Page D",
+        }
+
+        data_errors = int(p["Write Fault Errors"]["value"])
+        data_errors += int(p["Unrecovered Read Errors"]["value"])
+        data_errors += int(p["End-to-end Check Errors"]["value"])
+        data_errors += int(p["Miscompare Errors"]["value"])
+
+        info["parameters"]["Data Errors"] = {
+            "name": "Data Errors",
+            "value": f"{data_errors}",
+            "description": "Data errors events in Log Page D",
+        }
+
+        if data_errors == 0:
+            info["health"]["pe-tile-data"] = {"state": GOOD, "group": "PERSISTENT EVENTS"}
+        else:
+            info["health"]["pe-tile-data"] = {"state": CRITICAL, "group": "PERSISTENT EVENTS"}
+
+        if p["Controller Fatal Events"]["value"] == "0":
+            info["health"]["pe-tile-fatal"] = {"state": GOOD, "group": "PERSISTENT EVENTS"}
+        else:
+            info["health"]["pe-tile-fatal"] = {"state": CRITICAL, "group": "PERSISTENT EVENTS"}
+
+    else:
+        info["health"]["pe-tile-smart"] = {"state": MISSING, "group": "PERSISTENT EVENTS"}
+        info["health"]["pe-tile-pci"] = {"state": MISSING, "group": "PERSISTENT EVENTS"}
+        info["health"]["pe-tile-fatal"] = {"state": MISSING, "group": "PERSISTENT EVENTS"}
+        info["health"]["pe-tile-data"] = {"state": MISSING, "group": "PERSISTENT EVENTS"}
+
+    # PCI BW Tile
+
+    if p["PCI Bandwidth"]["value"] == p["PCI Rated Bandwidth"]["value"]:
+        info["health"]["pci-tile-bw"] = {"state": GOOD, "group": "PCI EXPRESS BANDWIDTH"}
+    else:
+        info["health"]["pci-tile-bw"] = {"state": SUSPECT, "group": "PCI EXPRESS BANDWIDTH"}
+
+    if p["PCI Speed"]["value"] == p["PCI Rated Speed"]["value"]:
+        info["health"]["pci-tile-speed"] = {"state": GOOD, "group": "PCI EXPRESS BANDWIDTH"}
+    else:
+        info["health"]["pci-tile-speed"] = {"state": SUSPECT, "group": "PCI EXPRESS BANDWIDTH"}
+
+    if p["PCI Width"]["value"] == p["PCI Rated Width"]["value"]:
+        info["health"]["pci-tile-width"] = {"state": GOOD, "group": "PCI EXPRESS BANDWIDTH"}
+    else:
+        info["health"]["pci-tile-width"] = {"state": SUSPECT, "group": "PCI EXPRESS BANDWIDTH"}
+
+    # SMART Tile Health
+
+    if p["NVM Subsystem Unreliable"]["value"] == "No":
+        info["health"]["smart-tile-reliability"] = {"state": GOOD, "group": "SMART ERRORS"}
+    else:
+        info["health"]["smart-tile-reliability"] = {"state": CRITICAL, "group": "SMART ERRORS"}
+
+    if "Persistent Memory Unreliable" in p:
+        if p["Persistent Memory Unreliable"]["value"] == "No":
+            info["health"]["smart-tile-pmr"] = {"state": GOOD, "group": "SMART ERRORS"}
+        else:
+            info["health"]["smart-tile-pmr"] = {"state": CRITICAL, "group": "SMART ERRORS"}
+
+    if p["Media in Read-only"]["value"] == "No":
+        info["health"]["smart-tile-readonly"] = {"state": GOOD, "group": "SMART ERRORS"}
+    else:
+        info["health"]["smart-tile-readonly"] = {"state": CRITICAL, "group": "SMART ERRORS"}
+
+    if p["Volatile Memory Backup Failed"]["value"] == "No":
+        info["health"]["smart-tile-volatile"] = {"state": GOOD, "group": "SMART ERRORS"}
+    else:
+        info["health"]["smart-tile-volatile"] = {"state": CRITICAL, "group": "SMART ERRORS"}
+
+    if p["Media and Data Integrity Errors"]["value"] == "0":
+        info["health"]["smart-tile-integrity"] = {"state": GOOD, "group": "SMART ERRORS"}
+    else:
+        info["health"]["smart-tile-integrity"] = {"state": CRITICAL, "group": "SMART ERRORS"}
+
+    # OS and Capacity Tiles
+
+    info["health"]["os-tile-timeouts"] = {"state": "Missing", "group": "OS ERRORS"}
+    info["health"]["os-tile-disk"] = {"state": "Missing", "group": "OS ERRORS"}
+    info["health"]["os-tile-pci"] = {"state": "Missing", "group": "OS ERRORS"}
+    info["health"]["os-tile-root"] = {"state": "Missing", "group": "OS ERRORS"}
+
+    info["health"]["cap-tile-total"] = {"state": "Missing", "group": "CAPACITY"}
+    info["health"]["cap-tile-free"] = {"state": "Missing", "group": "CAPACITY"}
+    info["health"]["cap-tile-used"] = {"state": "Missing", "group": "CAPACITY"}

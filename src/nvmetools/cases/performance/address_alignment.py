@@ -39,7 +39,7 @@ def address_alignment(suite):
         # big file. Since this is a stress test it must check the data integrity so the file will
         # be created with verify=True.  Note big files always have verify=True
         # -----------------------------------------------------------------------------------------
-        fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"]))
+        fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"].split()[0]))
 
         # -----------------------------------------------------------------------------------------
         #  Random reads at same offset

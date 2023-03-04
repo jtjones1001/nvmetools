@@ -36,3 +36,28 @@ class NoTestSuite(Exception):
         self.code = 80
         self.nvmetools = True
         super().__init__(f" Test Suite {suite} was not found")
+
+
+class NoInfoFile(Exception):
+    def __init__(self, file):
+        self.code = 81
+        self.nvmetools = True
+        super().__init__(f" NVMe info file {file} was not found")
+
+
+class NoCompareFile(Exception):
+    def __init__(self, file):
+        self.code = 82
+        self.nvmetools = True
+        super().__init__(f" Compare file {file} was not found")
+
+
+class NoNvme(Exception):
+    def __init__(self, nvme):
+        self.code = 83
+        self.nvmetools = True
+
+        if nvme is None:
+            super().__init__(" No NVMe drive was not found")
+        else:
+            super().__init__(f" NVMe drive {nvme} was not found")

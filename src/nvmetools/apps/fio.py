@@ -427,7 +427,7 @@ def space_for_big_file(info, volume):
     os_filepath = filepath.replace(r"\:", ":")
     if os.path.exists(os_filepath):
         return True
-    disk_size = float(info.parameters["Size"])
+    disk_size = float(info.parameters["Size"].split()[0])
     file_size = int(BIG_FILE_SIZE * disk_size / BYTES_IN_GIB) * BYTES_IN_GIB
 
     # shutil, psutil, and df return wrong number of bytes on some version of linux

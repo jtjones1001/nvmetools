@@ -25,12 +25,13 @@ def big_file_reads(suite):
         # Before test, read NVMe info and verify no critical warnings, get fio file, wait for idle
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
-        fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"]))
+        fio_file = steps.get_fio_big_file(test, disk_size=float(start_info.parameters["Size"].split()[0]))
         steps.idle_wait(test)
 
         test.data["io size"] = int(FILE_READS * fio_file.file_size)
-        test.data["disk size"] = float(start_info.parameters["Size"])
+        test.data["disk size"] = float(start_info.parameters["Size"].split()[0])
 
+        test.data["file ratio"] = 95
         # -----------------------------------------------------------------------------------------
         # Read big file with sequential reads
         # -----------------------------------------------------------------------------------------

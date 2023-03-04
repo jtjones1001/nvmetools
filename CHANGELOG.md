@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.7.0
+
+### Improvements
+- Overhauled the html report from viewnvme/testnvme/checknvme
+- Updated parameters relevant to NVMe health
+
+### For developers
+- Updated nvmecmd version with parameter changes for health and bug fix for feature reads
+
 ## v0.6.0
 
 ### Improvements

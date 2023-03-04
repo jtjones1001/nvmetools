@@ -44,7 +44,12 @@ def test_start_info(test):
         test, "Test start info", "Read test start info and verify drive not in error state.", stop_on_fail=True
     ) as step:
         start_info = Info(test.suite.nvme, directory=step.directory)
-        rqmts.no_critical_warnings(step, start_info)
+        rqmts.available_spare_above_threshold(step, start_info)
+        rqmts.nvm_system_reliable(step, start_info)
+        rqmts.persistent_memory_reliable(step, start_info)
+        rqmts.media_not_readonly(step, start_info)
+        rqmts.memory_backup_not_failed(step, start_info)
+        rqmts.no_media_errors(step, start_info)
 
     return start_info
 
@@ -64,7 +69,13 @@ def test_end_info(test, start_info):
     ) as step:
         end_info = Info(test.suite.nvme, directory=step.directory, compare_info=start_info)
 
-        rqmts.no_critical_warnings(step, end_info)
+        rqmts.available_spare_above_threshold(step, start_info)
+        rqmts.nvm_system_reliable(step, start_info)
+        rqmts.persistent_memory_reliable(step, start_info)
+        rqmts.media_not_readonly(step, start_info)
+        rqmts.memory_backup_not_failed(step, start_info)
+        rqmts.no_media_errors(step, start_info)
+
         rqmts.no_errorcount_change(step, end_info)
         rqmts.no_static_parameter_changes(step, end_info)
         rqmts.no_counter_parameter_decrements(step, end_info)
@@ -169,7 +180,7 @@ def get_fio_stress_file(test, disk_size):
 
 def verify_empty_drive(test, volume, info):
 
-    disk_size = float(info.parameters["Size"])
+    disk_size = float(info.parameters["Size"].split()[0])
     free_space = psutil.disk_usage(volume).free
 
     with TestStep(test, "Empty drive", "Verify the drive free space.") as step:
@@ -178,7 +189,7 @@ def verify_empty_drive(test, volume, info):
 
 def verify_full_drive(test, volume, info):
 
-    disk_size = float(info.parameters["Size"])
+    disk_size = float(info.parameters["Size"].split()[0])
     free_space = psutil.disk_usage(volume).free
 
     with TestStep(test, "Full drive", "Verify the drive is full.") as step:

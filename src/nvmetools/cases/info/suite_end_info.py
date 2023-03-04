@@ -36,6 +36,10 @@ def suite_end_info(suite, start_info):
                 "full_parameters": info.full_parameters,
                 "parameters": info.parameters,
                 "compare": info.compare,
+                "command log": info.info["nvme"]["command log"],
+                "event log": info.info["nvme"]["event log"],
+                "self-test log": info.info["nvme"]["self-test log"],
+                "error log": info.info["nvme"]["error log"],
             }
             test.data["start_info"] = {
                 "metadata": start_info.metadata,
@@ -45,13 +49,15 @@ def suite_end_info(suite, start_info):
 
         with TestStep(test, "Verify info", "Verify drive is healthy and not worn out.") as step:
 
-            rqmts.no_critical_warnings(step, info)
+            rqmts.available_spare_above_threshold(step, start_info)
+            rqmts.nvm_system_reliable(step, start_info)
+            rqmts.persistent_memory_reliable(step, start_info)
+            rqmts.media_not_readonly(step, start_info)
+            rqmts.memory_backup_not_failed(step, start_info)
             rqmts.no_media_errors(step, info)
             rqmts.no_critical_time(step, info)
             rqmts.throttle_time_within_limit(step, info, suite.device["Throttle Percent Limit"])
             rqmts.usage_within_limit(step, info)
-            rqmts.data_written_within_limit(step, info)
-            rqmts.power_on_hours_within_limit(step, info)
 
             rqmts.no_prior_selftest_failures(step, info)
 

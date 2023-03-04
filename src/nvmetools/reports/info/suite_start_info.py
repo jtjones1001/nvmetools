@@ -14,18 +14,16 @@ def report(report, test_result):
         occurred during the testing.
         <br/><br/>
 
-        This test defines worn out as Percentage Used, Percentage Data Written, or Percentage
-        Warranty Used exceeding {test_result["data"]["Wear Percent Limit"]}%.  This provides a guard
-        band so no wear percentage exceeds 100% during the test suite.  The percentages are determined
-        from the SMART attributes Percentage Used, Data Written, and Power On Hours and the drive
-        specifications TBW and Warranty Years.  If TBW and Warranty Years are not provided the
-        Percentage Data Written and Percentage Warranty Used cannot be verified.
+        This test defines worn out as Percentage Used exceeding
+        {test_result["data"]["Wear Percent Limit"]}% or the Available Spare Percentage being lower
+        than the Available Spare Threshold. These values are SMART attributes found in the
+        SMART/Health log.
         <br/><br/>
 
         A drive is defined as unhealthy if 1) any prior self-test results failed or 2) has critical
-        warnings or media and integrity errors or 3) has operated above the critical temperature or
-        4) has had an excessive amount of thermal throttling.   The self-test results are read from
-        Log Page 6 and the SMART attributes from Log Page 2.
+        errors or 3) has operated above the critical temperature or 4) has had an excessive amount
+        of thermal throttling.   The self-test results are read from Log Page 6 and the SMART
+        attributes from Log Page 2.
         <br/><br/>
 
         The information is read using the <u>nvmecmd utility</u> [2].  This utility uses NVMe Admin
@@ -79,9 +77,15 @@ def report(report, test_result):
     )
     table_rows = [
         ["PARAMETER", "VALUE", "NOTE"],
-        ["Critical Warnings", parameters["Critical Warnings"], ""],
         ["Media and Integrity Errors", parameters["Media and Data Integrity Errors"], ""],
+        ["NVM Subsystem Unreliable", parameters["NVM Subsystem Unreliable"], ""],
+        ["Media in Read-only", parameters["Media in Read-only"], ""],
+        ["Volatile Memory Backup Failed", parameters["Volatile Memory Backup Failed"], ""],
     ]
+    if "Persistent Memory Unreliable" in parameters:
+        table_rows.append(
+            ["Persistent Memory Unreliable", parameters["Persistent Memory Unreliable"], ""],
+        )
     report.add_table(table_rows, widths=[225, 100, 175])
 
     report.add_subheading2("Drive Health: Temperature Throttling")
@@ -126,57 +130,20 @@ def report(report, test_result):
 
     report.add_subheading2("Drive Wear")
     report.add_paragraph(
-        """The Percentage Used SMART attribute is the primary reference for drive wear.  If the drive
-        Warranty and TBW are specified the Percentage Data Written and Percentage Warranty Used are
-        calculated and verified.
-        <br/><br/>
+        """The Percentage Used, Available Spare, and Available Spare Threshold are the primary SMART
+        attributes that determine drive wear.
 
-        Percentage Data Written is defined as 100 * (Data Written / TBW) where TBW (Terabytes
-        Written) is the total amount of data that can be written to the drive during the warranty period.
-        Data Written is the SMART attribute that reports the data written to the drive.
-        <br/><br/>
-
-        Percentage Warranty Used is defined as 100 * (Power On Hours / Warranty Hours) where warranty hours
-        is the number of days in the warranty multiplied by 8 hours for client drives or 24 hours for
-        enterprise drives."""
+        If the Percentage Used is greater than 100% or the Available Spare is less then the threshold
+        the drive is considered worn out and should not be tested.
+        <br/><br/>"""
     )
     table_rows = [
         ["PARAMETER", "VALUE", "NOTE"],
         ["Percentage Used", f"{as_int(parameters['Percentage Used'])}%", "SMART attribute"],
-        ["Data Written", f"{as_float(parameters['Data Written']):,.3f} GB", "SMART attribute"],
-        ["Power On Hours", f"{as_int(parameters['Power On Hours']):,}", "SMART attribute"],
+        ["Available Spare", f"{as_int(parameters['Available Spare'])}%", "SMART attribute"],
+        ["Available Spare Threshold", f"{as_int(parameters['Available Spare Threshold'])}%", "SMART attribute"],
     ]
-    if parameters["TBW"] == "NA":
-        table_rows.extend(
-            [
-                ["Terabytes Written (TBW)", "NA", "User Input"],
-                ["Percentage Data Written", "NA", "Calculated"],
-            ]
-        )
-    else:
-        table_rows.extend(
-            [
-                ["Terabytes Written (TBW)", f"{parameters['TBW']} TB", "User Input"],
-                ["Percentage Data Written", f"{as_float(parameters['Data Used']):.1f}%", "Calculated"],
-            ]
-        )
 
-    if parameters["Warranty Years"] == "NA":
-        table_rows.extend(
-            [
-                ["Warranty Years", "NA", "User input"],
-                ["Warranty Hours", "NA", "Calculated"],
-                ["Percentage Warranty Used", "NA", "Calculated"],
-            ]
-        )
-    else:
-        table_rows.extend(
-            [
-                ["Warranty Years", f"{as_int(parameters['Warranty Years'])} years", "User input"],
-                ["Warranty Hours", f"{as_int(parameters['Warranty Hours']):,}", "Calculated"],
-                ["Percentage Warranty Used", f"{as_float(parameters['Warranty Used']):.1f}%", "Calculated"],
-            ]
-        )
     report.add_table(rows=table_rows, widths=[225, 100, 175])
 
     report.add_verifications(test_result)

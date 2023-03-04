@@ -24,8 +24,8 @@ def report(report, test_result):
     report.add_results(test_result)
 
     data = test_result["data"]
-    start_date = as_datetime(data["start_info"]["metadata"]["date"])
-    end_date = as_datetime(data["end_info"]["metadata"]["date"])
+    start_date = as_datetime(data["start_info"]["metadata"]["system"]["date"])
+    end_date = as_datetime(data["end_info"]["metadata"]["system"]["date"])
     delta_time = str(end_date - start_date)[:-3]
 
     report.add_paragraph(

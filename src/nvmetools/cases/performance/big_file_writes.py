@@ -89,7 +89,7 @@ def big_file_writes(suite):
         # -----------------------------------------------------------------------------------------
         start_info = steps.test_start_info(test)
 
-        test.data["disk size"] = disk_size = float(start_info.parameters["Size"])
+        test.data["disk size"] = disk_size = float(start_info.parameters["Size"].split()[0])
 
         # -----------------------------------------------------------------------------------------
         # Get the information for the fio big file but don't create it.  The drive should be empty
@@ -307,10 +307,9 @@ def big_file_writes(suite):
                         "cache bw": write_data[3],
                     }
                 )
-                offset =  math.ceil((offset + BURST_IO_SIZE) / BYTES_IN_GIB) * BYTES_IN_GIB
+                offset = math.ceil((offset + BURST_IO_SIZE) / BYTES_IN_GIB) * BYTES_IN_GIB
                 if (offset + BURST_IO_SIZE) > fio_file.file_size:
                     offset = 0
-
 
                 predelay = delay
                 time.sleep(delay)

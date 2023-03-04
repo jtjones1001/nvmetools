@@ -8,7 +8,7 @@ and writes.
 """
 from nvmetools import TestSuite, fio, tests
 
-with TestSuite("Performance Test", __doc__) as suite:
+with TestSuite("Performance", __doc__) as suite:
 
     info = tests.suite_start_info(suite)
 

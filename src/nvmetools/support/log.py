@@ -58,7 +58,7 @@ class _DebugLogger(logging.Logger):
             self._log(logging.IMPORTANT, msg, args, **kwargs)
 
     def banner(self):
-        epic_banner = f" {__brandname__}, version {__version__}, {__website__}, {__copyright__}"
+        epic_banner = f"{__brandname__}, version {__version__}, {__website__}, {__copyright__}"
         p = psutil.Process(os.getpid())
 
         self.info("")

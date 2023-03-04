@@ -52,7 +52,7 @@
   "read log page 0Ah": false,
   "read log page 0Bh": false,
   "read log page 0Ch": false,
-  "read log page 0Dh": false,
+  "read log page 0Dh": true,
   "read log page 0Eh": false,
   "read log page 0Fh": false,
   "read log page 10h": false
