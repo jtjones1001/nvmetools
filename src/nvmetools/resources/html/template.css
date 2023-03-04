@@ -1,0 +1,736 @@
+/* -------------------------------------------------------------------------------------------------
+/ Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
+/-------------------------------------------------------------------------------------------------
+/ CSS file for creating html file for viewnvme, checknvme, and testnvme
+/
+/ Version 3.5.23 - Joe Jones
+/ ------------------------------------------------------------------------------------------------- */
+:root {
+  --dark-green: rgb(1, 131, 1);
+  --dark-red: rgb(223, 54, 57);
+
+  --dark-green2: rgb(1, 131, 1, 0.65);
+  --dark-red2: rgb(223, 54, 57, 0.65);
+  --dark-yellow2: rgb(240, 209, 94, 0.65);
+
+  --dark-grey: rgb(119, 119, 119);
+  --dark-orange: rgb(242, 190, 0);
+  --dark-yellow: rgb(240, 209, 94);
+
+  --light-red: rgb(254, 114, 114);
+  --light-green: rgb(142, 226, 175);
+  --light-yellow: rgb(247, 224, 143);
+  --light-grey: rgb(216, 216, 216);
+  --lighter-grey: rgb(223, 223, 223);
+
+  --header-bg-color: rgb(17, 53, 95);
+  --header-hover-bg-color: rgb(17, 53, 95, 0.8);
+  --main-bg-color: rgb(247, 247, 247);
+  --sidebar-bg-color: rgb(232, 232, 232);
+  --hover-bg: rgb(240, 240, 236);
+  --tile-bg-color: white;
+  --table-header-bg-color: rgb(229, 226, 226);
+
+  --light-border-color: rgb(232, 232, 232);
+  --border-color: rgb(200, 200, 200);
+  --dark-border-color: rgb(160, 160, 160);
+
+  --icon-active: rgb(14, 73, 191);
+  --icon-grey: rgb(119, 119, 119);
+  --icon-hover: white;
+
+  --text-grey: rgb(43, 43, 43);
+  --text-darkgrey: rgb(16, 16, 16);
+  --text-highlight: rgb(253, 255, 196);
+
+  --min-screen-width: 1325px;
+  --min-screen-height: 700px;
+
+  --nvmetools-icon-size: 28px;
+
+  --header-height: 70px;
+  --header-item-height: 36px;
+  --header-badge-width: 90px;
+  --header-main-width: 520px;
+
+  --sidebar-width: 70px;
+  --icon-size: 24px;
+  --icon-margin: 20px;
+
+  --table-badge-height: 11px;
+  --table-badge-width: 20px;
+
+  --chart-height: 90px;
+  --chart-width: 270px;
+
+  --border-radius: 4px;
+
+  --default-pad: 10px;
+
+  --small-font-size: 10px;
+  --font-size: 12px;
+  --big-font-size: 13px;
+  --bigger-font-size: 14px;
+
+  --table-padding: 6px !important;
+  --parameter-table-cell-height: 24px;
+
+  --parameter-select-height: 28px;
+  --parameter-select-width: 120px;
+  --parameter-dropdown-width: 200px;
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  Scale down for screens (ie: laptops) smaller than 1400px
+/ -------------------------------------------------------------------------------------------------*/
+@media all and (max-device-width: 1400px) {
+  :root {
+    --min-screen-width: 1200px;
+    --min-screen-height: 250px;
+
+    --nvmetools-icon-size: 24px;
+
+    --header-height: 60px;
+    --header-item-height: 30px;
+    --header-badge-width: 74px;
+    --header-main-width: 450px;
+
+    --sidebar-width: 60px;
+    --icon-size: 20px;
+    --icon-margin: 15px;
+
+    --table-badge-height: 11px;
+    --table-badge-width: 20px;
+
+    --chart-height: 90px;
+    --chart-width: 270px;
+
+    --border-radius: 4px;
+
+    --default-pad: 8px;
+
+    --small-font-size: 9px;
+    --font-size: 10px;
+    --big-font-size: 11px;
+    --bigger-font-size: 13px;
+
+    --table-padding: 5px !important;
+    --parameter-table-cell-height: 24px;
+
+    --parameter-select-height: 28px;
+    --parameter-select-width: 120px;
+    --parameter-dropdown-width: 200px;
+  }
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: var(--font-size);
+  color: var(---text-grey);
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  This is nvmetools icon in upper left
+/ -------------------------------------------------------------------------------------------------*/
+.nvmetools {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: var(--header-height);
+  width: var(--sidebar-width);
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  border-style: none solid none none;
+  border-width: 1px;
+  border-color: var(--dark-border-color);
+  background-color: var(--header-bg-color);
+}
+
+.nvmetools-icon {
+  width: var(--nvmetools-icon-size);
+  height: var(--nvmetools-icon-size);
+  margin-top: 2px;
+}
+
+.nvmetools:hover {
+  background-color: var(--header-hover-bg-color);
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  Header at top of page, to the right of icon
+/ -------------------------------------------------------------------------------------------------*/
+.top-header {
+  position: fixed;
+  top: 0px;
+  left: var(--sidebar-width);
+  height: var(--header-height);
+  width: calc(100% - var(--sidebar-width) - 2 * var(--default-pad));
+  display: flex;
+  min-width: calc(var(--min-screen-width) - var(--sidebar-width));
+  flex-basis: auto;
+  flex-grow: 1;
+  align-items: center;
+  padding-left: calc(2 * var(--default-pad));
+  background-color: var(--header-bg-color);
+}
+
+.nvme-dropdown-parent {
+  position: relative;
+  width: var(--header-main-width);
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  height: calc(var(--header-item-height));
+}
+
+.nvme-dropdown {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+
+  /* account for border and padding */
+  width: calc(var(--header-main-width) - var(--default-pad) - 2px);
+  height: calc(var(--header-item-height) - 2px);
+
+  display: flex;
+  align-items: center;
+  text-align: left;
+  white-space: nowrap;
+  padding-left: var(--default-pad);
+  cursor: default;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+
+  font-size: var(--bigger-font-size);
+  font-weight: 700;
+  color: var(--text-darkgrey);
+  background-color: var(--sidebar-bg-color);
+
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.nvme-dropdown-items {
+  position: relative;
+  top: 60%;
+  left: 0;
+  min-width: var(--header-main-width);
+  z-index: 99;
+  margin-bottom: var(--default-pad);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  background-color: var(--tile-bg-color);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nvme-dropdown-items div {
+  padding: var(--default-pad);
+  font-size: var(--bigger-font-size);
+  font-weight: 700;
+  text-align: left;
+  cursor: default;
+  user-select: none;
+  background-color: var(--tile-bg-color);
+}
+
+.nvme-dropdown-items,
+.nvme-dropdown-items div:hover {
+  background-color: var(--table-header-bg-color) !important;
+}
+
+.test-suite-title,
+.tested-nvme {
+  vertical-align: middle;
+  position: relative;
+  height: calc(var(--header-item-height));
+  display: flex;
+  align-items: center;
+  margin: 0;
+  margin-right: calc(1 * var(--default-pad));
+  padding-left: var(--default-pad);
+  padding-right: calc(2 * var(--default-pad));
+  text-align: left;
+  white-space: nowrap;
+
+  font-size: var(--bigger-font-size);
+  font-weight: 700;
+  color: var(--text-darkgrey);
+  background-color: var(--sidebar-bg-color);
+
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  Badges
+/ -------------------------------------------------------------------------------------------------*/
+.hdr-badge {
+  width: var(--header-badge-width);
+  height: calc(var(--header-item-height) - 2px);
+  line-height: calc(var(--header-item-height) / 2 - 1px);
+  text-align: center;
+  white-space: nowrap;
+  margin-left: var(--default-pad);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  font-size: var(--small-font-size);
+  background-color: var(--sidebar-bg-color);
+}
+
+.result-badge {
+  height: 16px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+  padding: 2px 7px 2px 7px;
+  margin-left: var(--default-pad);
+  border-radius: 4px;
+
+  font-size: var(--small-font-size);
+  font-weight: bold;
+  color: white;
+}
+
+.table-badge {
+  text-align: center;
+  width: var(--table-badge-width);
+  height: var(--table-badge-height);
+  line-height: var(--table-badge-height);
+  margin: 0;
+  padding: 2px 4px 2px 4px;
+
+  border: 0px;
+  display: block;
+
+  font-size: 8px;
+  font-weight: bold;
+  border-radius: 3px;
+  color: white;
+  background-color: var(--dark-grey);
+}
+
+.hdr-badge.good {
+  background-color: var(--dark-green);
+  border-color: var(--dark-green);
+  color: white;
+}
+
+.hdr-badge.critical {
+  background-color: var(--dark-red);
+  border-color: var(--dark-red);
+  color: white;
+}
+
+.hdr-badge.suspect {
+  background-color: var(--dark-yellow);
+  border-color: var(--dark-yellow);
+}
+
+.result-badge.pass,
+.table-badge.pass {
+  background-color: var(--dark-green);
+}
+
+.result-badge.fail,
+.table-badge.fail {
+  background-color: var(--dark-red);
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  Sidebar used for navigation
+/ -------------------------------------------------------------------------------------------------*/
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0px;
+  height: 100%;
+  width: var(--sidebar-width);
+  min-height: var(--min-screen-height);
+
+  border-style: none solid none none;
+  border-width: 1px;
+  border-color: var(--border-color);
+
+  background-color: var(--sidebar-bg-color);
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  width: calc(var(--sidebar-width) - var(--icon-margin));
+  height: calc(var(--sidebar-width) - var(--icon-margin));
+  margin: var(--icon-margin) auto calc(2 * var(--icon-margin)) auto;
+
+  border: none;
+  border-radius: var(--border-radius);
+
+  background-color: var(--sidebar-bg-color);
+  color: var(--icon-grey);
+}
+
+.sidebar a:hover {
+  background-color: var(--icon-hover);
+}
+
+.sidebar a.active {
+  color: var(--icon-active) !important;
+}
+
+.sidebar a svg {
+  display: block;
+  margin: 0px auto;
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+
+.bottom-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  position: absolute;
+  bottom: 30px;
+  width: 100% !important;
+  height: 30px !important;
+}
+
+.bottom-link:hover {
+  color: var(--icon-active);
+  background-color: var(--sidebar-bg-color) !important;
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  The main window
+/ -------------------------------------------------------------------------------------------------*/
+.main-view {
+  position: fixed;
+  top: var(--header-height);
+  left: var(--sidebar-width);
+  height: calc(100% - var(--header-height) - 20px);
+  width: calc(100% - var(--sidebar-width));
+  min-width: calc(var(--min-screen-width) - var(--sidebar-width));
+  min-height: var(--min-screen-height);
+  overflow: scroll;
+  z-index: -1;
+  padding-top: var(--default-pad);
+
+  background-color: var(--main-bg-color);
+}
+
+.row {
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 2 * var(--default-pad));
+  padding-left: var(--default-pad);
+}
+
+.row-block {
+  display: inline-block;
+  width: calc(100% - 2 * var(--default-pad));
+  padding-left: var(--default-pad);
+}
+
+.tile {
+  vertical-align: top;
+  display: inline-block;
+  flex: 1;
+  margin: var(--default-pad);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+
+  background-color: var(--tile-bg-color);
+}
+
+.tile.overflow {
+  overflow: hidden;
+}
+
+.tile p {
+  padding-left: var(--default-pad);
+  font-size: var(--font-size);
+}
+
+.tile-title,
+.health-banner {
+  font-weight: bold;
+  font-size: var(--big-font-size);
+  margin: 0px;
+  padding: var(--default-pad);
+}
+
+.health-banner {
+  font-size: var(--bigger-font-size);
+}
+
+.banner-text {
+  font-size: var(--big-font-size) !important;
+}
+
+.tile-title.click {
+  cursor: pointer;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+.tile-title.border {
+  border-style: none none solid none;
+  border-width: 1px;
+  border-color: var(--border-color);
+  background-color: var(--light-border-color) !important;
+}
+
+.tile-footer {
+  font-size: var(--big-font-size);
+  border-style: solid none none none;
+  border-width: 1px;
+  border-color: var(--border-color);
+
+  margin: var(--default-pad) 0 0 0;
+  padding: var(--default-pad);
+  vertical-align: bottom;
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  The tables used in the web page
+/ -------------------------------------------------------------------------------------------------*/
+table {
+  width: calc(100% - 2 * var(--default-pad)) !important;
+  margin: var(--default-pad);
+  margin-bottom: 16px;
+  border-collapse: collapse;
+  cursor: default;
+  user-select: text;
+  -ms-user-select: text;
+  -webkit-user-select: text;
+}
+
+table th,
+table td {
+  padding: var(--table-padding);
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid var(--table-header-bg-color);
+}
+
+table th {
+  background-color: var(--table-header-bg-color);
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+table>tbody>tr.active>td {
+  background: var(--text-highlight);
+}
+
+table.hover tr:hover,
+.tile-table tr:hover,
+.summary-table tr:hover,
+.parameter-table tr:hover,
+.active-parameter-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.summary-table {
+  font-size: var(--big-font-size) !important;
+}
+
+.active-parameter-table {
+  cursor: pointer;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+.parameter-table th {
+  cursor: pointer;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+.summary-table {
+  margin-top: var(--default-pad);
+  margin-left: calc(2 * var(--default-pad));
+  width: calc(100% - 5 * var(--default-pad)) !important;
+}
+
+.tile-table {
+  margin-left: calc(2 * var(--default-pad));
+  width: calc(100% - 5 * var(--default-pad)) !important;
+}
+
+.number-col {
+  width: 25px;
+  vertical-align: top;
+}
+
+.status-col {
+  width: 55px;
+  vertical-align: top;
+}
+
+.bullet-col {
+  padding: 6px 4px 6px 0 !important;
+  width: 1px;
+  border: 0px !important;
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  These are buttons used to select parameter view
+/ -------------------------------------------------------------------------------------------------*/
+.search-bar {
+  display: flex;
+  width: 100%;
+  margin: 10px 0px 20px var(--default-pad);
+}
+
+.search-input {
+  height: calc(var(--parameter-select-height) - 2px);
+  width: 250px;
+  padding-left: 6px;
+  margin-left: 20px;
+  margin-bottom: 2px;
+
+  font-size: var(--font-size);
+
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.param-select {
+  height: var(--parameter-select-height);
+  width: var(--parameter-select-width);
+  margin-right: 0px;
+  margin-left: 0px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  border-radius: 0;
+  border: 1px solid var(--border-color);
+  border-right: none;
+
+  background-color: var(--tile-bg-color);
+  color: var(--text-darkgrey);
+  font-size: var(--font-size);
+}
+
+.param-select.left {
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+}
+
+.param-select:hover,
+.param-select-dropdown-parent:hover {
+  background-color: var(--hover-bg);
+}
+
+.param-select-dropdown-parent,
+.param-select-dropdown {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  height: var(--parameter-select-height);
+  width: var(--parameter-dropdown-width);
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+
+  border: 0px;
+  border-radius: var(--border-radius);
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+
+  background-color: var(--tile-bg-color);
+  color: var(--text-grey);
+  font-size: var(--font-size);
+}
+
+.param-select-dropdown {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: calc(var(--parameter-select-height));
+  width: var(--parameter-dropdown-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+
+  border: 1px solid var(--border-color);
+}
+
+.param-select-dropdown-items {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  min-width: 190px;
+  z-index: 99;
+  margin-bottom: var(--default-pad);
+  border-radius: var(--border-radius);
+
+  border: 1px solid var(--border-color);
+  background-color: var(--tile-bg-color);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.param-select-dropdown-items div {
+  padding: 6px;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  background-color: var(--tile-bg-color);
+}
+
+.param-select.active,
+.param-select-dropdown.active {
+  background-color: var(--icon-active);
+  color: white !important;
+  border-color: var(--icon-active);
+}
+
+.param-select-dropdown:hover,
+.param-select-dropdown-items:hover,
+.param-select-dropdown-items div:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+.param-select.active:hover,
+.param-select-dropdown.active:hover {
+  opacity: 0.85 !important;
+  background-color: var(--icon-active) !important;
+  color: white !important;
+  border-color: var(--icon-active) !important;
+}
+
+/* -------------------------------------------------------------------------------------------------
+/  Misc
+/ -------------------------------------------------------------------------------------------------*/
+.hide {
+  display: none !important;
+}
+
+.donut-chart {
+  margin: 6px 10px 16px 0;
+  height: var(--chart-height) !important;
+  width: var(--chart-width) !important;
+}
+
+.fatal-msg {
+  color: red;
+  font-size: 16px;
+}

@@ -1,0 +1,924 @@
+<!doctype html>
+<!-------------------------------------------------------------------------------------
+ Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
+------------------------------------------------------------------------------------ -->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Joe Jones">
+
+    <title>Epic! NVMe Tools</title>
+
+    <link rel="stylesheet" type="text/css" href="./template.css">
+
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="data:image/png;base64,
+        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" />
+</head>
+
+<body id="mainbody" class="light">
+
+    <div class="nvmetools">
+        <a href="https://www.nvmetools.com" target="_blank" style="margin: auto;">
+            <image
+                src="data:image/png;base64,
+            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"
+                class="nvmetools-icon" />
+        </a>
+    </div>
+
+    <!-- Top header with basic informat on NVMe drive or Test Suite -->
+    <div id="test-top-header" class="top-header">
+        <div id="nvme-dropdown-parent" class="view-only nvme-dropdown-parent">NVMe List</div>
+        <span id="nvme-health" class="view-only hdr-badge"></span>
+        <span id="nvme-wear" class="view-only hdr-badge"></span>
+        <span id="nvme-written" class="view-only hdr-badge"></span>
+        <span id="nvme-read" class="view-only hdr-badge"></span>
+        <span id="nvme-temp" class="view-only hdr-badge"></span>
+        <span id="nvme-throttle" class="view-only hdr-badge"></span>
+        <span id="nvme-fw" class="view-only hdr-badge"></span>
+
+        <div id="suite-name" class="testview-only test-suite-title">Test Suite</div>
+        <div id="tested-nvme" class="testview-only tested-nvme">NVMe List</div>
+    </div>
+
+    <!-- Start of sidebar -->
+    <div class="sidebar">
+        <a id="sb-health" href="#" class="sb-icon view-only active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
+                <path
+                    d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9H1.475Z" />
+                <path
+                    d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8H.88Z" />
+            </svg>
+        </a>
+        <a id="sb-summary" href="#" class="sb-icon  testview-only active">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-heart-pulse-fill" viewBox="0 0 16 16">
+                <path
+                    d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.945.049L5.889 6.568l-1.473 2.21A.5.5 0 0 1 4 9H1.475Z" />
+                <path
+                    d="M.88 8C-2.427 1.68 4.41-2 7.823 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C11.59-2 18.426 1.68 15.12 8h-2.783l-1.874-4.686a.5.5 0 0 0-.945.049L7.921 8.956 6.464 5.314a.5.5 0 0 0-.88-.091L3.732 8H.88Z" />
+            </svg>
+        </a>
+        <a id="sb-test" class="sb-icon testview-only" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-clipboard2-fill" viewBox="0 0 16 16">
+                <path
+                    d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z" />
+                <path
+                    d="M3.5 1h.585A1.498 1.498 0 0 0 4 1.5V2a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 12 2v-.5c0-.175-.03-.344-.085-.5h.585A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1Z" />
+            </svg>
+        </a>
+        <a id="sb-rqmt" class="sb-icon testview-only" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-clipboard2-check-fill" viewBox="0 0 16 16">
+                <path
+                    d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z" />
+                <path
+                    d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5Zm6.769 6.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708.708Z" />
+            </svg>
+        </a>
+        <a id="sb-parameter" href="#" class="sb-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-hdd-fill" viewBox="0 0 16 16">
+                <path
+                    d="M0 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-1zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm2 0a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM.91 7.204A2.993 2.993 0 0 1 2 7h12c.384 0 .752.072 1.09.204l-1.867-3.422A1.5 1.5 0 0 0 11.906 3H4.094a1.5 1.5 0 0 0-1.317.782L.91 7.204z" />
+            </svg>
+        </a>
+        <a id="sb-host" href="#" class="sb-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentcolor"
+                class="bi bi-pc-display" viewBox="0 0 16 16">
+                <path
+                    d="M8 1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V1Zm1 13.5a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0Zm2 0a.5.5 0 1 0 1 0 .5.5 0 0 0-1 0ZM9.5 1a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5ZM9 3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 0-1h-5a.5.5 0 0 0-.5.5ZM1.5 2A1.5 1.5 0 0 0 0 3.5v7A1.5 1.5 0 0 0 1.5 12H6v2h-.5a.5.5 0 0 0 0 1H7v-4H1.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5H7V2H1.5Z" />
+            </svg>
+        </a>
+        <a id="sb-help" class="sb-icon view-only" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-question-circle-fill" viewBox="0 0 16 16">
+                <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+            </svg>
+        </a>
+        <a id="sb-pdf" class="sb-icon testview-only" href="./report.pdf" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="sb-svg" fill="currentColor"
+                class="bi bi-file-pdf-fill" viewBox="0 0 16 16">
+                <path
+                    d="M5.523 10.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.266.266 0 0 1-.035.012.282.282 0 0 1-.026-.044c-.056-.11-.054-.216.04-.36.106-.165.319-.354.647-.548zm2.455-1.647c-.119.025-.237.05-.356.078a21.035 21.035 0 0 0 .5-1.05 11.96 11.96 0 0 0 .51.858c-.217.032-.436.07-.654.114zm2.525.939a3.888 3.888 0 0 1-.435-.41c.228.005.434.022.612.054.317.057.466.147.518.209a.095.095 0 0 1 .026.064.436.436 0 0 1-.06.2.307.307 0 0 1-.094.124.107.107 0 0 1-.069.015c-.09-.003-.258-.066-.498-.256zM8.278 4.97c-.04.244-.108.524-.2.829a4.86 4.86 0 0 1-.089-.346c-.076-.353-.087-.63-.046-.822.038-.177.11-.248.196-.283a.517.517 0 0 1 .145-.04c.013.03.028.092.032.198.005.122-.007.277-.038.465z" />
+                <path fill-rule="evenodd"
+                    d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm.165 11.668c.09.18.23.343.438.419.207.075.412.04.58-.03.318-.13.635-.436.926-.786.333-.401.683-.927 1.021-1.51a11.64 11.64 0 0 1 1.997-.406c.3.383.61.713.91.95.28.22.603.403.934.417a.856.856 0 0 0 .51-.138c.155-.101.27-.247.354-.416.09-.181.145-.37.138-.563a.844.844 0 0 0-.2-.518c-.226-.27-.596-.4-.96-.465a5.76 5.76 0 0 0-1.335-.05 10.954 10.954 0 0 1-.98-1.686c.25-.66.437-1.284.52-1.794.036-.218.055-.426.048-.614a1.238 1.238 0 0 0-.127-.538.7.7 0 0 0-.477-.365c-.202-.043-.41 0-.601.077-.377.15-.576.47-.651.823-.073.34-.04.736.046 1.136.088.406.238.848.43 1.295a19.707 19.707 0 0 1-1.062 2.227 7.662 7.662 0 0 0-1.482.645c-.37.22-.699.48-.897.787-.21.326-.275.714-.08 1.103z" />
+            </svg>
+        </a>
+        <a href="https://www.nvmetools.com" target="_blank" class="bottom-link">
+            <p style="margin:auto">nvmetools</p>
+        </a>
+
+    </div>
+    <!-- End of sidebar -->
+
+    <!-- Main view has several 'views' defined in a section that is displayed based on sidebar selection -->
+    <div class="main-view">
+
+        <section id="fatal-section" class="hide">
+            <div class="row">
+                <p id="fatal-error" class="fatal-msg"></p>
+            </div>
+
+        </section>
+        <!-- View or Check health page view -->
+        <section id="health-section" class="view-only">
+
+            <div class="row">
+                <div class="tile overflow">
+                    <div id="health-banner" class="health-banner">HEALTH</div>
+                    <p id="health-banner-text" class="banner-text"> </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="tile overflow">
+                    <div id="usage-tile" class="tile-title click border">USAGE</div>
+                    <table class="tile-table">
+                        <tr>
+                            <td id="usage-used" class="bullet-col"></td>
+                            <td style="width:65%">Percentage Used</td>
+                            <td id="usage-used-value"> 11 %</td>
+                        </tr>
+                        <tr>
+                            <td id="usage-spare" class="bullet-col"></td>
+                            <td>Available Spare</td>
+                            <td id="usage-spare-value">100 %</td>
+                        </tr>
+                        <tr>
+                            <td class="bullet-col"></td>
+                            <td id="usage-poh">Power On Hours</td>
+                            <td id="usage-poh-value"> 1,456 hrs</td>
+                        </tr>
+                        <tr>
+                            <td class="bullet-col"></td>
+                            <td id="usage-data">Data Written</td>
+                            <td id="usage-data-value"></td>
+                        </tr>
+                        <tr>
+                            <td class="bullet-col"></td>
+                            <td id="usage-writes" style="vertical-align:top">Drive Writes</td>
+                            <td id="usage-writes-value"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tile overflow">
+                    <div id="smart-tile" class="tile-title click border">SMART ERRORS</div>
+                    <table class="tile-table">
+                        <tr>
+                            <td id="smart-tile-reliability" class="bullet-col"></td>
+                            <td style="width:75%">NVM Subsystem Unreliable</td>
+                            <td id="smart-tile-reliability-value">No</td>
+                        </tr>
+                        <tr id="pmr-row">
+                            <td id="smart-tile-pmr" class="bullet-col"></td>
+                            <td>Persistent Memory Unreliable</td>
+                            <td id="smart-tile-pmr-value">No</td>
+                        </tr>
+                        <tr>
+                            <td id="smart-tile-readonly" class="bullet-col"></td>
+                            <td>Media in Read-only</td>
+                            <td id="smart-tile-readonly-value">No</td>
+                        </tr>
+                        <tr>
+                            <td id="smart-tile-volatile" class="bullet-col"></td>
+                            <td>Volatile Memory Backup Fail</td>
+                            <td id="smart-tile-volatile-value">No</td>
+                        </tr>
+                        <tr>
+                            <td id="smart-tile-integrity" class="bullet-col"></td>
+                            <td>Unrecoverable Data Errors</td>
+                            <td id="smart-tile-integrity-value"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tile overflow">
+                    <div id="diag-tile" class="tile-title click border">DIAGNOSTIC SELF-TEST</div>
+                    <table class="tile-table">
+                        <tr>
+                            <td class="bullet-col"></td>
+                            <td style="width:65%">Total Self-tests</td>
+                            <td id="dt-total-value"></td>
+                        </tr>
+                        <tr>
+                            <td id="dt-fails" class="bullet-col"></td>
+                            <td>Self-test Fails</td>
+                            <td id="dt-fails-value"> 0</td>
+                        </tr>
+                        <tr>
+                            <td id="dt-last" class="bullet-col"></td>
+                            <td style="vertical-align:top">Last Self-test</td>
+                            <td id="dt-last-value"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="tile overflow">
+                    <div id="throttle-tile" class="tile-title click border">TIME THROTTLED</div>
+
+                    <table class="tile-table">
+                        <tr>
+                            <td id="thr-total" class="bullet-col"></td>
+                            <td style="width:38%">Total</td>
+                            <td style="width:20%"></td>
+                            <td style="width:20%" id="thr-total-value"></td>
+                            <td id="thr-total-percent"></td>
+                        </tr>
+                        <tr>
+                            <td id="thr-cctemp" class="bullet-col"></td>
+                            <td>Critical Threshold</td>
+                            <td id="cctemp-value"></td>
+                            <td id="cctemp-time"></td>
+                            <td id="cctemp-percent"></td>
+                        </tr>
+                        <tr>
+                        <tr>
+                            <td id="thr-wctemp" class="bullet-col"></td>
+                            <td>Warning Threshold</td>
+                            <td id="wctemp-value"></td>
+                            <td id="wctemp-time"></td>
+                            <td id="wctemp-percent"></td>
+                        </tr>
+                        <tr id="tmt2-row" class="hide">
+                            <td id="thr-tmt2" class="bullet-col"></td>
+                            <td>Host Threshold 2</td>
+                            <td id="tmt2-value"></td>
+                            <td id="tmt2-time"></td>
+                            <td id="tmt2-percent"></td>
+                        </tr>
+                        <tr id="tmt1-row" class="hide">
+                            <td id="thr-tmt1" class="bullet-col"></td>
+                            <td>Host Threshold 1</td>
+                            <td id="tmt1-value"></td>
+                            <td id="tmt1-time"></td>
+                            <td id="tmt1-percent"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="tile overflow">
+                    <div id="pcibw-tile" class="tile-title click border">PCI EXPRESS BANDWIDTH</div>
+                    <table class="tile-table">
+                        <tr>
+                            <td id="pci-tile-bw" class="bullet-col"></td>
+                            <td style="width:22%">Bandwidth</td>
+                            <td style="width:28%" id="pcibw-value"></td>
+                            <td style="width:10%">Rated</td>
+                            <td id="pcibw-rated"> </td>
+                        </tr>
+                        <tr>
+                            <td id="pci-tile-speed" class="bullet-col"></td>
+                            <td>Speed</td>
+                            <td id="pcispeed-value"></td>
+                            <td>Rated</td>
+                            <td id="pcispeed-rated"></td>
+                        </tr>
+                        <tr>
+                            <td id="pci-tile-width" class="bullet-col"></td>
+                            <td id>Width</td>
+                            <td id="pciwidth-value"></td>
+                            <td>Rated</td>
+                            <td id="pciwidth-rated"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="tile overflow">
+                    <div id="temp-tile" class="tile-title click border">TEMPERATURE</div>
+
+                    <table class="tile-table">
+                        <tr>
+                            <td id="temp-comp" class="bullet-col"></td>
+                            <td style="width:75%">Composite Temperature</td>
+                            <td id="ctemp-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor1">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 1</td>
+                            <td id="tsensor1-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor2">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 2</td>
+                            <td id="tsensor2-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor3">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 3</td>
+                            <td id="tsensor3-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor4">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 4</td>
+                            <td id="tsensor4-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor5">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 5</td>
+                            <td id="tsensor5-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor6">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 6</td>
+                            <td id="tsensor6-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor7">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 7</td>
+                            <td id="tsensor7-value"></td>
+                        </tr>
+                        <tr id="tr-tsensor8">
+                            <td class="bullet-col"></td>
+                            <td>Temperature Sensor 8</td>
+                            <td id="tsensor8-value"></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="tile overflow">
+                    <div id="events-tile" class="tile-title click  border">PERSISTENT EVENTS</div>
+
+                    <table id="persistent-event-table" class="tile-table">
+                        <tr>
+                            <td id="pe-tile-smart" class="bullet-col"></td>
+                            <td style="width:75%">SMART Errors</td>
+                            <td id="pe-tile-smart-value"></td>
+                        </tr>
+                        <tr>
+                            <td id="pe-tile-pci" class="bullet-col"></td>
+                            <td>PCIe Errors</td>
+                            <td id="pe-tile-pci-value"></td>
+                        </tr>
+                        <tr>
+                            <td id="pe-tile-data" class="bullet-col"></td>
+                            <td>Media and Data Errors</td>
+                            <td id="pe-tile-data-value"></td>
+                        </tr>
+                        <tr>
+                            <td id="pe-tile-fatal" class="bullet-col"></td>
+                            <td>Fatal Controller Errors</td>
+                            <td id="pe-tile-fatal-value"></td>
+                        </tr>
+                    </table>
+                    <p id="pel-support-msg">Drive does not support Persistent Event Log</p>
+
+                </div>
+                <div class="tile overflow">
+                    <div id="os-tile" class="tile-title border">OS ERRORS</div>
+
+                    <table class="tile-table">
+                        <tr>
+                            <td id="os-tile-timeouts" class="bullet-col"></td>
+                            <td>Driver Timeouts</td>
+                            <td id="pcibw-value"></td>
+                            <td id="pcibw-rated"></td>
+                        </tr>
+                        <tr>
+                            <td id="os-tile-disk" class="bullet-col"></td>
+                            <td id="pcispeed">Disk Errors</td>
+                            <td id="pcispeed-value"></td>
+                            <td id="pcispeed-rated"></td>
+                        </tr>
+                        <tr>
+                            <td id="os-tile-pci" class="bullet-col"></td>
+                            <td id="pciwidth">PCIe Errors</td>
+                            <td id="pciwidth-value"></td>
+                            <td id="pciwidth-rated"></td>
+                        </tr>
+                        <tr>
+                            <td id="os-tile-root" class="bullet-col"></td>
+                            <td id="pciwidth">Root PCIe Errors</td>
+                            <td id="pciwidth-value"></td>
+                            <td id="pciwidth-rated"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="tile overflow">
+                    <div id="capacity-tile" class="tile-title border">CAPACITY</div>
+                    <table class="tile-table">
+                        <tr>
+                            <td id="cap-tile-total" class="bullet-col"></td>
+                            <td style="width:65%;">Total</td>
+                            <td id="ct-total-value"></td>
+                        </tr>
+                        <tr>
+                            <td id="cap-tile-free" class="bullet-col"></td>
+                            <td>Free</td>
+                            <td id="ct-free-value"></td>
+                        </tr>
+                        <tr>
+                            <td id="cap-tile-used" class="bullet-col"></td>
+                            <td>Used</td>
+                            <td id="ct-used-value"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section id="parameter-section" class="hide">
+            <div class="row">
+                <div class="tile">
+                    <div class="tile-title">NVME PARAMETERS</div>
+                    <div class="search-bar">
+                        <div id="pv-summary" class="param-select left active">SUMMARY</div>
+                        <div id="pv-all" class="param-select">ALL</div>
+                        <div id="pv-smart" class="param-select">SMART</div>
+                        <div id="pv-firmware" class="param-select">FIRMWARE</div>
+                        <div id="pv-throttle" class="param-select">THROTTLE</div>
+                        <div id="pv-dropdown-parent" class="param-select-dropdown-parent"> </div>
+
+                        <input id="parameter-search" class="search-input" type="text" spellcheck="false"
+                            placeholder=" SEARCH...">
+                    </div>
+                    <table id="device-parameters-compare" class="parameter-table hide">
+                        <thead>
+                            <tr>
+                                <th style="width:400px;" data-column="name" data-order="desc"> PARAMETER </th>
+                                <th style="width:270px;" data-column="value" data-order="desc"> VALUE</th>
+                                <th style="width:270px;" data-column="change" data-order="desc"> COMPARE (IF
+                                    CHANGED) </th>
+                                <th data-column="description" data-order="desc"> DESCRIPTION </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <table id="device-parameters" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th style="width:400px;" data-column="name" data-order="desc"> PARAMETER </th>
+                                <th style="width:270px;" data-column="value" data-order="desc"> VALUE</th>
+                                <th data-column="description" data-order="desc"> DESCRIPTION </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="logrow" class="row hide">
+                <div class="tile">
+                    <p id="log entries name" class="tile-title">LOG ENTRIES</p>
+
+                    <div class="search-bar">
+                        <input id="log-search" class="search-input" style="margin-left:0px;" type="text"
+                            spellcheck="false" placeholder=" SEARCH...">
+                    </div>
+
+                    <table id="error-entries" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;" data-column="Error Count" data-order="desc"> ERROR </th>
+                                <th style="width:140px;" data-column="Command ID" data-order="desc"> COMMAND ID</th>
+                                <th style="width:140px;" data-column="Command Specific Info" data-order="desc">
+                                    COMMAND INFO
+                                </th>
+                                <th style="width:140px;" data-column="Namespace" data-order="desc"> NAMESPACE </th>
+                                <th style="width:80px;" data-column="Status Field" data-order="desc"> STATUS</th>
+                                <th style="width:140px;" data-column="Vendor Specific Info" data-order="desc">
+                                    VENDOR INFO
+                                </th>
+                                <th style="width:140px;" data-column="Submission Queue ID" data-order="desc">
+                                    QUEUE ID</th>
+                                <th style="width:80px;" data-column="Byte Location" data-order="desc"> BYTE</th>
+                                <th style="width:80px;" data-column="Bit Location" data-order="desc"> BIT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <table id="command-entries">
+                        <thead>
+                            <tr>
+                                <th style="width:200px;" data-column="Type" data-order="desc"> COMMAND </th>
+                                <th style="width:80px;" data-column="Supported" data-order="desc"> SUPPORTED
+                                </th>
+                                <th style="width:80px;" data-column="Controller Capability Change (CCC)"
+                                    data-order="desc"> CCC</th>
+                                <th style="width:80px;" data-column="Logical Block Content Change (LBCC)"
+                                    data-order="desc"> LBCC</th>
+                                <th style="width:80px;" data-column="Namespace Capability Change (NCC)"
+                                    data-order="desc"> NCC</th>
+                                <th style="width:80px;" data-column="Namespace Inventory Change (NIC)"
+                                    data-order="desc"> NIC</th>
+                                <th style="width:80px;" data-column="UUID Selection Supported" data-order="desc">
+                                    UUID</th>
+                                <th data-column="Command Submission and Execution (CSE)" data-order="desc">
+                                    RESTRICTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <table id="diagnostic-entries" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th style="width:60px;" data-column="Entry" data-order="desc"> ENTRY</th>
+                                <th style="width:80px;" data-column="Power On Hours" data-order="desc"> POWER ON HOUR
+                                </th>
+                                <th style="width:80px;" data-column="Type" data-order="desc"> TYPE </th>
+                                <th style="width:100px;" data-column="Result" data-order="desc"> RESULT </th>
+                                <th style="width:80px;" data-column="Segment" data-order="desc"> SEGMENT </th>
+                                <th style="width:80px;" data-column="Namespace" data-order="desc"> NAMESPACE </th>
+                                <th style="width:80px;" data-column="LBA" data-order="desc"> LBA </th>
+                                <th style="width:80px;" data-column="Status Code" data-order="desc"> STATUS CODE</th>
+                                <th style="width:80px;" data-column="Status Code Type" data-order="desc"> STATUS TYPE
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <table id="event-entries" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;" data-column="Entry" data-order="desc"> ENTRY </th>
+                                <th style="width:200px;" data-column="Time" data-order="desc"> TIME</th>
+                                <th style="width:160px;" data-column="Type" data-order="desc"> TYPE</th>
+                                <th style="width:100px;" data-column="Health" data-order="desc"> HEALTH</th>
+                                <th data-column="Details" data-order="desc"> DETAILS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section id="host-section" class="hide">
+            <div class="row-block">
+                <div class="tile" style="width:1000px;">
+                    <div class="tile-title">HOST PARAMETERS</div>
+                    <table id="host-parameters-compare" class="hide">
+                        <thead>
+                            <tr>
+                                <th style="width:20%" data-column="name" data-order="desc"> PARAMETER </th>
+                                <th style="width:40%;" data-column="value" data-order="desc"> VALUE </th>
+                                <th style="width:40%;" data-column="value" data-order="desc"> COMPARE VALUE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <table id="host-parameters">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;" data-column="name" data-order="desc"> PARAMETER </th>
+                                <th style="width: 50%;" data-column="value" data-order="desc"> VALUE </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section id="help-section" class="view-only">
+
+            <div class="row">
+                <div class="tile">
+                    <div class="tile-title">LICENSE INFORMATION </div>
+                    <p style="margin: 0px 12px 12px 12px">This file was created using the nvmetools python package
+                        released under the MIT License @ https://opensource.org/licenses/MIT. </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="tile">
+                    <div class="tile-title">NVMETOOLS INFORMATION </div>
+                    <p style="margin: 0px 12px 12px 12px"> Additional information can be found in the blog. For
+                        example,
+                        how the health, thermal throttle limits and other parameters were determined. </p>
+                    <ul>
+                        <li><a href="https://www.nvmetools.com" target="_blank">Nvmetools Blog</a></li>
+                        <li><a href="https://github.com/jtjones1001/nvmetools" target="_blank">
+                                Source code on github</a></li>
+                        <li><a href="https://pypi.org/project/nvmetools/" target="_blank">
+                                Python package on pypi</a></li>
+                        <li><a href="https://nvmetools.readthedocs.io/en/latest/" target="_blank">
+                                Documentation on readthedocs</a></li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="tile">
+                    <div class="tile-title">NVMe Specification </div>
+
+                    <p style="margin: 0px 12px 12px 12px">Additional information on NVMe parameters can be
+                        found in the
+                        NVMe Base Specification</p>
+                    <ul>
+                        <li><a href="https://nvmexpress.org/developers/nvme-specification/" target="_blank">
+                                NVMe Base Specification</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Summary View for testnvme -->
+        <section id="summary-section" class="testview-only">
+
+            <!-- First row with critical information -->
+            <div class="row">
+                <div class="tile">
+                    <div class="tile-title">TEST SUITE</div>
+                    <table class="summary-table">
+                        <tbody>
+                            <tr>
+                                <td style="width:40%">Name</td>
+                                <td id="name"></td>
+                            </tr>
+                            <tr>
+                                <td>ID</td>
+                                <td id="id"></td>
+                            </tr>
+                            <tr>
+                                <td>Version</td>
+                                <td id="script version"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tile">
+                    <div class="tile-title">TESTED</div>
+                    <table class="summary-table">
+                        <tbody>
+                            <tr id="db-device">
+                                <td style="width:35%">Device</td>
+                                <td id="model"></td>
+                            </tr>
+                            <tr id="db-system1">
+                                <td>System</td>
+                                <td id="system"></td>
+                            </tr>
+                            <tr id="sb-system2">
+                                <td>Location</td>
+                                <td id="location"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tile">
+                    <div class="tile-title">DATE</div>
+                    <table class="summary-table">
+                        <tbody>
+                            <tr>
+                                <td style="width:40%">Start</td>
+                                <td id=start></td>
+                            </tr>
+                            <tr>
+                                <td>End</td>
+                                <td id="end"></td>
+                            </tr>
+                            <tr>
+                                <td>Duration</td>
+                                <td id="duration"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Second row with donut graphs-->
+            <div class="row">
+                <div class="tile">
+                    <div class="tile-title">TESTS</div>
+                    <canvas id="tests" class="donut-chart" width="270px" height="90px"></canvas>
+                    <div class="tile-footer">
+                        <span id="test donut footer"></span>
+                        <span id="test donut footer total" style="float:right"></span>
+                    </div>
+                </div>
+                <div class="tile">
+                    <div class="tile-title">REQUIREMENTS</div>
+                    <canvas id="requirements" class="donut-chart" width="270px" height="90px"></canvas>
+
+                    <div class="tile-footer">
+                        <span id="rqmt donut footer"></span>
+                        <span id="rqmt donut footer total" style="float:right"></span>
+                    </div>
+                </div>
+                <div class="tile">
+                    <div class="tile-title">VERIFICATIONS</div>
+                    <canvas id="verifications" class="donut-chart" width="270px" height="90px"></canvas>
+
+                    <div class="tile-footer">
+                        <span id="ver donut footer" class="text-left"></span>
+                        <span id="ver donut footer total" style="float:right"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Third row : Tables of tests and requirements   -->
+
+            <div class="row" style="align-items: flex-start;">
+                <div class="tile" style="flex-basis:30%;">
+                    <div class="tile-title">TEST LIST </div>
+                    <table id="test-list" class="active-parameter-table">
+                        <thead>
+                            <tr>
+                                <th class="number-col" data-column="number" data-order="asc"> #</th>
+                                <th data-column="title" data-order="desc"> Test</th>
+                                <th class="status-col" data-column="result" data-order="desc">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tile" style="flex-basis:70%">
+                    <div class="tile-title">REQUIREMENT LIST</div>
+                    <table id="rqmt-list" class="active-parameter-table">
+                        <thead>
+                            <thead>
+                                <tr>
+                                    <th class=" number-col" data-column="number" data-order="asc">#</th>
+                                    <th data-column="title" data-order="desc">Requirement</th>
+                                    <th style="width:100px;" data-column="pass" data-order="desc">Pass</th>
+                                    <th style="width:100px;" data-column="fail" data-order="desc">Fail</th>
+                                    <th class="status-col" data-column="fail" data-order="desc">Status</th>
+                                </tr>
+                            </thead>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!--   Test View for testnvme  -->
+        <section id="test-section" class="testview-only">
+
+            <div class="row" style="align-items: flex-start;">
+                <div class="tile" style="flex-basis:30%;">
+                    <div class="tile-title">TEST LIST
+
+                        <svg id="collapsed" xmlns="http://www.w3.org/2000/svg" onclick="expandTests(this)"
+                            data-bs-toggle="collapse" data-bs-target=".test_detail" style="float:right;" width="16"
+                            height="16" fill="currentColor" class="hide bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                            <path
+                                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                        </svg>
+                        <svg id="expanded" xmlns="http://www.w3.org/2000/svg" onclick="collapseTests(this)"
+                            data-bs-toggle="collapse" data-bs-target=".test_detail" style="float:right;" width="16"
+                            height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                        </svg>
+
+                    </div>
+
+                    <table id="test-view-list" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th class="number-col" data-column="number" data-order="asc"> #</th>
+                                <th data-column="title" data-order="desc"> Test</th>
+                                <th class="status-col" data-column="result" data-order="desc">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="test-list-details" class="tile" style="flex-basis:70%;">
+                </div>
+
+        </section>
+
+        <!--   Requirement View for testnvme  -->
+        <section id="rqmt-section" class="testview-only">
+
+            <div class="row" style="align-items: flex-start;">
+                <div class="tile" style="flex-basis:45%;">
+                    <div class="tile-title">REQUIREMENT LIST
+                        <svg id="rl2" xmlns="http://www.w3.org/2000/svg" onclick="selectRequirement(0)"
+                            style="float:right;" width="16" height="16" fill="currentColor" class="hide bi bi-x-circle"
+                            viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                            <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                    </div>
+                    <table id="rqmt-view-list" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th class="number-col" data-column="number" data-order="asc">#</th>
+                                <th data-column="title" data-order="desc">Requirement</th>
+                                <th data-column="pass" data-order="desc">Pass</th>
+                                <th data-column="fail" data-order="desc">Fail</th>
+                                <th class="status-col" data-column="fail" data-order="desc">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tile" style="flex-basis:55%;">
+                    <div class="tile-title">REQUIREMENT VERIFICATIONS</div>
+                    <table id="rqmt-verifications" class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th class="number-col" data-column="number" data-order="asc">#</th>
+                                <th data-column="title" data-order="desc" style="width:45%">Requirement</th>
+                                <th data-column="value" data-order="desc" style="width:100ps;">Value </th>
+                                <th data-column="test number" data-order="desc" class="number-col">#</th>
+                                <th data-column="test" data-order="desc">Test</th>
+                                <th class="status-col" data-column="result" data-order="desc">Status </th>
+                            </tr>
+                        </thead>
+                        <tbody class="no-select">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <script src="./chart.min.js"></script>
+    <script src="./data.js"></script>
+    <script src="./viewFunctions.js"></script>
+    <script src="./updateFunctions.js"></script>
+    <script src="./dropdown.js"></script>
+    <script src="./template.js"></script>
+
+</body>
+
+</html>
