@@ -44,6 +44,7 @@ import argparse
 import os
 import sys
 
+from nvmetools.support.info import Info
 import nvmetools.support.console as console
 from nvmetools import PACKAGE_DIRECTORY, TEST_SUITE_DIRECTORY, TestSuite
 
@@ -109,6 +110,15 @@ def main():
             filepath = os.path.join(PACKAGE_DIRECTORY, "suites", filename)
         if not os.path.exists(filepath):
             raise console.NoTestSuite(args["suite"])
+
+        # Check that nvme exists, if not throws an error
+
+        directory = os.path.join(args["result directory"], "temp")
+        Info(nvme=args["nvme"], directory=directory)
+        os.remove(os.path.join(directory, "nvme.info.json"))
+        os.remove(os.path.join(directory, "read.summary.json"))
+        if os.path.exists(os.path.join(directory, "nvmecmd.trace.log")):
+            os.remove(os.path.join(directory, "nvmecmd.trace.log"))
 
         with open(filepath, "r") as file_object:
             code = file_object.read()

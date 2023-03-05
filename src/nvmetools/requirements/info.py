@@ -356,7 +356,7 @@ def persistent_memory_reliable(step, info):
         verification(
             rqmt_id=35,
             step=step,
-            title="Persistent Memory Unreliable shall be No ",
+            title="Persistent Memory Unreliable shall be No",
             verified=(value == "No"),
             value=value,
         )
