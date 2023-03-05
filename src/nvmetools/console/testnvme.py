@@ -30,25 +30,14 @@ Command Line Parameters
 
 **Example**
 
-    This example runs a Test Suite called short_demo on NVMe 1.
-
-    .. code-block:: python
-
-        testnvme  short_demo  --nvme 1  --volume /mnt/nvme1a
-
-    - `short_demo report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/8c2dc6868e109702024e60037f6903a713f6ee1d/docs/examples/short_demo/report.pdf>`_
-    - `short_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/8c2dc6868e109702024e60037f6903a713f6ee1d/docs/examples/short_demo/dashboard.html>`_
-
-**Example**
-
     This example runs a Test Suite called big_demo on NVMe 1.
 
     .. code-block:: python
 
         testnvme  big_demo  --nvme 1 --volume g:
 
-    - `big_demo report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/d680e14fbbd71ede2d5ff0a154e40e2dfe467b43/docs/examples/big_demo/report.pdf>`_
-    - `big_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/d680e14fbbd71ede2d5ff0a154e40e2dfe467b43/docs/examples/big_demo/dashboard.html>`_
+    - `big_demo report (report.pdf) <https://raw.githubusercontent.com/jtjones1001/nvmetools/6785ed59b7c52ce8730e56a1bd28c7f2226bde1a/docs/examples/big_demo/report.pdf>`_
+    - `big_demo dashboard (dashboard.html) <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/6785ed59b7c52ce8730e56a1bd28c7f2226bde1a/docs/examples/big_demo/testnvme.html>`_
 
 """  # noqa: E501
 import argparse

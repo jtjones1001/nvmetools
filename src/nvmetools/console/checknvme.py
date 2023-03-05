@@ -41,7 +41,7 @@ This example checks the health of NVMe 0.
 
 The html dashboard displayed is the same as viewnvme:
 
-   * `Example viewnvme.html  <https://htmlpreview.github.io?https://github.com/jtjones1001/nvmetools/blob/2ff9f4c3f2c6b7d41f57f01e299c6272fef21994/docs/examples/checknvme/dashboard.html>`_
+   * `Example viewnvme.html  <https://htmlpreview.github.io?https://raw.githubusercontent.com/jtjones1001/nvmetools/main/docs/examples/viewnvme/viewnvme.html>`_
 
 .. warning::
    The Windows OS driver has a bug where the self-test diagnostic fails if rerun within 10 minutes of a prior
