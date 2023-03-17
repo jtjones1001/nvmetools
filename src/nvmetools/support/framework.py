@@ -26,14 +26,14 @@ The framework automatically runs a test suite and produces these three outputs
 Because this framework is based on python and command line usage it can easily be integrated into
 existing automation frameworks, test databases such as TestRail, and log storage servers.
 
-The test flow can be changed as follows:
+The test flow can be changed with:
 
-   Flow Control     Test Case Result      Test Suite Result         Comment
-
-   Skip             Skip                                            As if test never ran
-   Stop             Pass/Fail @ Stop      Pass/Fail @ Stop          Stops and evaluates pass/fail
-   Abort            Abort                 Abort                     Fatal error
-   Exception        Abort                 Abort                     Fatal error
+    - Skip test.  Skips to end of test, same as if the test never ran
+    - Stop test.  Stops test case, evaluates pass/fail based on test steps up to the stop.
+    - Stop suite.  Stops test suite, evaluates pass/fail based on test cases up to the stop.
+    - Abort test.  Aborts test case, sets result to Abort (which is a type of fail)
+    - Abort suite.  Aborts test suite, sets result to Abort (which is a type of fail)
+    - Unhandled exception.  Same as Abort.
 
 """  # noqa: E501
 import datetime
