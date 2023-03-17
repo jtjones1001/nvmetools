@@ -1,3 +1,3 @@
 Requirement Verifications
 =========================
-.. automodule:: nvmetools.requirements
+.. automodule:: nvmetools.lib.nvme.requirements

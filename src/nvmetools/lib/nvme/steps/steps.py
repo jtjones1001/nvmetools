@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------------------------
 """Test Steps for NVMe solid state drives (SSD).
 
-All NVMe Test Steps are combined into this single python package (nvmetools.steps) so they can
+All NVMe Test Steps are combined into this single python package so they can
 easily be imported and run as shown here.
 
     .. code-block::

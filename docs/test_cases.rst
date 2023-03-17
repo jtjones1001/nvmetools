@@ -1,7 +1,7 @@
 
 Test Cases
 ==========
-.. automodule:: nvmetools.tests
+.. automodule:: nvmetools.lib.nvme.tests
 
 Features
 --------

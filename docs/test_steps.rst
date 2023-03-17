@@ -1,6 +1,6 @@
 Test Steps
 ==========
-.. automodule:: nvmetools.steps
+.. automodule:: nvmetools.lib.nvme.steps
 
 Information
 -----------
