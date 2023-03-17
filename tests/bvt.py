@@ -1,5 +1,6 @@
 from nvmetools import TestCase, TestStep, TestSuite, rqmts
 
+
 def verify_stop_on_fail():
     for suite_sof in [True, False]:
         for test_sof in [True, False]:
@@ -14,10 +15,10 @@ def verify_stop_on_fail():
                     suite.stop_on_fail=suite_sof
 
                     with TestCase(suite, "Test1") as test:
-                        test.stop_on_fail = test_sof
+                        test.abort_on_fail= test_sof
 
                         with TestStep(test, "Step") as step:
-                            step.stop_on_fail = step_sof
+                            step.abort_on_fail = step_sof
                             rqmts._force_pass(step)
                             rqmts._force_fail(step)
                             rqmts._force_pass(step)
@@ -75,7 +76,7 @@ def verify_step_stop():
                 with TestCase(suite, "Test1") as test:
 
                     with TestStep(test, "Step") as step:
-                        step.stop_on_fail = False
+                        step.abort_on_fail = False
 
                         rqmts._force_pass(step)
 
@@ -121,7 +122,7 @@ def verify_test_stop():
                 with TestCase(suite, "Test1") as test:
 
                     with TestStep(test, "Step") as step:
-                        step.stop_on_fail = False
+                        step.abort_on_fail = False
 
                         rqmts._force_pass(step)
 
@@ -167,7 +168,7 @@ def verify_suite_stop():
                 with TestCase(suite, "Test1") as test:
 
                     with TestStep(test, "Step") as step:
-                        step.stop_on_fail = False
+                        step.abort_on_fail = False
 
                         rqmts._force_pass(step)
 

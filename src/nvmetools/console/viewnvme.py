@@ -41,9 +41,9 @@ import shutil
 import sys
 
 import nvmetools.support.console as console
+from nvmetools.lib.nvme.reporter import create_dashboard
 from nvmetools.support.info import Info
 from nvmetools.support.log import start_logger
-from nvmetools.support.report import create_dashboard
 
 
 def _parse_arguments():
@@ -54,10 +54,10 @@ def _parse_arguments():
     )
     parser.add_argument("-n", "--nvme", type=int, help="NVMe to read, reads all if not specified", metavar="#")
     parser.add_argument("-f", "--file", default="", help="Read NVMe info from this file")
-    '''
+    """
         Disable this argument for now
         parser.add_argument("-c", "--comparefile", default="", help="Compare info against NVMe info in this file")
-    '''
+    """
     return vars(parser.parse_args())
 
 
@@ -76,8 +76,11 @@ def read_nvme(nvme=None, file="", comparefile=""):
         os.makedirs(directory, exist_ok=False)
 
         log = start_logger(directory, logging.INFO, "viewnvme.log", False)
+        log.info("-" * 90, indent=False)
+        log.info(f"VIEW NVME", indent=False)
+        log.info("-" * 90, indent=False)
 
-        log.info(f" Logs: {directory}", indent=False)
+        log.info(f"Logs: {directory}", indent=False)
         all_nvme_info = {}
         start_nvme = None
 
@@ -97,7 +100,7 @@ def read_nvme(nvme=None, file="", comparefile=""):
                     uid = this_info.parameters["Unique Description"]
                     all_nvme_info[uid] = this_info
 
-                    log.info(f" Read: {uid}", indent=False)
+                    log.info(f"Read: {uid}", indent=False)
 
                     if start_nvme is None:
                         if nvme is None or nvme == nvme_number:
@@ -108,13 +111,13 @@ def read_nvme(nvme=None, file="", comparefile=""):
 
                 start_nvme = this_info.parameters["Unique Description"]
                 all_nvme_info[start_nvme] = this_info
-                log.info(f" Read: {start_nvme}", indent=False)
+                log.info(f"Read: {start_nvme}", indent=False)
 
         else:
             if not os.path.exists(file):
                 raise console.NoInfoFile(file)
 
-            log.info(f" Reading: {file}", indent=False)
+            log.info(f"Reading: {file}", indent=False)
             info = Info(from_file=file)
             start_nvme = info.parameters["Unique Description"]
             all_nvme_info[start_nvme] = info

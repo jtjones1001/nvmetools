@@ -6,7 +6,8 @@
 Measures IO peformance for several conditions including short and long bursts of reads
 and writes.
 """
-from nvmetools import TestSuite, fio, tests
+import nvmetools.apps.fio as fio
+from nvmetools.lib.nvme import TestSuite, tests
 
 with TestSuite("Performance", __doc__) as suite:
 

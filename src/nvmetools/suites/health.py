@@ -6,7 +6,7 @@
 Check NVMe is a short Test Suite that verifies drive health and wear by running the drive
 diagnostic, reviewing SMART data and Self-Test history.
 """
-from nvmetools import TestSuite, tests
+from nvmetools.lib.nvme import TestSuite, tests
 
 with TestSuite("Check NVMe Health", __doc__, winadmin=True) as suite:
 

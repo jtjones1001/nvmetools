@@ -30,11 +30,15 @@ try {
       document.getElementById(
         "suite-name"
       ).innerHTML = `${info["title"]} Test Suite <span class="result-badge fail">FAIL</span>`;
-    } else {
+    } else if (info["result"] == "ABORTED") {
       document.getElementById(
         "suite-name"
-      ).innerHTML = `${info["title"]} Test Suite <span class="result-badge pass">PASS</span>`;
-    }
+      ).innerHTML = `${info["title"]} Test Suite <span class="result-badge abort">ABORT</span>`;
+    } else {
+    document.getElementById(
+      "suite-name"
+    ).innerHTML = `${info["title"]} Test Suite <span class="result-badge pass">PASS</span>`;
+  }
 
     var selectedVerificationListData = verificationListData;
     var sortedRqmtList = rqmtListData;
@@ -63,10 +67,11 @@ try {
 
     document.getElementById("test donut footer total").innerHTML = `<b>${test.total}</b> Total`;
     document.getElementById("test donut footer").innerHTML = `<b>${test.pass}</b> passed, <b>${test.fail}</b> failed, <b>${test.skip}</b> skipped`;
+
     document.getElementById("rqmt donut footer total").innerHTML = `<b>${rqmt.total}</b> Total`;
-    document.getElementById("rqmt donut footer").innerHTML = `<b>${rqmt.pass}</b> passed, <b>${rqmt.fail}</b> failed `;
+    document.getElementById("rqmt donut footer").innerHTML = `<b>${rqmt.pass}</b> passed, <b>${rqmt.fail}</b> failed`;
     document.getElementById("ver donut footer total").innerHTML = `<b>${ver.total}</b> Total`;
-    document.getElementById("ver donut footer").innerHTML = `<b>${ver.pass}</b> passed, <b>${ver.fail}</b> failed `;
+    document.getElementById("ver donut footer").innerHTML = `<b>${ver.pass}</b> passed, <b>${ver.fail}</b> failed`;
 
     updateChart(
       document.getElementById("tests").getContext("2d"),

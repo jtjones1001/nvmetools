@@ -29,6 +29,7 @@ import argparse
 
 from nvmetools.support.console import exit_on_exception
 from nvmetools.support.framework import update_suite_files
+from nvmetools.lib.nvme.reporter import create_reports
 
 
 def main():
@@ -42,7 +43,7 @@ def main():
 
         args = parser.parse_args()
 
-        update_suite_files(args.directory)
+        update_suite_files(args.directory, reporter=create_reports)
 
     except Exception as e:
         exit_on_exception(e)

@@ -26,7 +26,7 @@ def exit_on_exception(e):
         log.exception("Unknown error.  Send developer details below and debug.log\n\n")
     else:
         log.header(f"FATAL ERROR : {e.code}", indent=False)
-        log.error(e)
+        log.error(str(e))
 
     sys.exit(e.code)
 

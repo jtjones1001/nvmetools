@@ -57,6 +57,7 @@ class RunProcess:
             timeout_sec: Seconds to wait for process to end before timing out.
             wait:  Waits for process to end if true, else return after process started
         """
+        log.debug(" ")
         log.frames("RunProcess", inspect.getouterframes(inspect.currentframe(), context=1))
         log.debug(f"Process: {args[0]}")
         for arg in enumerate(args, 1):
@@ -82,12 +83,9 @@ class RunProcess:
                 stderr=subprocess.DEVNULL,
             )
 
-        log.debug(" ")
         log.debug(f"Process ID:            {self.process.pid}")
         if wait:
             self.wait(timeout_sec)
-        else:
-            log.debug(" ")
 
     def kill(self):
         """Kill the running process.
@@ -165,7 +163,6 @@ class RunProcess:
 
                 log.debug(f"Process Run Time:      {self.run_time:.3f} seconds")
                 log.debug(f"Process Return Code:   {self.process.returncode}")
-                log.debug(" ")
 
         except subprocess.TimeoutExpired:
             log.debug(f"Process {self.process.pid} timeout expired and will be stopped")
@@ -178,6 +175,5 @@ class RunProcess:
 
                 log.debug(f"Process Run Time:      {self.run_time:.3f} seconds")
                 log.debug(f"Process Return Code:   {self.process.returncode}")
-                log.debug(" ")
 
         return self.return_code

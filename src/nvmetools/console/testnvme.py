@@ -44,9 +44,10 @@ import argparse
 import os
 import sys
 
-from nvmetools.support.info import Info
 import nvmetools.support.console as console
-from nvmetools import PACKAGE_DIRECTORY, TEST_SUITE_DIRECTORY, TestSuite
+from nvmetools import PACKAGE_DIRECTORY, TEST_SUITE_DIRECTORY
+from nvmetools.support.framework import TestSuite
+from nvmetools.support.info import Info
 
 
 def main():
@@ -91,6 +92,13 @@ def main():
             metavar="#",
             help="level of detail in logging, 0 is least, 3 is most",
         )
+        parser.add_argument(
+            "-r",
+            "--report",
+            action="store_true",
+            help="create reports after test suite completed",
+        )
+
         parser.add_argument("-i", "--uid", help="unique id for directory name")
 
         args = vars(parser.parse_args())

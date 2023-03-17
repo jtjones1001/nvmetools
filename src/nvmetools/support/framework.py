@@ -1,7 +1,7 @@
 # --------------------------------------------------------------------------------------
 # Copyright(c) 2023 Joseph Jones,  MIT License @  https://opensource.org/licenses/MIT
 # --------------------------------------------------------------------------------------
-"""This module provides a framework for testing NVMe devices.
+"""This module provides a framework for testing devices.
 
 The framework consists of Test Suites, Test Cases, Test Steps, and Requirement Verifications
 structured as follows::
@@ -21,10 +21,19 @@ The framework automatically runs a test suite and produces these three outputs
 
     -  Detailed text and json logs
     -  HTML dashboard
-    -  Detailed report
+    -  Detailed PDF report
 
 Because this framework is based on python and command line usage it can easily be integrated into
 existing automation frameworks, test databases such as TestRail, and log storage servers.
+
+The test flow can be changed as follows:
+
+   Flow Control     Test Case Result      Test Suite Result         Comment
+
+   Skip             Skip                                            As if test never ran
+   Stop             Pass/Fail @ Stop      Pass/Fail @ Stop          Stops and evaluates pass/fail
+   Abort            Abort                 Abort                     Fatal error
+   Exception        Abort                 Abort                     Fatal error
 
 """  # noqa: E501
 import datetime
@@ -36,20 +45,20 @@ import os
 import platform
 import shutil
 import time
-
+import traceback
 
 from nvmetools import DEFAULT_INFO_DIRECTORY, TEST_RESULT_DIRECTORY, USER_INFO_DIRECTORY, __version__
 from nvmetools.apps.fio import check_fio_installation
 from nvmetools.apps.nvmecmd import check_nvmecmd_permissions
 from nvmetools.support.conversions import as_duration, is_admin, is_windows_admin
 from nvmetools.support.log import start_logger
-from nvmetools.support.report import create_reports
 
-SKIPPED = "SKIPPED"
-PASSED = "PASSED"
-FAILED = "FAILED"
-ABORTED = "ABORTED"
-STARTED = "STARTED"
+RQMT_PASSED = TEST_PASSED = PASSED = "PASSED"
+RQMT_FAILED = TEST_FAILED = FAILED = "FAILED"
+TEST_ABORTED = ABORTED = "ABORTED"
+RQMT_SKIPPED = TEST_SKIPPED = SKIPPED = "SKIPPED"
+COMPLETED = "COMPLETED"
+STOPPED = "STOPPED"
 
 RESULTS_FILE = "result.json"
 
@@ -58,21 +67,32 @@ class _NoAdmin(Exception):
     def __init__(self):
         self.code = 70
         self.nvmetools = True
-        super().__init__(" Test Suite must be run as admin.")
+        super().__init__("TEST SUITE must be run as admin.")
 
 
 class _NoWinAdmin(Exception):
     def __init__(self):
         self.code = 71
         self.nvmetools = True
-        super().__init__(" Test Suite must be run as Windows administrator.")
+        super().__init__("TEST SUITE must be run as Windows administrator.")
+
+
+class _InvalidStep(Exception):
+    def __init__(self):
+        self.code = 72
+        self.nvmetools = True
+        super().__init__("Parameter step is not type TestStep")
+
+
+class _InvalidTest(Exception):
+    def __init__(self):
+        self.code = 73
+        self.nvmetools = True
+        super().__init__("Parameter test is not type TestCase")
 
 
 class TestStep:
-    stop_on_fail = False
-    __force_fail = False
-
-    def __init__(self, test, title, description="", stop_on_fail=False):
+    def __init__(self, test, title, description=""):
         """Runs a Test Step.
 
         Args:
@@ -80,15 +100,14 @@ class TestStep:
             title: Title of the step
             description: Optional description for the step
 
-        A Test Step is run within a Test Case which is run within a Test Suite.  A Test Step runs
+        A Test Step is run within a Test Case, which is run within a Test Suite.  A Test Step runs
         any number of requirement verifications, including zero.
 
-        A Test Step result is either PASSED or FAILED.  If no verifications failed the Test Step
-        result is PASSED, otherwise it is FAILED.  The one exception if the stop() method is called,
-        see below for details.
+        A Test Step result is either PASS or FAIL.  The Test Step result is PASS if all
+        verifications PASS, otherwise it is FAIL.
 
         The step is run using the python with command.  This example runs a step with two
-        verifications.  If either verification fails the step result is FAILED.
+        verifications.  If either verification fails the step result is FAIL.
 
             .. code-block::
 
@@ -96,50 +115,17 @@ class TestStep:
 
                     value1, value2 = get_my_values()
 
-                    verify.my_requirement(step, value1)
-                    verify.my_second_requirement(step, value2)
-
-
-        If stop_on_fail is True the step will stop when a verification fails.  This example runs a
-        test step and enables stop on fail for the first verification.
-
-            .. code-block::
-
-                with TestStep(test, "My step", "Very cool step description") as step:
-
-                    value1, value2 = get_my_values()
-
-                    step.stop_on_fail = True
-                    verify.my_requirement(step, value1)
-
-                    step.stop_on_fail = False
-                    verify.my_second_requirement(step, value2)
-
-
-        A step can be stopped using the stop() method.  This example stops a step and sets the result
-        to PASSED or FAILED based on a custom variable.
-
-            .. code-block::
-
-                with TestStep(test, "My step", "Very cool step description") as step:
-
-                    value1, value2 = get_my_values()
-
-                    if value1 == 32:
-                        step.stop(force_fail=False)
-                    else:
-                        step.stop()
+                    rqmts.my_requirement(step, value1)
+                    rqmts.my_second_requirement(step, value2)
 
         Attributes:
             test:            Parent TestCase instance running the test step
             suite:           Grandparent TestSuite instance running the test
             step_number:     Step number within the test
             directory:       Working directory for step specific files
-            stop_on_fail:    Stops step on a failed verification, default is False
 
         """
         self._title = title
-        self.stop_on_fail = stop_on_fail
         self._description = description
         self._start_counter = time.perf_counter()
         self.test = test
@@ -153,9 +139,10 @@ class TestStep:
             "title": title,
             "description": self._description,
             "result": ABORTED,
-            "force fail": False,
+            "flow": "",
             "start time": f"{datetime.datetime.now()}"[:-3],
             "end time": "",
+            "end message": "",
             "duration (sec)": "",
             "duration": "",
             "directory": self.directory,
@@ -165,90 +152,62 @@ class TestStep:
 
     def __enter__(self):
         log.frames("TestStep", inspect.getouterframes(inspect.currentframe(), context=1))
-        log.verbose(f"Step {self.test.step_number}: {self._title}")
         log.verbose("")
+        log.verbose(f"Step {self.test.step_number}: {self._title}")
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
+
         duration_seconds = time.perf_counter() - self._start_counter
         self.state["end time"] = f"{datetime.datetime.now()}"[:-3]
         self.state["description"] = self._description
         self.state["duration (sec)"] = f"{duration_seconds:.3f}"
         self.state["duration"] = as_duration(duration_seconds)
 
-        pass_vers = sum(ver["result"] is PASSED for ver in self.state["verifications"])
         fail_vers = sum(ver["result"] is not PASSED for ver in self.state["verifications"])
-
-        if self.suite.loglevel > 1:
-            if fail_vers != 0:
-                log.important("")
-            elif pass_vers != 0:
-                log.verbose("")
 
         # End normally
 
         if exc_type is None:
-            if self.__force_fail or fail_vers > 0:
+            if fail_vers > 0:
                 self.state["result"] = FAILED
             else:
                 self.state["result"] = PASSED
+            self.state["flow"] = COMPLETED
             self.test.state["steps"].append(self.state)
+            return True
 
-        # Stopped because of framework exception, determine pass/fail and then forward exception
+        # else, set results and message then forward exception to TestCase
 
-        elif hasattr(exc_value, "nvme_framework_exception"):
-            if self.__force_fail or fail_vers > 0:
+        elif exc_type is TestCase._Skip:
+            self.state["result"] = self.state["flow"] = SKIPPED
+            self.test.state["steps"].append(self.state)
+            self.state["end message"] = "Step skipped with message: {exc_value}"
+        elif exc_type in [TestCase._Stop, TestSuite._Stop]:
+            if fail_vers > 0:
                 self.state["result"] = FAILED
             else:
                 self.state["result"] = PASSED
-            self.test.state["steps"].append(self.state)
-
-            # if step stop then it was handled, else send to parent test case
-            if exc_type is not self.__Stop:
-                return False
-
-        # Stopped with unknown exception, forward to parent test case
-
+            self.state["flow"] = STOPPED
+            self.state["end message"] = "Step stopped with message: {exc_value}"
+        elif exc_type in [TestCase._Abort, TestSuite._Abort]:
+            self.state["result"] = self.state["flow"] = ABORTED
+            self.state["end message"] = "Step aborted with message: {exc_value}"
         else:
-            self.state["result"] = ABORTED
-            self.test.state["steps"].append(self.state)
-            return False
+            self.state["result"] = self.state["flow"] = ABORTED
+            self.state["end message"] = """Step aborted with unknown exception."""
 
-        if self.state["result"] == FAILED and self.test.stop_on_fail:
-            self.test.stop()
-
-        return True
-
-    class __Stop(Exception):
-        nvme_framework_exception = True
-
-        def __init__(self, message=""):
-            log.frames("TestStep.Stop", inspect.getouterframes(inspect.currentframe(), context=1))
-            log.info(f"----> STEP STOP : {message}", indent=False)
-            log.info("")
-            super().__init__("TestStep.Stop")
-
-    def stop(self, message="", force_fail=True):
-        """Stop the TestStep.
-
-        Stops the step when called.  By default will force the step to fail.  If force_fail=False
-        the step result is determined by the completed verifications up to the point stop() is
-        called.  If any verification failed the step result is failed, otherwise it is passed.
-
-        Args:
-            force_fail: Forces step to fail if True
-
-        """
-        self.__force_fail = force_fail
-        self.state["force fail"] = force_fail
-        raise self.__Stop(message)
+        self.test.state["steps"].append(self.state)
+        return False
 
 
 class TestCase:
-    stop_on_fail = False
-    __force_fail = False
+    run_on_fail = None
+    run_on_exception = None
+    run_on_timeout = None
+    abort_on_fail = False
 
-    def __init__(self, suite, title, description="", stop_on_fail=False):
+    def __init__(self, suite, title, description=""):
         """Runs a Test Case.
 
         Args:
@@ -258,10 +217,11 @@ class TestCase:
 
         A Test Case which is run within a Test Suite.  A Test Case runs one or more Test Steps.
 
-        A Test Case result is either PASSED, FAILED, ABORTED, or SKIPPED.  If an unhandled
-        exception occurs during the test the result is ABORTED.  If the skip() method is
-        called the result is SKIPPED.  If not skipped or aborted, if any Test Step fails the result
-        is FAILED, otherwise it is PASSED.
+        A Test Case result is either PASS, FAIL, ABORT, or SKIP.  If an unhandled
+        exception occurs or test.abort() is called the result is ABORT.  This result indicates
+        the Test Case did not complete.  If the skip() method is called the result is SKIP.  This
+        is the same as if the test was not run.  If not skipped or aborted, if any Test Step fails
+        the result is FAIL, otherwise it is PASS.
 
         The test is run using the python with command.  This example runs a test with one test step.
 
@@ -271,27 +231,10 @@ class TestCase:
 
                     with TestStep(test, "My step", "Very cool step description") as step:
                         value1, value2 = get_my_values()
-                        verify.my_requirement(step, value1)
-
-
-        If stop_on_fail is True the test will stop when a step fails.  Note the step will complete
-        before the test is stopped.  This example runs a test and enables stop on fail for the
-        first step.
-
-            .. code-block::
-
-                with TestCase(suite, "My test", "Very cool test description") as test:
-
-                    test.stop_on_fail = True
-
-                    with TestStep(test, "My step", "Very cool step description") as step:
-
-                        value1, value2 = get_my_values()
-                        verify.my_requirement(step, value1))
-
+                        rqmts.my_requirement(step, value1)
 
         A test can be stopped using the stop() method.  This example stops a test and sets the result
-        to PASSED or FAILED based on a custom variable.
+        based on the results up to that point.
 
             .. code-block::
 
@@ -301,13 +244,10 @@ class TestCase:
 
                         value1, value2 = get_my_values()
                         if value1 == 32:
-                            test.stop(force_fail=False)
-                        else:
                             test.stop()
 
-
-        A test can be skipped using the skip() method.  This example skips a test if the testable
-        feature is not supported.
+        A test can be skipped using the skip() method.  This example skips a test.  For example, if
+        the testable feature is not supported.
 
             .. code-block::
 
@@ -320,15 +260,14 @@ class TestCase:
                             test.skip()
 
         Attributes:
-            suite:          Parent TestSuite instance running the test
+            suite:           Parent TestSuite instance running the test
+            step_number:     Number of current test step
             test_number:     Test number within the test suite
             directory:       Working directory for step specific files
-            stop_on_fail:    Stops step on a failed verification, default is False
-
+            abort_on_fail:   Aborts the test when a verification fails
         """
         self.data = {}
         self.suite = suite
-        self.stop_on_fail = stop_on_fail
         self._steps = []
         self._start_counter = time.perf_counter()
         self._description = description.split("\n")[0]
@@ -345,9 +284,10 @@ class TestCase:
             "description": self._description,
             "details": self.details,
             "result": ABORTED,
-            "force fail": False,
+            "flow": "",
             "start time": f"{datetime.datetime.now()}"[:-3],
             "end time": "",
+            "end message": "",
             "duration (sec)": "",
             "duration": "",
             "directory": self.directory,
@@ -363,14 +303,15 @@ class TestCase:
         }
 
     def __enter__(self):
+        log.info("")
         log.frames("TestCase", inspect.getouterframes(inspect.currentframe(), context=1))
         log.header(f"TEST {self.suite.test_number} : {self.state['title']}", 45)
         log.info(f"Description : {self.state['description']}")
         log.verbose(f"Start Time  : {self.state['start time']}")
-        log.info("")
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
+
         duration_seconds = time.perf_counter() - self._start_counter
         self.state["end time"] = f"{datetime.datetime.now()}"[:-3]
         self.state["description"] = self._description
@@ -380,127 +321,170 @@ class TestCase:
 
         fail_steps = sum(step["result"] is not PASSED for step in self.state["steps"])
 
-        if exc_type is None or hasattr(exc_value, "nvme_framework_exception"):
+        unhandled_exception = exc_type in [TestSuite._Stop, TestSuite._Abort]
 
-            if exc_type is self.__Skip:
-                self.state["result"] = SKIPPED
-            elif self.__force_fail or fail_steps > 0:
+        if exc_type is None:
+            if fail_steps > 0:
                 self.state["result"] = FAILED
             else:
                 self.state["result"] = PASSED
+            self.state["flow"] = COMPLETED
+
+        elif exc_type is TestCase._Skip:
+            self.state["result"] = SKIPPED
+            self.state["flow"] = SKIPPED
+            self.state["end message"] = f"Test skipped with message: {exc_value}"
+
+        elif exc_type in [TestCase._Stop, TestSuite._Stop]:
+            log.info("")
+            log.info(f"----> STOP : Test stopped with message: {exc_value}", indent=False)
+            if fail_steps > 0:
+                self.state["result"] = FAILED
+            else:
+                self.state["result"] = PASSED
+            self.state["flow"] = STOPPED
+            self.state["end message"] = f"Test stopped with message: {exc_value}"
+
+        elif exc_type in [TestCase._Abort, TestSuite._Abort]:
+            log.info("")
+            log.info(f"----> ABORT : Test aborted with message: {exc_value}", indent=False)
+            self.state["result"] = ABORTED
+            self.state["flow"] = ABORTED
+            self.state["end message"] = f"Test aborted with message: {exc_value}"
+
         else:
             self.state["result"] = ABORTED
+            self.state["flow"] = ABORTED
+            self.state["end message"] = "Test aborted with below exception.  "
+
+            if self.suite.abort_on_exception:
+                unhandled_exception = True
+
+            if exc_type is KeyboardInterrupt:
+                log.important("")
+                log.important("----> TEST ABORTED BY CTRL-C\n\n")
+                self.state["end message"] += "<br>Received CTRL-C."
+            else:
+                log.info("")
+                log.info("----> EXCEPTION : Possible script error.", indent=False)
+                log.info("----> ", indent=False)
+
+                exception_lines = traceback.format_exception(
+                    type(exc_value), exc_value, exc_traceback, limit=-2, chain=False
+                )[1:]
+                for line in exception_lines:
+                    for each_line in line.split("\n"):
+                        if len(each_line.strip().replace("\n", "")) > 0:
+                            final_line = each_line.strip().replace("\n", "")
+                            log.info("---->     " + final_line, indent=False)
+                            self.state["end message"] += f"<br>{final_line}"
+                    log.info("----> ", indent=False)
+
+        # update the test suite and test results file
 
         self.update_summary()
         self.suite.state["tests"].append(self.state)
-
         results_file = os.path.join(self.directory, RESULTS_FILE)
         with open(results_file, "w", encoding="utf-8") as file_object:
             json.dump(self.state, file_object, ensure_ascii=False, indent=4)
 
-        if self.suite.loglevel == 1:
-            log.info("")
-        log.verbose(f"End Time    : {self.state['end time']} ")
-        log.info(f"Duration    : {self.state['duration (sec)']} seconds")
-        log.info(
-            f"Verifications: {self.state['summary']['verifications']['pass']} passed, "
-            + f"{self.state['summary']['verifications']['fail']} failed "
-        )
-        log.info("")
-        if self.state["result"] == PASSED:
+        if self.state["result"] == SKIPPED:
             if self.suite.loglevel == 0:
-                log.important(f"     PASS : TEST {self.suite.test_number} : {self.state['title']}", indent=False)
+                log.important(f"----> SKIP : TEST {self.suite.test_number} : {self.state['title']}", indent=False)
             else:
-                log.info("TEST PASSED")
                 log.info("")
-        elif self.state["result"] == SKIPPED:
-            if self.suite.loglevel == 0:
-                log.important(f" --> SKIP : TEST {self.suite.test_number} : {self.state['title']}", indent=False)
-            else:
-                log.info("----> TEST SKIPPED", indent=False)
-                log.info("")
-        elif self.state["result"] == ABORTED:
-            if exc_type is KeyboardInterrupt:
-                log.error(" ----> TEST ABORTED BY CTRL-C\n\n")
-                self.suite.stop()
-            else:
-                log.exception(" ----> TEST ABORTED WITH BELOW EXCEPTION\n\n")
-                log.error(" ")
+                log.info(f"----> TEST SKIPPED : {exc_value}", indent=False)
         else:
-            if self.suite.loglevel == 0:
-                log.important(f" --> FAIL : TEST {self.suite.test_number} : {self.state['title']}", indent=False)
+            log.info("")
+            log.verbose(f"End Time    : {self.state['end time']} ")
+            log.info(f"Duration    : {self.state['duration (sec)']} seconds")
+            log.info(
+                f"Verifications: {self.state['summary']['verifications']['pass']} passed, "
+                + f"{self.state['summary']['verifications']['fail']} failed "
+            )
+            log.info("")
+
+            if self.state["result"] == PASSED:
+                if self.suite.loglevel == 0:
+                    log.important(
+                        f"      PASS : TEST {self.suite.test_number} : {self.state['title']}", indent=False
+                    )
+                else:
+                    log.info("TEST PASSED")
             else:
-                log.info("----> TEST FAILED", indent=False)
-                log.info("")
+                if self.suite.loglevel == 0:
+                    log.important(
+                        f"----> FAIL : TEST {self.suite.test_number} : {self.state['title']}", indent=False
+                    )
+                else:
+                    log.info("----> TEST FAILED", indent=False)
 
-        if (
-            exc_type is not self.__Stop
-            and exc_type is not self.__Skip
-            and hasattr(exc_value, "nvme_framework_exception")
-        ):
+        # Forward the exceptions to test suite
+
+        if exc_type is KeyboardInterrupt:
+            raise TestSuite._Stop
+        elif exc_type in [TestSuite._Stop, TestSuite._Abort]:
             return False
+        elif unhandled_exception:
+            raise TestSuite._Abort(f"Test {self.suite.test_number} had unhandled exception") from None
 
-        if self.state["result"] == FAILED and self.suite.stop_on_fail:
-            self.suite.stop()
+        elif self.suite.abort_on_exception and self.state["result"] == ABORTED:
+            raise TestSuite._Abort(
+                f"Test {self.suite.test_number} had exception with Abort-On-Exception enabled"
+            ) from None
+
+        elif (self.suite.abort_on_fail or self.abort_on_fail) and self.state["result"] == FAILED:
+            raise TestSuite._Stop(f"Test {self.suite.test_number} failed with Abort-On-Fail enabled") from None
 
         return True
 
+    def abort(self, message=""):
+        """Aborts the TestCase and sets result to ABORT."""
+        raise self._Abort(message)
+
     def skip(self, message=""):
-        """Skip the TestCase.
+        """Skip the TestCase and sets result to SKIPPED."""
+        raise self._Skip(message)
 
-        Skips the test when called.
-        """
-        raise self.__Skip(message)
-
-    def stop(self, message="", force_fail=True):
-        """Stop the TestCase.
-
-        Stops the test when called.  By default will force the test to fail.  If force_fail=False
-        the test result is determined by the completed steps up to the point stop() is
-        called.  If any step failed the test result is failed, otherwise it is passed.
-
-        Args:
-            force_fail: Forces test to fail if True
-
-        """
-        self.__force_fail = force_fail
-        self.state["force fail"] = force_fail
-
-        raise self.__Stop(message)
+    def stop(self, message=""):
+        """Stop the TestCase and sets result on completed steps."""
+        raise self._Stop(message)
 
     def update_summary(self):
         self.state = update_test_summary(self.state)
 
-    class __Skip(Exception):
-        nvme_framework_exception = True
-
+    class _Skip(Exception):
         def __init__(self, message=""):
             log.frames("TestCase.Skip", inspect.getouterframes(inspect.currentframe(), context=1))
-            log.info(f"----> TEST SKIP : {message}", indent=False)
-            log.info("")
-            super().__init__("TestCase.Skip")
+            super().__init__(message)
 
-    class __Stop(Exception):
-        nvme_framework_exception = True
-
+    class _Stop(Exception):
         def __init__(self, message=""):
             log.frames("TestCase.Stop", inspect.getouterframes(inspect.currentframe(), context=1))
-            log.info(f"----> TEST STOP : {message}", indent=False)
-            log.info("")
-            super().__init__("TestCase.Stop")
+            super().__init__(message)
+
+    class _Abort(Exception):
+        def __init__(self, message=""):
+            log.frames("TestCase.Abort", inspect.getouterframes(inspect.currentframe(), context=1))
+            super().__init__(message)
 
 
 class TestSuite:
-    create_reports = True
+    report = False
     loglevel = 1
     show_dashboard = True
-    stop_on_fail = False
+
+    abort_on_fail = False
+    abort_on_exception = True
+
+    run_on_fail = None
+    run_on_exception = None
+
     uid = None
     result_directory = TEST_RESULT_DIRECTORY
     admin = False
     winadmin = False
-
-    __force_fail = False
+    reporter = None
 
     def __init__(self, title, description="", *args, **kwargs):
         """Runs a Test Suite.
@@ -538,10 +522,7 @@ class TestSuite:
                     tests.short_selftest(suite)
                     tests.extended_selftest(suite)
 
-
-
-
-        If stop_on_fail is True the test will stop when a step fails.  Note the step will complete
+        If abort_on_fail is True the suite will stop when a test fails.  Note the test will complete
         before the test is stopped.  This example runs a test and enables stop on fail for the
         first step.
 
@@ -549,7 +530,7 @@ class TestSuite:
 
                 with TestCase(suite, "My test", "Very cool test description") as test:
 
-                    test.stop_on_fail = True
+                    test.abort_on_fail = True
 
                     with TestStep(test, "My step", "Very cool step description") as step:
 
@@ -575,7 +556,7 @@ class TestSuite:
 
         Attributes:
             directory:      Working directory for step specific files
-            stop_on_fail:    Stops step on a failed verification, default is False
+            abort_on_fail:   Aborts suite when a test fails, default is False
             loglevel:        Amount of detail to log, least is 0, most is 3
 
         """
@@ -609,10 +590,12 @@ class TestSuite:
         if self.uid is None:
             self.uid = f"{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
             time.sleep(1)
+            self.directory = os.path.realpath(
+                os.path.join(TEST_RESULT_DIRECTORY, title.lower().replace(" ", "_"), self.uid)
+            )
+        else:
+            self.directory = os.path.realpath(os.path.join(TEST_RESULT_DIRECTORY, self.uid))
 
-        self.directory = os.path.realpath(
-            os.path.join(TEST_RESULT_DIRECTORY, title.lower().replace(" ", "_"), self.uid)
-        )
         if os.path.exists(self.directory):
             shutil.rmtree(self.directory)
         os.makedirs(self.directory, exist_ok=False)
@@ -622,10 +605,11 @@ class TestSuite:
             "description": self._description,
             "details": self.details,
             "result": ABORTED,
-            "force fail": False,
+            "flow": "",
             "complete": False,
             "start time": f"{datetime.datetime.now()}"[:-3],
             "end time": "",
+            "end message": "",
             "duration (sec)": "",
             "duration": "",
             "directory": self.directory,
@@ -658,22 +642,19 @@ class TestSuite:
         if hasattr(self, "volume") and not os.path.exists(self.volume):
             self.stop(f"Volume {self.volume} does not exist")
 
-        check_nvmecmd_permissions()
-        check_fio_installation()
-        self.get_drive_specification()
         results_file = os.path.join(self.directory, RESULTS_FILE)
         with open(results_file, "w", encoding="utf-8") as file_object:
             json.dump(self.state, file_object, ensure_ascii=False, indent=4)
 
     def __enter__(self):
-        log.frames("TestSuite", inspect.getouterframes(inspect.currentframe(), context=1), indent=False)
-        log.important(" " + "-" * 90, indent=False)
-        log.important(f" TEST SUITE : {self.state['title']}", indent=False)
-        log.important(" " + "-" * 90, indent=False)
-        log.info(f" Description : {self.state['description']}", indent=False)
-        log.important(f" Start Time  : {datetime.datetime.now()}", indent=False)
-        log.important(f" Directory   : {self.directory}", indent=False)
-        log.important("")
+        log.important("-" * 90, indent=False)
+        log.important(f"TEST SUITE : {self.state['title']}", indent=False)
+        log.important("-" * 90, indent=False)
+        log.info(f"Description : {self.state['description']}", indent=False)
+        log.important(f"Start Time  : {datetime.datetime.now()}", indent=False)
+        log.important(f"Directory   : {self.directory}", indent=False)
+        if self.loglevel == 0:
+            log.important("")
 
         return self
 
@@ -689,62 +670,103 @@ class TestSuite:
         self.state["duration (sec)"] = f"{duration_seconds:.3f}"
         self.state["duration"] = as_duration(duration_seconds)
 
-        fail_tests = sum(test["result"] is not PASSED for test in self.state["tests"])
-        aborted_tests = sum(test["result"] is ABORTED for test in self.state["tests"])
+        skip_tests = sum(test["result"] is SKIPPED for test in self.state["tests"])
+        fail_tests = sum(test["result"] is FAILED for test in self.state["tests"])
+        pass_tests = sum(test["result"] is PASSED for test in self.state["tests"])
+        abort_tests = sum(test["result"] is ABORTED for test in self.state["tests"])
 
-        if exc_type is None or exc_type is self.__Stop:
-            if aborted_tests == 0:
-                self.state["complete"] = True
+        if (fail_tests + abort_tests) > 0:
+            self.state["result"] = FAILED
+        else:
+            self.state["result"] = PASSED
 
-            if self.__force_fail or fail_tests > 0:
-                self.state["result"] = FAILED
-            else:
-                self.state["result"] = PASSED
+        if exc_type is None:
+            self.state["flow"] = COMPLETED
+
+        elif exc_type is self._Stop:
+            log.info("")
+            log.info(f"STOP : TestSuite stop message '{exc_value}'", indent=False)
+            self.state["flow"] = STOPPED
+
+        elif exc_type is self._Abort:
+            log.important("")
+            log.important(f"TEST SUITE ABORTED : {exc_value}", indent=False)
+            self.state["result"] = ABORTED
+            self.state["flow"] = ABORTED
+
+            self.state["end message"] = f"Test Suite aborted with message: {exc_value}"
 
         else:
-            log.exception(" ----> TEST SUITE ABORTED WITH BELOW EXCEPTION\n\n")
-            log.error(" ")
             self.state["result"] = ABORTED
+            self.state["flow"] = ABORTED
+
+            self.state["end message"] = """Test aborted with below exception.  """
+
+            log.info("")
+            log.info("> EXCEPTION : Possible script error.", indent=False)
+            log.info(">    ", indent=False)
+
+            exception_lines = traceback.format_exception(
+                type(exc_value), exc_value, exc_traceback, limit=-1, chain=False
+            )[1:]
+
+            for line in exception_lines:
+                for each_line in line.split("\n"):
+                    if len(each_line.strip().replace("\n", "")) > 0:
+                        final_line = each_line.strip().replace("\n", "")
+                        log.info(">    " + final_line, indent=False)
+                        self.state["end message"] += f"<br>{final_line}"
+
+            log.important(" ")
+            log.important("TEST SUITE ABORTED : Exception occurred at TestSuite level", indent=False)
 
         self.update_summary()
 
-        if self.loglevel == 0:
-            log.important("")
-
-        log.important(f" End Time     : {self.state['end time'] }", indent=False)
-        log.important(f" Duration     : {self.state['duration (sec)']} seconds", indent=False)
+        log.important("")
+        log.important(f"End Time     : {self.state['end time'] }", indent=False)
+        log.important(f"Duration     : {self.state['duration (sec)']} seconds", indent=False)
         log.info(
-            f" Tests        : {self.state['summary']['tests']['total']} "
+            f"Tests        : {self.state['summary']['tests']['total']} "
             + f"({self.state['summary']['tests']['pass']} passed, "
-            + f"{self.state['summary']['tests']['fail']} failed)",
+            + f"{self.state['summary']['tests']['fail']} failed, "
+            + f"{self.state['summary']['tests']['skip']} skipped)",
             indent=False,
         )
         log.info(
-            f" Verifications : {self.state['summary']['verifications']['total']} "
+            f"Verifications : {self.state['summary']['verifications']['total']} "
             + f"({self.state['summary']['verifications']['pass']} passed, "
             + f"{self.state['summary']['verifications']['fail']} failed)",
             indent=False,
         )
-        log.important(" " + "-" * 90, indent=False)
+
+        log.important("-" * 90, indent=False)
 
         if self.state["result"] == PASSED:
-            log.important(" TEST SUITE PASSED", indent=False)
+            log.important("TEST SUITE PASSED", indent=False)
         else:
-            log.important(" TEST SUITE FAILED", indent=False)
+            log.important("TEST SUITE FAILED", indent=False)
 
-        log.important(" " + "-" * 90, indent=False)
+        log.important("-" * 90, indent=False)
 
         results_file = os.path.join(self.directory, RESULTS_FILE)
         with open(results_file, "w", encoding="utf-8") as file_object:
             json.dump(self.state, file_object, ensure_ascii=False, indent=4)
 
-        if self.create_reports:
-            create_reports(
-                results_directory=self.directory,
-                title=self._title,
-                description=self.details,
-                show_dashboard=self.show_dashboard,
-            )
+        # create the reports, handle any exceptions
+
+        try:
+            if self.report:
+                self.reporter(
+                    results_directory=self.directory,
+                    title=self._title,
+                    description=self.details,
+                    show_dashboard=self.show_dashboard,
+                )
+        except Exception:
+            log.error("\n  Report creation failed with exception:\n")
+            for line in traceback.format_exc(limit=-2, chain=False).split("\n"):
+                log.error("     " + line)
+
         return True
 
     def get_drive_specification(self):
@@ -766,32 +788,33 @@ class TestSuite:
         with open(filepath, "r") as file_object:
             self.device = json.load(file_object)
 
-    def stop(self, message="", force_fail=True):
+    def abort(self, message=""):
+        """Abort the TestSuite.
+
+        Aborts the suite when called.  The suite result is set to failed.
+        """
+        raise self._Abort(message)
+
+    def stop(self, message=""):
         """Stop the TestSuite.
 
-        Stops the suite when called.  By default will force the suite to fail.  If force_fail=False
-        the suite result is determined by the completed tests up to the point stop() is
-        called.  If any test failed the result is failed, otherwise it is passed.
-
-        Args:
-            force_fail: Forces suite to fail if True
-
+        Stops the suite when called.  The suite result is determined by the completed tests up to
+        the point stop() is called.  If any test failed the result is failed, otherwise it is passed.
         """
-        self.__force_fail = force_fail
-        self.state["force fail"] = force_fail
-        raise self.__Stop(message)
+        raise self._Stop(message)
 
     def update_summary(self):
         self.state = update_suite_summary(self.state)
 
-    class __Stop(Exception):
-        nvme_framework_exception = True
-
+    class _Stop(Exception):
         def __init__(self, message=""):
             log.frames("TestSuite.Stop", inspect.getouterframes(inspect.currentframe(), context=1))
-            log.info(f"----> TEST SUITE STOP : {message}", indent=False)
-            log.info("")
-            super().__init__("TestSuite.Stop")
+            super().__init__(message)
+
+    class _Abort(Exception):
+        def __init__(self, message=""):
+            log.frames("TestSuite.Abort", inspect.getouterframes(inspect.currentframe(), context=1))
+            super().__init__(message)
 
 
 def update_suite_summary(state):
@@ -848,7 +871,7 @@ def update_suite_summary(state):
         test_fails = sum(ver["result"] is FAILED for ver in state["tests"])
         test_fails += sum(ver["result"] is ABORTED for ver in state["tests"])
 
-        if test_fails == 0 and not state["force fail"]:
+        if test_fails == 0:
             state["result"] = PASSED
         else:
             state["result"] = FAILED
@@ -856,7 +879,7 @@ def update_suite_summary(state):
     return state
 
 
-def update_suite_files(directory="."):
+def update_suite_files(directory=".", reporter=None):
     """Update Test Suite after results files updated.
 
     This function updates the Test Suite after a user has manually updated the test results.
@@ -887,11 +910,11 @@ def update_suite_files(directory="."):
 
     log = start_logger(full_directory, logging.IMPORTANT, "update_console.log")
 
-    log.important(" " + "-" * 90, indent=False)
-    log.important(f" UPDATE TEST SUITE : {suite_results['title']}", indent=False)
-    log.important(" " + "-" * 90, indent=False)
-    log.info(f" Description : {suite_results['description']}", indent=False)
-    log.important(f" Directory   : {full_directory}", indent=False)
+    log.important("-" * 90, indent=False)
+    log.important(f"UPDATE TEST SUITE : {suite_results['title']}", indent=False)
+    log.important("-" * 90, indent=False)
+    log.info(f"Description : {suite_results['description']}", indent=False)
+    log.important(f"Directory   : {full_directory}", indent=False)
     log.important("")
 
     suite_results["tests"] = []
@@ -911,11 +934,12 @@ def update_suite_files(directory="."):
     with open(suite_results_file, "w") as file_object:
         json.dump(suite_results, file_object, ensure_ascii=False, indent=4)
 
-    create_reports(
-        results_directory=full_directory,
-        title=suite_results["title"],
-        description=suite_results["details"],
-    )
+    if reporter is not None:
+        reporter(
+            results_directory=full_directory,
+            title=suite_results["title"],
+            description=suite_results["details"],
+        )
 
 
 def update_test_summary(state):
@@ -954,7 +978,9 @@ def update_test_summary(state):
                 state["rqmts"][verification["title"]]["fail"] += 1
                 step_fails += 1
 
-        if step_fails == 0 and not step["force fail"]:
+        if step["result"] == ABORTED:  # leave the same
+            pass
+        elif step_fails == 0:
             state["summary"]["steps"]["pass"] += 1
             step["result"] = PASSED
         else:
@@ -974,7 +1000,7 @@ def update_test_summary(state):
 
     if state["result"] != SKIPPED and state["result"] != ABORTED:
         failed_steps = sum(step["result"] is not PASSED for step in state["steps"])
-        if failed_steps == 0 and not state["force fail"]:
+        if failed_steps == 0:
             state["result"] = PASSED
         else:
             state["result"] = FAILED
@@ -992,13 +1018,12 @@ def verification(rqmt_id, step, title, verified, value):
         verified: True if the requirement passes verification
         value:  Value to be reported as the result
 
-    Verification is True if a requirement is met and False if not.  For example, the
-    verification of requirement 'Media and Integrity Errors shall be 0' is True if there
-    are no errors and False if there are errors.
-
     This function does not return a value but updates the test step and test case with the
-    result of the verification.  If step stop_on_fail is True and the verification fails
-    step.stop() is called.
+    result of the verification.
+
+    The result is PASSED if verified is True, FAILED if verified is False, and NONE if verified
+    is None.  The NONE results allows the verification to be determined later.  This can be useful
+    for automation that requires manual review.
 
     This function is wrapped in a parent function that defines the requirement to verify.
     For example, this parent function verifies there are no prior self-test failures.
@@ -1029,23 +1054,37 @@ def verification(rqmt_id, step, title, verified, value):
             rqmts.no_prior_selftest_failures(step, info)
     """
     frames = inspect.getouterframes(inspect.currentframe(), context=1)
-    log.debug(f"  Verification {frames[1].function} called from {frames[2].filename} line {frames[2].lineno}")
+    debug = f"Verification {frames[1].function} called from {frames[2].filename} line {frames[2].lineno}"
 
-    # must update verification number in test suite directly
+    if step.suite.loglevel == 2 and len(step.state["verifications"]) == 0:
+        log.verbose("")
+    elif step.suite.loglevel == 1 and step.test.state["summary"]["verifications"]["fail"] == 0 and (not verified):
+        log.info("")
+    else:
+        log.debug("")
+    log.debug(debug)
+
+    if not isinstance(step, TestStep):
+        raise _InvalidStep(debug)
 
     step.suite.state["summary"]["verifications"]["total"] += 1
     ver_number = step.suite.state["summary"]["verifications"]["total"]
 
-    if verified:
-        log.verbose(f"  PASS #{ver_number} : {title} [value: {value}]")
+    if verified is None:
+        result = RQMT_SKIPPED
+        log.info(f"----> SKIP #{ver_number} : {title} [value: {value}]", indent=False)
+    elif verified:
+        result = RQMT_PASSED
+        log.verbose(f"PASS #{ver_number} : {title} [value: {value}]")
     else:
-        log.info(f"------> FAIL #{ver_number} : {title} [value: {value}]", indent=False)
+        result = RQMT_FAILED
+        log.info(f"----> FAIL #{ver_number} : {title} [value: {value}]", indent=False)
 
     state = {
         "number": ver_number,
         "id": rqmt_id,
         "title": title,
-        "result": PASSED if verified else FAILED,
+        "result": result,
         "value": value,
         "time": f"{datetime.datetime.now()}",
         "reviewer": "",
@@ -1056,5 +1095,5 @@ def verification(rqmt_id, step, title, verified, value):
     step.state["verifications"].append(state)
     step.test.update_summary()
 
-    if step.stop_on_fail and not verified:
-        step.stop()
+    if result == RQMT_FAILED and step.test.abort_on_fail:
+        step.test.abort(f"Verification #{ver_number} failed with Abort On Fail enabled : {title}")

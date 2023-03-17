@@ -6,7 +6,7 @@
 This suite runs Test Cases to verify the admin commands, SMART attrbiutes, timestamp, and
 short self-test.
 """
-from nvmetools import TestSuite, tests
+from nvmetools.lib.nvme import TestSuite, tests
 
 with TestSuite("Functional", __doc__, winadmin=True) as suite:
 

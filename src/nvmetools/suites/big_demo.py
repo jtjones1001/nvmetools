@@ -8,7 +8,8 @@ Test suite with all possible test cases that creates a big report for demonstrat
 import platform
 import time
 
-from nvmetools import TestSuite, fio, tests
+import nvmetools.apps.fio as fio
+from nvmetools.lib.nvme import TestSuite, tests
 
 with TestSuite("Big Demo", __doc__, winadmin=True) as suite:
 

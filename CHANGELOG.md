@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.8.0
+
+### Improvements
+- Overhauled the test framework
+- Sped up the creation of PDF report
+
 ## v0.7.0
 
 ### Improvements

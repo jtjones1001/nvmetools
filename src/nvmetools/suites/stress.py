@@ -5,7 +5,7 @@
 
 This suite runs Test Cases to stress the drive in several different ways
 """
-from nvmetools import TestSuite, tests
+from nvmetools.lib.nvme import TestSuite, tests
 
 with TestSuite("Stress", __doc__) as suite:
 

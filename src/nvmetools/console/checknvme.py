@@ -57,10 +57,10 @@ import sys
 
 import nvmetools.support.console as console
 from nvmetools.apps.nvmecmd import Selftest
+from nvmetools.lib.nvme.reporter import create_dashboard
 from nvmetools.support.conversions import is_windows_admin
 from nvmetools.support.info import Info
 from nvmetools.support.log import start_logger
-from nvmetools.support.report import create_dashboard
 
 
 class _NoWinAdmin(Exception):
@@ -107,11 +107,14 @@ def check_nvme(nvme=None, extended=False):
         os.makedirs(directory, exist_ok=False)
 
         log = start_logger(directory, logging.INFO, "checknvme.log", False)
+        log.info("-" * 90, indent=False)
+        log.info(f"CHECK NVME", indent=False)
+        log.info("-" * 90, indent=False)
 
         if platform.system() == "Windows" and not is_windows_admin():
             raise _NoWinAdmin()
 
-        log.info(f" Logs: {directory}", indent=False)
+        log.info(f"Logs: {directory}", indent=False)
         all_nvme_info = {}
         start_nvme = None
 
@@ -126,7 +129,7 @@ def check_nvme(nvme=None, extended=False):
                 nvme_number = nvme_entry.split()[1]
                 info_directory = os.path.join(directory, f"nvme{nvme_number}")
 
-                log.info(f" Start: NVMe {nvme_number} self-test", indent=False)
+                log.info(f"Start: NVMe {nvme_number} self-test", indent=False)
                 selftest = Selftest(nvme=nvme_number, directory=info_directory, extended=False)
 
                 if selftest.data["return code"] == 0:
@@ -136,21 +139,20 @@ def check_nvme(nvme=None, extended=False):
                     if selftest.data["return code"] == 31:
                         raise _FailedToRun()
 
-                log.info(f"        NVMe {nvme_number} self-test {result}", indent=False)
-
+                log.info(f"       NVMe {nvme_number} self-test {result}", indent=False)
 
                 this_info = Info(nvme=nvme_number, directory=info_directory)
                 uid = this_info.parameters["Unique Description"]
                 all_nvme_info[uid] = this_info
 
-                log.info(f" Read: {uid}", indent=False)
+                log.info(f"Read:  {uid}", indent=False)
 
                 if start_nvme is None:
                     if nvme is None or nvme == nvme_number:
                         start_nvme = this_info.parameters["Unique Description"]
         else:
             info_directory = os.path.join(directory, f"nvme{nvme}")
-            log.info(f" Start: NVMe {nvme} self-test", indent=False)
+            log.info(f"Start: NVMe {nvme} self-test", indent=False)
             selftest = Selftest(nvme=nvme, directory=info_directory, extended=False)
 
             if selftest.data["return code"] == 0:
@@ -160,14 +162,13 @@ def check_nvme(nvme=None, extended=False):
                 if selftest.data["return code"] == 31:
                     raise _FailedToRun()
 
-            log.info(f"        NVMe {nvme} self-test {result}", indent=False)
-
+            log.info(f"       NVMe {nvme} self-test {result}", indent=False)
 
             this_info = Info(nvme=nvme, directory=info_directory)
 
             start_nvme = this_info.parameters["Unique Description"]
             all_nvme_info[start_nvme] = this_info
-            log.info(f" Read: {start_nvme}", indent=False)
+            log.info(f"Read:  {start_nvme}", indent=False)
 
         if start_nvme is None:
             raise console.NoNvme(nvme)

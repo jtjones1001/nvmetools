@@ -13,6 +13,9 @@ import os
 import time
 
 import matplotlib as mpl
+
+mpl.use("agg")  # speed up and avoid memory issues
+
 import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 

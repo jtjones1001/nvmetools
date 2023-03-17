@@ -12,10 +12,14 @@
   --dark-green2: rgb(1, 131, 1, 0.65);
   --dark-red2: rgb(223, 54, 57, 0.65);
   --dark-yellow2: rgb(240, 209, 94, 0.65);
+  --dark-orange2: rgb(114, 1, 149);
 
   --dark-grey: rgb(119, 119, 119);
   --dark-orange: rgb(242, 190, 0);
   --dark-yellow: rgb(240, 209, 94);
+
+  --dark-purple: rgb(83, 25, 134);
+  --dark-purple: rgb(114, 1, 149);
 
   --light-red: rgb(254, 114, 114);
   --light-green: rgb(142, 226, 175);
@@ -58,7 +62,7 @@
   --icon-margin: 20px;
 
   --table-badge-height: 11px;
-  --table-badge-width: 20px;
+  --table-badge-width: 26px;
 
   --chart-height: 90px;
   --chart-width: 270px;
@@ -331,6 +335,7 @@ body {
   border-color: var(--dark-yellow);
 }
 
+
 .result-badge.pass,
 .table-badge.pass {
   background-color: var(--dark-green);
@@ -339,6 +344,11 @@ body {
 .result-badge.fail,
 .table-badge.fail {
   background-color: var(--dark-red);
+}
+.result-badge.abort,
+.table-badge.abort,
+.table-badge.tbd {
+  background-color: var(--dark-purple);
 }
 
 /* -------------------------------------------------------------------------------------------------

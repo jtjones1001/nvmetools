@@ -57,20 +57,28 @@ class _DebugLogger(logging.Logger):
 
             self._log(logging.IMPORTANT, msg, args, **kwargs)
 
+    def error(self, msg, indent=False, *args: any, **kwargs: any):
+        if self.isEnabledFor(logging.ERROR):
+            if indent:
+                msg = "       " + msg
+            else:
+                msg = " " + msg
+
+            self._log(logging.IMPORTANT, msg, args, **kwargs)
+
     def banner(self):
         epic_banner = f"{__brandname__}, version {__version__}, {__website__}, {__copyright__}"
         p = psutil.Process(os.getpid())
-
-        self.info("")
-        self.info(f"{epic_banner}", indent=False)
+        self.important("")
+        self.important(f"{epic_banner}", indent=False)
         self.verbose("")
-        self.verbose(f" Python: {p.exe()}", indent=False)
-        self.verbose(f"         {sys.version}", indent=False)
-        self.verbose(f"         Process ID: {p.pid}", indent=False)
+        self.verbose(f"Python: {p.exe()}", indent=False)
+        self.verbose(f"        {sys.version}", indent=False)
+        self.verbose(f"        Process ID: {p.pid}", indent=False)
         self.verbose("")
-        self.verbose(f" Host:   {platform.node()}", indent=False)
-        self.verbose(f" OS:     {platform.system()} {platform.version()}", indent=False)
-        self.info("")
+        self.verbose(f"Host:   {platform.node()}", indent=False)
+        self.verbose(f"OS:     {platform.system()} {platform.version()}", indent=False)
+        self.verbose("")
 
     def frames(self, function, frames: list, indent=True):
         self.debug(" ")
@@ -99,7 +107,9 @@ def start_logger(directory, log_level, filename=None, debug_log=True):
     if debug_log:
         file_handler = logging.FileHandler(os.path.join(directory, "trace.log"), mode="w")
         log.addHandler(file_handler)
-        file_handler.setFormatter(logging.Formatter("[%(asctime)s]  %(message)s"))
+        file_handler.setFormatter(
+            logging.Formatter("%(asctime)s.%(msecs)03d  %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+        )
         file_handler.setLevel(logging.DEBUG)
 
     if filename is not None:

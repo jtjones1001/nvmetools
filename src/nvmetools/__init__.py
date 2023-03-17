@@ -61,13 +61,3 @@ TOP_DIRECTORY = os.path.split(SRC_DIRECTORY)[0]
 RESOURCE_DIRECTORY = os.path.join(PACKAGE_DIRECTORY, "resources")
 DEFAULT_INFO_DIRECTORY = os.path.join(RESOURCE_DIRECTORY, "drives")
 RESULTS_FILE = "result.json"
-
-import nvmetools.requirements as rqmts
-import nvmetools.apps.fio as fio
-
-from nvmetools.support.log import log
-from nvmetools.support.info import Info, InfoSamples
-from nvmetools.support.framework import TestCase, TestStep, TestSuite
-
-import nvmetools.steps as steps
-import nvmetools.cases as tests

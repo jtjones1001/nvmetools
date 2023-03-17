@@ -8,6 +8,9 @@
 var bannerHealth = "na";
 const maxTempSensor = 8;
 
+const tbdBadge = `<td class="status-col"><span class="table-badge tbd">TBD</span></td>`;
+const abortBadge = `<td class="status-col"><span class="table-badge abort">ABORT</span></td>`;
+
 const failBadge = `<td class="status-col"><span class="table-badge fail">FAIL</span></td>`;
 const passBadge = `<td class="status-col"><span class="table-badge pass">PASS</span></td>`;
 const skipBadge = `<td class="status-col"><span class="table-badge">SKIP</span></td>`;
@@ -107,6 +110,8 @@ function updateChart(element_by_id, labels, values) {
             getComputedStyle(main_body).getPropertyValue("--dark-green"),
             getComputedStyle(main_body).getPropertyValue("--dark-red"),
             getComputedStyle(main_body).getPropertyValue("--dark-grey"),
+            getComputedStyle(main_body).getPropertyValue("--dark-purple"),
+
           ],
           hoverOffset: 4,
         },
@@ -454,6 +459,8 @@ function formatReq(requirement) {
   reqString = `<tr> <td>${requirement["title"]}</td>`;
   if (requirement["result"] == "PASSED") {
     reqString += `${passValue(requirement["value"])} ${passBadge}</tr>`;
+  } else if (requirement["result"] == "TBD") {
+    reqString += `${failValue(requirement["value"])} ${tbdBadge}</tr>`;
   } else {
     reqString += `${failValue(requirement["value"])} ${failBadge}</tr>`;
   }
@@ -473,16 +480,15 @@ function updateTestDetailTable() {
     testString += `<div class="tile-title">TEST DETAIL : ${testListData[index]["title"]} </div>`;
     testString += `<p>${testListData[index]["description"]}</p>`;
 
-    if (testListData[index]["result"] == "ABORTED") {
-      testString += `<p style="color:red">Test was aborted and did not complete, refer to the test logs for error details.</p>`;
+    if (testListData[index]["end message"] != "") {
+      testString += `<p style="color:red">${testListData[index]["end message"]}</p>`;
     }
-
     testString += `<table class="test-detail-table">
                         <thead>
                             <tr>
                                 <th class="number-col">#</th>
                                 <th>Step</th>
-                                <th class="status-col">Status</th>
+                                <th class="status-col">Result</th>
                             </tr>
                         </thead>
                         <tbody id="test1_steps">`;
@@ -505,7 +511,7 @@ function updateTestDetailTable() {
                                                     <tr>
                                                         <th style="width:75%">Requirement</th>
                                                         <th style="width:100px;">Value</th>
-                                                        <th class="status-col">Status</th>
+                                                        <th class="status-col">Result</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>`;
@@ -520,6 +526,8 @@ function updateTestDetailTable() {
 
       if (testListData[index]["steps"][step]["result"] == "PASSED") {
         testString += `${passBadge}`;
+      } else if (testListData[index]["steps"][step]["result"] == "ABORTED"){
+        testString += `${abortBadge}`;
       } else {
         testString += `${failBadge}`;
       }
@@ -533,7 +541,16 @@ function updateTestDetailTable() {
 function updateTestListTable(tableId, tableData) {
   console.log(`updateTestListTable(${tableId}, tableData)`);
 
+  if (info["end message"] != "") {
+
+      msg_elements = document.getElementsByClassName("suite_end_message")
+      for (let i = 0; i < msg_elements.length; i++) {
+        console.log( info["end message"] )
+        msg_elements[i].innerHTML = info["end message"];
+      }
+  }
   testString = "";
+
   for (let test in tableData) {
     let resultBadge = failBadge;
     if (tableData[test]["result"] == "PASSED") {
@@ -541,6 +558,9 @@ function updateTestListTable(tableId, tableData) {
     }
     if (tableData[test]["result"] == "SKIPPED") {
       resultBadge = skipBadge;
+    }
+    if (tableData[test]["result"] == "ABORTED") {
+      resultBadge = abortBadge;
     }
 
     if (
@@ -585,7 +605,16 @@ function updateVerificationListTable(tableData) {
           }</td>
                         <td>${tableData[index]["test"]}</td>
                         ${passBadge}</tr>`;
-      } else {
+      }
+      else if (tableData[index]["result"] == "TBD") {
+        testString += `${failValue(tableData[index]["value"])}</td>
+                        <td class="text-center">${tableData[index]["test number"]
+          }</td>
+                        <td>${tableData[index]["test"]}</td>
+                        ${tbdBadge}</tr>`;
+      }
+
+      else {
         testString += `${failValue(tableData[index]["value"])}</td>
                         <td class="text-center">${tableData[index]["test number"]
           }</td>
@@ -710,6 +739,7 @@ function updateErrorLogTable() {
             <td>${filteredData[i]["Command ID"]}</td>
             <td>${filteredData[i]["Command Specific Info"]}</td>
             <td>${filteredData[i]["Namespace"]}</td>
+            <td>${filteredData[i]["Phase Tag"]}</td>
             <td>${filteredData[i]["Status Field"]}</td>
             <td>${filteredData[i]["Vendor Specific Info"]}</td>
             <td>${filteredData[i]["Submission Queue ID"]}</td>

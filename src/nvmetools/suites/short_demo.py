@@ -5,7 +5,8 @@
 
 Test suite with a few Test Cases that run very quickly for short demonstrations.
 """
-from nvmetools import TestSuite, tests
+from nvmetools.lib.nvme import TestSuite, tests
+
 
 with TestSuite("Short Demo", __doc__) as suite:
 

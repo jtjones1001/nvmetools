@@ -542,6 +542,7 @@
                                     COMMAND INFO
                                 </th>
                                 <th style="width:140px;" data-column="Namespace" data-order="desc"> NAMESPACE </th>
+                                <th style="width:80px;" data-column="Phase Tag" data-order="desc"> PHASE TAG</th>
                                 <th style="width:80px;" data-column="Status Field" data-order="desc"> STATUS</th>
                                 <th style="width:140px;" data-column="Vendor Specific Info" data-order="desc">
                                     VENDOR INFO
@@ -786,12 +787,13 @@
             <div class="row" style="align-items: flex-start;">
                 <div class="tile" style="flex-basis:30%;">
                     <div class="tile-title">TEST LIST </div>
+                    <p style="color:red" class="suite_end_message"><p>
                     <table id="test-list" class="active-parameter-table">
                         <thead>
                             <tr>
                                 <th class="number-col" data-column="number" data-order="asc"> #</th>
                                 <th data-column="title" data-order="desc"> Test</th>
-                                <th class="status-col" data-column="result" data-order="desc">Status</th>
+                                <th class="status-col" data-column="result" data-order="desc">Result</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -809,7 +811,7 @@
                                     <th data-column="title" data-order="desc">Requirement</th>
                                     <th style="width:100px;" data-column="pass" data-order="desc">Pass</th>
                                     <th style="width:100px;" data-column="fail" data-order="desc">Fail</th>
-                                    <th class="status-col" data-column="fail" data-order="desc">Status</th>
+                                    <th class="status-col" data-column="fail" data-order="desc">Result</th>
                                 </tr>
                             </thead>
                         </thead>
@@ -842,13 +844,13 @@
                         </svg>
 
                     </div>
-
+                    <p style="color:red" class="suite_end_message"><p>
                     <table id="test-view-list" class="parameter-table">
                         <thead>
                             <tr>
                                 <th class="number-col" data-column="number" data-order="asc"> #</th>
                                 <th data-column="title" data-order="desc"> Test</th>
-                                <th class="status-col" data-column="result" data-order="desc">Status</th>
+                                <th class="status-col" data-column="result" data-order="desc">Result</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -881,7 +883,7 @@
                                 <th data-column="title" data-order="desc">Requirement</th>
                                 <th data-column="pass" data-order="desc">Pass</th>
                                 <th data-column="fail" data-order="desc">Fail</th>
-                                <th class="status-col" data-column="fail" data-order="desc">Status</th>
+                                <th class="status-col" data-column="fail" data-order="desc">Result</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -899,7 +901,7 @@
                                 <th data-column="value" data-order="desc" style="width:100ps;">Value </th>
                                 <th data-column="test number" data-order="desc" class="number-col">#</th>
                                 <th data-column="test" data-order="desc">Test</th>
-                                <th class="status-col" data-column="result" data-order="desc">Status </th>
+                                <th class="status-col" data-column="result" data-order="desc">Result </th>
                             </tr>
                         </thead>
                         <tbody class="no-select">
