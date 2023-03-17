@@ -434,7 +434,7 @@ class TestCase:
             ) from None
 
         elif (self.suite.abort_on_fail or self.abort_on_fail) and self.state["result"] == FAILED:
-            raise TestSuite._Stop(f"Test {self.suite.test_number} failed with Abort-On-Fail enabled") from None
+            raise TestSuite._Abort(f"Test {self.suite.test_number} failed with Abort-On-Fail enabled") from None
 
         return True
 
