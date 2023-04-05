@@ -322,9 +322,9 @@ class RunFio:
 
 def _get_target_directory(volume):
     if "Windows" == platform.system():
-        return os.path.abspath(os.path.join(volume, "\\" "fio"))
+        return os.path.abspath(os.path.join(volume, "\\" "nvmetools"))
     else:
-        return os.path.join(volume, "fio")
+        return os.path.join(volume, "nvmetools")
 
 
 def _get_fio_target_directory(volume):

@@ -27,9 +27,9 @@ Command Line Parameters
 """
 import argparse
 
+from nvmetools.lib.nvme.reporter import create_reports
 from nvmetools.support.console import exit_on_exception
 from nvmetools.support.framework import update_suite_files
-from nvmetools.lib.nvme.reporter import create_reports
 
 
 def main():

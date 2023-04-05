@@ -4,7 +4,7 @@
 def report(report, test_result):
 
     report.add_description(
-        """Timestamp Feature Identifier 0Eh is an optional feature that reports the number
+        """Timestamp Feature, Identifier 0Eh, is an optional feature that reports the number
         of milliseconds that have elapsed since the epoch: midnight, 01-Jan-1970, UTC.  The
         timestamp is set to the current time by the host and then the drive increments the
         timestamp every millisecond.  The test reads the Get Feature data structure to get
@@ -65,6 +65,6 @@ def report(report, test_result):
     )
     report.add_plot(data["host"], "Host Time (Sec)", data["drive"], "Drive Time (Sec)", height=2)
     report.add_paragraph("<br/><br/>")
-    report.add_plot(data["host"], "Host Time (Sec)", data["power states"], "Power State", height=2)
+    report.add_plot(data["host"], "Host Time (Sec)", data["power states"], "Power State", height=2, xmin=0)
 
     report.add_verifications(test_result)

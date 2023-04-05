@@ -25,6 +25,7 @@ def _force_fail(step):
         value="FAIL",
     )
 
+
 def _force_none(step):
     verification(
         rqmt_id=2,

@@ -13,6 +13,7 @@ with TestSuite("Performance", __doc__) as suite:
 
     info = tests.suite_start_info(suite)
 
+    tests.trim(suite)
     tests.short_burst_performance(suite)
     tests.long_burst_performance(suite)
     tests.idle_latency(suite)

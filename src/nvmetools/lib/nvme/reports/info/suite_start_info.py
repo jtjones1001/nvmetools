@@ -8,10 +8,10 @@ from nvmetools.support.conversions import as_float, as_int
 
 def report(report, test_result):
     report.add_description(
-        f"""This test reads the NVMe drive information at the start of a test suite. If the drive is
+        f"""This test reads NVMe information at the start of a test suite. If the drive is
         unhealthy or worn out the test suite is stopped.  At the end of the suite, this start
-        information is compared with the suite end information to verify no unexpected changes
-        occurred during the testing.
+        information is compared with the end information to verify no unexpected changes
+        occurred.
         <br/><br/>
 
         This test defines worn out as Percentage Used exceeding
@@ -20,10 +20,10 @@ def report(report, test_result):
         SMART/Health log.
         <br/><br/>
 
-        A drive is defined as unhealthy if 1) any prior self-test results failed or 2) has critical
-        errors or 3) has operated above the critical temperature or 4) has had an excessive amount
-        of thermal throttling.   The self-test results are read from Log Page 6 and the SMART
-        attributes from Log Page 2.
+        This test defines unhealthy as 1) any prior self-test results failed or 2) has or had
+        critical errors or 3) has operated above the critical temperature or 4) has had an excessive
+        amount of thermal throttling.  The self-test results are read from Log Page 6, the SMART
+        attributes from Log Page 2, and the persistent errors from Log Page D.
         <br/><br/>
 
         The information is read using the <u>nvmecmd utility</u> [2].  This utility uses NVMe Admin
@@ -36,10 +36,11 @@ def report(report, test_result):
         """
     )
     report.add_results(test_result)
-
     commands = test_result["data"]["commands"]
     parameters = test_result["data"]["parameters"]
-
+    # ------------------------------------------------------------------
+    # Create section on commands tested, include table of the commands
+    # ------------------------------------------------------------------
     report.add_paragraph(
         """The table below lists the NVMe Admin Commands completed.  The nvmecmd utility only
         supports Namespace 1 and a subset of the log pages and features."""
@@ -48,27 +49,36 @@ def report(report, test_result):
     for command in commands:
         table_rows.append(
             [
-                command["admin command"],
+                str(command["admin command"]),
                 f"{command['time in ms']:0.3f}",
-                command["bytes returned"],
-                command["return code"],
+                str(command["bytes returned"]),
+                str(command["return code"]),
             ]
         )
     report.add_table(table_rows, [260, 80, 80, 80])
-
+    # ------------------------------------------------------------------
+    # Create section on self-test results
+    # ------------------------------------------------------------------
     report.add_subheading2("Drive Health: Self-Test Results")
     report.add_paragraph(
-        """The most recent 20 self-test results, short and extended, were read
-        from Log Page 6. The drive is considered unhealthy if any prior results are failures."""
+        """The most recent self-test results, short and extended, were read from Log Page 6. The
+        drive is considered unhealthy if any prior results are failures."""
     )
-
     table_rows = [
         ["PARAMETER", "VALUE", "NOTE"],
-        ["Prior self-test results", parameters["Current Number Of Self-Tests"], "Logs up to 20"],
-        ["Prior self-test failures", parameters["Number Of Failed Self-Tests"], ""],
+        ["Prior self-test results", parameters["Current Number Of Self-Tests"], "Logs up to 20"]
     ]
+    table_rows.append(
+        [
+            "Prior self-test failures",
+            parameters["Number Of Failed Self-Tests"],
+            ""
+        ]
+    )
     report.add_table(table_rows, widths=[225, 100, 175])
-
+    # ------------------------------------------------------------------
+    # Create section on drive health
+    # ------------------------------------------------------------------
     report.add_subheading2("Drive Health: Errors and Warnings")
     report.add_paragraph(
         """The drive is considered unhealthy if the SMART attributes contain critical warnings
@@ -87,6 +97,8 @@ def report(report, test_result):
             ["Persistent Memory Unreliable", parameters["Persistent Memory Unreliable"], ""],
         )
     report.add_table(table_rows, widths=[225, 100, 175])
+
+    # ToDo: if persistent events add them
 
     report.add_subheading2("Drive Health: Temperature Throttling")
     report.add_paragraph(
@@ -143,7 +155,5 @@ def report(report, test_result):
         ["Available Spare", f"{as_int(parameters['Available Spare'])}%", "SMART attribute"],
         ["Available Spare Threshold", f"{as_int(parameters['Available Spare Threshold'])}%", "SMART attribute"],
     ]
-
     report.add_table(rows=table_rows, widths=[225, 100, 175])
-
     report.add_verifications(test_result)

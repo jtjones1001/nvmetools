@@ -38,15 +38,17 @@ def report(report, test_result):
     report.add_description(
         f"""This test verifies reading SMART attributes during normal operation has no adverse
         effects on IO read and writes.  Adverse effects are defined as functional errors, data integrity
-        loss, or an unacceptable increase in IO latency.  A typical Enterprise Use Case [10]
-        reads SMART attributes regularly to identify issues that may predict drive failures.  Suspect
-        drives can then be replaced prior to actually failing.
+        loss, or an unacceptable increase in IO latency.
         <br/><br/>
 
-        This test runs a total of 1,825 Get Log Page 2 commands to simulate one read per day for 5
-        years.  The Get Log Page 2 commands are run at intervals of
-        {data['interval ms']}mS to ensure significant idle time between commands which is closer to
-        the actual use case.
+        This test is modelled after an Enterprise Use Case [10] where SMART attributes are read
+        regularly to identify issues that may predict drive failures.  Suspect drives can then be
+        replaced prior to actually failing.
+        <br/><br/>
+
+        This test simulates one SMART read per day for 5 years.  The SMART reads occur at intervals of
+        {data['interval ms']}mS to ensure significant idle time between reads.  The SMART reads are
+        done standalone and then concurrent with an IO workload.
         <br/><br/>
 
         The concurrent IO workload is a 50/50 mix of reads and writes, random addressing, 4 KiB
@@ -91,7 +93,7 @@ def report(report, test_result):
 
     report.add_paragraph(
         f""" A total of {total_lp2_commands:,} Get Log Page 2 Commands were completed with
-        {lp2_failures:,} reported errors. Get Log Page 2 latency was measured on
+        {lp2_failures:,} reported errors. Latency was measured on
         {len(baseline_lp2):,} commands run standalone and another {len(concurrent_lp2):,}
         commands run concurrent with IO reads and writes."""
     )
@@ -103,12 +105,8 @@ def report(report, test_result):
     report.add_table(table_rows, [200, 90, 90, 90])
 
     report.add_paragraph(
-        f""" A total of {baseline_fio["jobs"][0]["error"]} errors occured running IO standalone
-        and  {baseline_fio["jobs"][0]["error"]} errors running concurrent. """
-    )
-    report.add_paragraph(
-        f""" A total of {baseline_fio["jobs"][0]["read"]["total_ios"]:,} reads were completed
-        standalone. Another {concurrent_fio["jobs"][0]["read"]["total_ios"]:,} reads
+        f""" A total of {baseline_fio["jobs"][0]["read"]["total_ios"]:,} IO reads were completed
+        standalone. Another {concurrent_fio["jobs"][0]["read"]["total_ios"]:,} IO reads
         were completed concurrent with Log Page 2.  In the tables and charts below the slowest IO
         are defined as the slowest {len(baseline_lp2):,} IO. """
     )

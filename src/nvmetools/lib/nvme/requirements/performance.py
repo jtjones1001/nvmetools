@@ -115,3 +115,14 @@ def review_first_burst_bandwidth(step):
         verified=False,
         value="REVIEW",
     )
+
+
+def trim_command_pass(step, return_code):
+
+    verification(
+        rqmt_id=58,
+        step=step,
+        title="Bandwidth of first IO write burst should match write cache bandwidth",
+        verified=(return_code == 0),
+        value="{return_code}",
+    )

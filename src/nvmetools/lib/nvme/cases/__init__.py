@@ -38,6 +38,7 @@ from nvmetools.lib.nvme.cases.performance.long_burst_performance_full import lon
 from nvmetools.lib.nvme.cases.performance.read_buffer import read_buffer
 from nvmetools.lib.nvme.cases.performance.short_burst_performance import short_burst_performance
 from nvmetools.lib.nvme.cases.performance.short_burst_performance_full import short_burst_performance_full
+from nvmetools.lib.nvme.cases.performance.trim import trim
 from nvmetools.lib.nvme.cases.selftest.extended_selftest import extended_selftest
 from nvmetools.lib.nvme.cases.selftest.short_diagnostic import short_diagnostic
 from nvmetools.lib.nvme.cases.selftest.short_selftest import short_selftest

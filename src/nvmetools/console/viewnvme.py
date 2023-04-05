@@ -77,7 +77,7 @@ def read_nvme(nvme=None, file="", comparefile=""):
 
         log = start_logger(directory, logging.INFO, "viewnvme.log", False)
         log.info("-" * 90, indent=False)
-        log.info(f"VIEW NVME", indent=False)
+        log.info("VIEW NVME", indent=False)
         log.info("-" * 90, indent=False)
 
         log.info(f"Logs: {directory}", indent=False)

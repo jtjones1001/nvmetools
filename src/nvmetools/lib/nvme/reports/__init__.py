@@ -24,6 +24,7 @@ from nvmetools.lib.nvme.reports.performance import (
     read_buffer,
     short_burst_performance,
     short_burst_performance_full_drive,
+    trim
 )
 from nvmetools.lib.nvme.reports.selftest import extended_selftest, short_diagnostic, short_selftest
 from nvmetools.lib.nvme.reports.smart import (

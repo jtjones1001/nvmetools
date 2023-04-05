@@ -57,6 +57,7 @@ from nvmetools.lib.nvme.requirements.performance import (
     review_short_power_exit_latency,
     sequential_read_128k_qd32_bandwidth,
     sequential_write_128k_qd32_bandwidth,
+    trim_command_pass
 )
 from nvmetools.lib.nvme.requirements.selftest import (
     selftest_linearity,

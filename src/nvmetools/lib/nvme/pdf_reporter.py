@@ -410,9 +410,6 @@ class NvmeReport(InfoReport):
         else:
             self.description = description
 
-    #    log.info(f"Creating PDF report...", indent=False)
-
-
         self._results_directory = results_directory
         self._elements = []
         self._testsuite_requirements = 0
@@ -423,9 +420,6 @@ class NvmeReport(InfoReport):
         suite_results_file = os.path.join(results_directory, RESULTS_FILE)
         with open(suite_results_file, "r") as file_object:
             self.suite_results = json.load(file_object)
-
-   #     if self.suite_results["result"] == ABORTED:
-   #         raise Exception("Cannot create report when Test Suite was aborted")
 
         self.completed = self.suite_results["complete"]
 
@@ -444,7 +438,7 @@ class NvmeReport(InfoReport):
         # summary pages then call custom flowable for title page and then build
         # summary page
 
-        log.debug(f"Reading test results")
+        log.debug("Reading test results")
         self._read_test_results()
         self._elements.append(TitlePage(self.drive_name, title, self.description, time.strftime("%B %d, %Y")))
 
@@ -455,9 +449,8 @@ class NvmeReport(InfoReport):
 
         self._elements.append(toc)
 
-        log.debug(f"Adding summary")
+        log.debug("Adding summary")
         self._add_summary()
-
 
         # Display results for each test based on time they completed, first one
         # completed is displayed first and so on.  New tests must be added to
@@ -471,9 +464,9 @@ class NvmeReport(InfoReport):
 
         # Add the appendices to the end of the report
 
-        log.debug(f"Adding parameters")
+        log.debug("Adding parameters")
         self._add_drive_parameters()
-        log.debug(f"Adding references")
+        log.debug("Adding references")
         self._add_references()
 
     def _add_bandwidth_plot(self, time_data, write_data, read_data, vlines=None, width=6.5, height=2.5):
@@ -980,7 +973,8 @@ class NvmeReport(InfoReport):
 
                 display_line = False
                 error_lines = ""
-                for line in end_exceptions[len(start_exceptions) :]:
+                start_exception_length = len(start_exceptions)
+                for line in end_exceptions[start_exception_length:]:
                     if "in _get_test_report" in line:
                         display_line = True
                     elif display_line:

@@ -670,9 +670,11 @@ class TestSuite:
         self.state["duration (sec)"] = f"{duration_seconds:.3f}"
         self.state["duration"] = as_duration(duration_seconds)
 
+        """
         skip_tests = sum(test["result"] is SKIPPED for test in self.state["tests"])
-        fail_tests = sum(test["result"] is FAILED for test in self.state["tests"])
         pass_tests = sum(test["result"] is PASSED for test in self.state["tests"])
+        """
+        fail_tests = sum(test["result"] is FAILED for test in self.state["tests"])
         abort_tests = sum(test["result"] is ABORTED for test in self.state["tests"])
 
         if (fail_tests + abort_tests) > 0:

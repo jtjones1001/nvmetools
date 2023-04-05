@@ -32,8 +32,6 @@ STARTED = "STARTED"
 
 def create_dashboard(results_directory, nvme_uid=None, all_nvme_info=None, show_dashboard=True):
 
-    # log.info(f"Creating HTML page...", indent=False)
-
     if all_nvme_info is None:
         test_view = True
         dashboard_file = os.path.join(results_directory, "testnvme.html")
@@ -202,6 +200,7 @@ def create_dashboard(results_directory, nvme_uid=None, all_nvme_info=None, show_
 
     log.info(f"Saving HTML page      {dashboard_file}", indent=False)
 
+
 def create_reports(results_directory, title="N/A", description="N/A", show_dashboard=True):
 
     log.info("")
@@ -213,6 +212,7 @@ def create_reports(results_directory, title="N/A", description="N/A", show_dashb
 
     pdf.save()
     create_dashboard(results_directory, None, None, show_dashboard)
+
 
 def _encode_png_icon(icon_file):
     """Function to encode image for inclusion in standalone html file."""

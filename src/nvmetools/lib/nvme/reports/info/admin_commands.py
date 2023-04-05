@@ -8,10 +8,10 @@ from collections import defaultdict
 
 def report(report, test_result):
     report.add_description(
-        """ This test verifies the reliability and performance of Admin Commands that provide
-        information about the drive: Identify Controller, Identify Namespace, Get Log Page, and Get
-        Feature. Each Admin Command is run several thousand times with no interval between the
-        commands.  This quickly builds a large sample to assess reliability and performance.
+        """ This test verifies the reliability and performance of the Admin Commands that provide
+        NVMe information: Identify Controller, Identify Namespace, Get Log Page, and Get
+        Feature. Each Admin Command is run several thousand times to assess reliability and
+        performance.
         <br/><br/>
 
         The test verifies the Admin Command average and maximum latencies.  Admin command latency is
@@ -23,8 +23,8 @@ def report(report, test_result):
 
         Each command is verified to complete without error.  The information returned by each command
         is compared against the initial reading to verify no unexpected changes occurred. Static
-        parameters, such as Model Number, were verified not to change. SMART counters, such as Data
-        Read, were verified not to decrement.  Dynamic parameters, such as Timestamp, are expected to
+        parameters, such as Model Number, are verified not to change. SMART counters, such as Data
+        Read, are verified not to decrement.  Dynamic parameters, such as Timestamp, are expected to
         change and are not verified.
         """
     )
@@ -50,19 +50,21 @@ def report(report, test_result):
             each_command[col["Command"]].append(float(col["Time(mS)"]))
 
     table_rows = [
-        ["PARAMETER", "VALUE", "LIMIT"],
+        ["PARAMETER", "VALUE", "LIMIT", "SAMPLE"],
         [
             "Average Latency (All Commands)",
             f"{(sum(cmd_times)/len(cmd_times)):.1f} mS",
             f"{data['Average Admin Cmd Limit mS']} mS",
+            f"{data['commands run']:,}"
         ],
         [
             "Maxmimum Latency (All Commands)",
             f"{max(cmd_times):.1f} mS",
             f"{data['Maximum Admin Cmd Limit mS']} mS",
+            f"{data['commands run']:,}"
         ],
     ]
-    report.add_table(table_rows, [240, 75, 75])
+    report.add_table(table_rows, [220, 80, 80, 80])
 
     report.add_paragraph(
         "<br/><br/>This histogram shows the distribution of Admin Command latencies for all command types."
@@ -70,7 +72,7 @@ def report(report, test_result):
     report.add_histogram(cmd_times)
     report.add_pagebreak()
     report.add_paragraph(
-        "<br/>This histogram shows the distribution above on a log scale to better show outliers."
+        "<br/>This histogram shows the distribution on a log scale to better show outliers."
     )
     report.add_histogram(cmd_times, log=True)
 

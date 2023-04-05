@@ -323,11 +323,6 @@ def available_spare_above_threshold(step, info):
     spare = as_int(info.parameters["Available Spare"])
     threshold = as_int(info.parameters["Available Spare Threshold"])
 
-    if spare > threshold:
-        value = "Pass"
-    else:
-        value = "Fail"
-
     verification(
         rqmt_id=33,
         step=step,

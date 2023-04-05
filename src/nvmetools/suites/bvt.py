@@ -17,7 +17,7 @@ with TestSuite("BVT Simple", __doc__, uuid=r"bvt\simple") as suite:
 with TestSuite("BVT Multiple Pass", __doc__, uuid=r"bvt\multiple_pass") as suite:
     info = tests.suite_start_info(suite)
 
-    for i in range(200):
+    for _i in range(200):
         with TestCase(suite, "Same Test", " Looping") as test:
             with TestStep(test, "Step 1") as step:
                 rqmts._force_pass(step)
@@ -28,12 +28,12 @@ with TestSuite("BVT Multiple Pass", __doc__, uuid=r"bvt\multiple_pass") as suite
 with TestSuite("BVT One Test Fail", __doc__, uuid=r"bvt\one_fail") as suite:
     info = tests.suite_start_info(suite)
 
-    for i in range(500):
+    for _i in range(500):
         with TestCase(suite, "Same Test", " Looping") as test:
             with TestStep(test, "Step 1") as step:
                 rqmts._force_pass(step)
 
-    for i in range(500):
+    for _i in range(500):
         with TestCase(suite, "Same Test", " Looping") as test:
             with TestStep(test, "Step 1") as step:
                 rqmts._force_fail(step)
@@ -152,17 +152,14 @@ with TestSuite("BVT Abort Suite On Fail", __doc__, uuid=r"bvt\last") as suite:
     info = tests.suite_start_info(suite)
 
     suite.abort_on_fail = True
-    for i in range(3):
+    for _i in range(3):
         with TestCase(suite, "Same Test", " Looping") as test:
             with TestStep(test, "Step 1") as step:
                 rqmts._force_pass(step)
 
-
-    for i in range(3):
+    for _i in range(3):
         with TestCase(suite, "Same Test", " Looping") as test:
             with TestStep(test, "Step 1") as step:
                 rqmts._force_fail(step)
 
     tests.suite_end_info(suite, info)
-
-

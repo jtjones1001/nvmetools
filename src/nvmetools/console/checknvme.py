@@ -108,7 +108,7 @@ def check_nvme(nvme=None, extended=False):
 
         log = start_logger(directory, logging.INFO, "checknvme.log", False)
         log.info("-" * 90, indent=False)
-        log.info(f"CHECK NVME", indent=False)
+        log.info("CHECK NVME", indent=False)
         log.info("-" * 90, indent=False)
 
         if platform.system() == "Windows" and not is_windows_admin():
