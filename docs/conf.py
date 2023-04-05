@@ -11,7 +11,7 @@ autoclass_content = "init"
 
 project = u'nvmetools'
 slug = re.sub(r'\W+', '-', project.lower())
-version = "0.7.903"
+version = "0.8.0"
 release = version
 author = u'Joe Jones'
 copyright = "2023 Joseph Jones"
