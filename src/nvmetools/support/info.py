@@ -403,6 +403,8 @@ class Info:
         return self.parameters[name].replace("Watts", "W")
 
     def _as_pwr2(self, name):
+        if self.parameters[name] == "Unrestricted":
+            return self.parameters[name]
         return self.parameters[name].split("=")[1].strip(")")
 
     def _list_param(self, name, value, description=""):
