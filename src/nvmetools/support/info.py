@@ -767,36 +767,37 @@ class Info:
                     over = self.parameters[f"Temperature Sensor {index} Over Threshold"]
                     log.info(f"   {name:18}{value:15}{under:20}{over}")
 
-            # Throttle table
+            if 'Thermal Management Temperature 1 Time' in self.parameters:
+                # Throttle table
 
-            log.info("")
-            title = f"{'Throttle':14}{'Total':12}{'TMT1':12}{'TMT2':12}{'WCTEMP':12}{'CCTEMP':12}"
-            self._log_header(title, width=72)
+                log.info("")
+                title = f"{'Throttle':14}{'Total':12}{'TMT1':12}{'TMT2':12}{'WCTEMP':12}{'CCTEMP':12}"
+                self._log_header(title, width=72)
 
-            log.info(
-                f"   {'Time (Hrs)':14}"
-                + f"{total_time/3600:<12,.3f}"
-                + f"{as_int(self.parameters['Thermal Management Temperature 1 Time'])/3600:<12,.3f}"
-                + f"{as_int(self.parameters['Thermal Management Temperature 2 Time'])/3600:<12,.3f}"
-                + f"{as_int(self.parameters['Warning Composite Temperature Time'])/3600:<12,.3f}"
-                + f"{as_int(self.parameters['Critical Composite Temperature Time'])/3600:<12,.3f}"
-            )
-            log.info(
-                f"   {'Threshold':14}"
-                + f"{' ':12}"
-                + f"{self.parameters['Thermal Management Temperature 1 (TMT1)']:12}"
-                + f"{self.parameters['Thermal Management Temperature 2 (TMT2)']:12}"
-                + f"{self.parameters['Warning Composite Temperature Threshold (WCTEMP)']:12}"
-                + f"{self.parameters['Critical Composite Temperature Threshold (CCTEMP)']:12}"
-            )
-            log.info(
-                f"   {'Count':14}"
-                + f"{' ':12}"
-                + f"{self.parameters['Thermal Management Temperature 1 Count']:12}"
-                + f"{self.parameters['Thermal Management Temperature 2 Count']:12}"
-                + f"{'--':12}"
-                + f"{'--':12}"
-            )
+                log.info(
+                    f"   {'Time (Hrs)':14}"
+                    + f"{total_time/3600:<12,.3f}"
+                    + f"{as_int(self.parameters['Thermal Management Temperature 1 Time'])/3600:<12,.3f}"
+                    + f"{as_int(self.parameters['Thermal Management Temperature 2 Time'])/3600:<12,.3f}"
+                    + f"{as_int(self.parameters['Warning Composite Temperature Time'])/3600:<12,.3f}"
+                    + f"{as_int(self.parameters['Critical Composite Temperature Time'])/3600:<12,.3f}"
+                )
+                log.info(
+                    f"   {'Threshold':14}"
+                    + f"{' ':12}"
+                    + f"{self.parameters['Thermal Management Temperature 1 (TMT1)']:12}"
+                    + f"{self.parameters['Thermal Management Temperature 2 (TMT2)']:12}"
+                    + f"{self.parameters['Warning Composite Temperature Threshold (WCTEMP)']:12}"
+                    + f"{self.parameters['Critical Composite Temperature Threshold (CCTEMP)']:12}"
+                )
+                log.info(
+                    f"   {'Count':14}"
+                    + f"{' ':12}"
+                    + f"{self.parameters['Thermal Management Temperature 1 Count']:12}"
+                    + f"{self.parameters['Thermal Management Temperature 2 Count']:12}"
+                    + f"{'--':12}"
+                    + f"{'--':12}"
+                )
 
         log.info("")
 
